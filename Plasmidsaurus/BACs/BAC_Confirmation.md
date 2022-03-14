@@ -69,9 +69,9 @@ and added `> NCBI pBeloBAC11 CVU51113`
 [main] CMD: bwa mem CVU51113_pBeloBAC11.txt Unckless_ed_2_pBeloBAC11.fasta
 [main] Real time: 0.002 sec; CPU: 0.002 sec
 ```
-- Ok, now to look at these
+- Ok, now to look at these  
 `samtools view pBeloBAC11.bam | less`
-- There are just 2 alignments for pBeloBAC11
+- There are just 2 alignments for pBeloBAC11  
 `samtools view pBACe3.6.bam | less`
 - There are also only 2 alignments for pBACe3.6
-- This seems like a good sign that these "2" alignments are just because the sequences don't start and stop in the same place, but I should investigate these further 
+- This seems like a good sign that these "2" alignments are just because the sequences don't start and stop in the same place, but I should investigate these further
