@@ -74,4 +74,23 @@ and added `> NCBI pBeloBAC11 CVU51113`
 - There are just 2 alignments for pBeloBAC11  
 `samtools view pBACe3.6.bam | less`
 - There are also only 2 alignments for pBACe3.6
-- This seems like a good sign that these "2" alignments are just because the sequences don't start and stop in the same place, but I should investigate these further
+- **Investigating pBeloBAC11 further:** looking at the CIGAR string on the alignments to see how many bases are a match and how many don't match. This is with H for hard clipped (not present in mapping) and M for matched
+- The 2 alignments for pBeloBAC11 have reciprocal CIGAR strings:
+  - 4743H2764M
+  - 4743M2764S
+- I am pretty sure this means that the entire consensus sequence from Plasmidsaurus maps exactly to the sequence from NCBI, it just has different start and stop points
+- 4743 + 2764 = 7507 bases
+- This is actually less than the number of bases that I got with the `wc -m` above, which is 7555. Seems like I am missing ~50 bases
+- I also might have counted the header lines when doing `wc -m`, so I copied and pasted just the bases into an [online character counter](https://lettercounter.github.io/)
+  - Unckless_ed_2_pBeloBAC11.fasta 5507 characters, no spaces
+  - CVU51113_pBeloBAC11.txt 5507 characters without spaces, 5553 characters **with** spaces
+- So, even though it doesn't look like there are spaces in CVU51113_pBeloBAC11.txt, there still are some (although I really thought I got rid of all of them). So, this looks like a perfect mapping for pBeloBAC11!
+- **Investigating pBACe3.6 further:** looking at the CIGAR string
+- The 2 alignments for pBACe3.6 are also reciprocal:
+  - 2452S9160M
+  - 2452M9160H
+- 2452 + 9160 = 11,612 bases
+- I want to check the actual bases character count for pBACe3.6, same way as above
+  - CVU80929_pBACe3.6.txt 11,612 characters without spaces, 11,684 characters **with** spaces
+  - Unckless_ed_1_pBACe3.6.fasta 11,612 characters
+- So I would say pBACe3.6 is also an exact map!   
