@@ -1,4 +1,4 @@
-## Confirming BAC Sequences from Plasmidsaurus
+## Confirming BAC Sequences from Plasmidsaurus by Mapping the Consensus Sequence to the BAC "Genomes"
 
 - Make new directories in Linux for Plasmidsaurus and BACs
 - Copy in data from Plasmidsaurus to Linux machine
