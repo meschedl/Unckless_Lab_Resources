@@ -3,8 +3,10 @@
 
 I want to re-check the read sizes from Plasmidsarus to see if it's possible the second band in pBeloBAC11 is likely to be a doublet/triplet or a second construct.  
 They gave us little graphs of the read lengths:  
+
 pBACe3.6:
-![](https://raw.githubusercontent.com/meschedl/Unckless_Lab_Resources/main/images/Unckless_ed_1_pBACe3.6.png)
+![](https://raw.githubusercontent.com/meschedl/Unckless_Lab_Resources/main/images/Unckless_ed_1_pBACe3.6.png)  
+
 pBeloBAC11:
 ![](https://raw.githubusercontent.com/meschedl/Unckless_Lab_Resources/main/images/Unckless_ed_2_pBeloBAC11.png)
 
@@ -145,4 +147,4 @@ pBeloBAC11
 - 31,523bp read 174 - all top BLAST hits are to _E. coli_ strains
 - 12,739bp read 285 - all top BLAST hits are to _E. coli_ strains and one shigella (bacteria)
 
-Very surprising! Based on the gel I thought that it was pBeloBAC11 that had the doublet, but it just looks like it is all contamination in the extraction from the bacteria. And that is in both of them. And it looks like there are two reads that hint at a possible doublet in pBACe3.6. 
+Very surprising! Based on the gel I thought that it was pBeloBAC11 that had the doublet, but it just looks like it is all contamination in the extraction from the bacteria. And that is in both of them. And it looks like there are two reads that hint at a possible doublet in pBACe3.6.
