@@ -155,3 +155,20 @@ CAGTTAAATTGCTAACGCAGTCAGGCACCGTGTATGAAATCTAACAATGCGCTCATCGTC
 - Contig 1 (10,408 bases) is missing 1,254 bases to get to the NCBI sequence at 11,662 bases
 - I'm not entirely sure what to make of the alignment, but they align up pretty good, but it's not exact. It's hard to say because I know the assembly didn't go "the right way" so should I be expecting this to align up perfectly anyways?
 - I also cannot do anything with pBeloBAC11 because it din't assemble...
+
+
+**Using EPI2ME Software from Oxford Nanopore to Make BAC Consensus Sequences**
+
+- Downloaded the EPI2ME software from the [Nanopore EPI2ME website](https://epi2me.nanoporetech.com/software), you need to have a Nanopore login to access these programs
+- Started a new analysis and chose the Fastq Clone Validation workflow
+- Using version v2022.03.16
+- First started by uploading the raw reads from pBACe3.6
+- I set parameters for:
+  - Minimum quality score 10
+  - Minimum length filter 10
+  - No maximum length filter
+  - Enabled host filtering (this should remove and _E. coli_ DNA)
+  - And yes to reconcile assemblies
+- Made sure I had an output directory indicated
+- Pressed start!
+- After 4-5 hours there is not even any QC information available, so I decided to stop the analysis and try again
