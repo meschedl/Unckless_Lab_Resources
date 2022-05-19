@@ -102,10 +102,6 @@ egg_counts_main %>%
 
 #######
 # Now on your own use the same code to find the mean of average_egg_count by the categories of yeast and plate_type
-average_egg_count_by_age <- egg_counts_main %>% 
-  group_by(fly_age) %>% 
-  summarise(average_egg_count = mean(average_egg_count)) %>% 
-  as.data.frame()
 
 # this is great, but it would be even better to have R give us this information in a dataframe instead of just 
 # printing it to the console 
