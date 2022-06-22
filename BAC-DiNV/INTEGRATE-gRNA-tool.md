@@ -18,8 +18,8 @@ Using [INTEGRATE Guide RNA Tool](https://github.com/sternberglab/INTEGRATE-guide
 - Now I need to copy over the DiNV genome
 `cp /home/runcklesslab/Maggie/DiNV-DV-1/GCF_004132165.1_ASM413216v1_genomic.fna /home/runcklesslab/Maggie/INTEGRATE-gRNA`
 - I created a new conda environment with python version 3.9 to be able to run these python scripts (specified on the Github page, needs to be 3.8 or higher)
-  - `conda create -n integrateEnv python=3.9`
-  - `conda activate integrateEnv`
+  - `conda create -n IntegrateEnv python=3.9`
+  - `conda activate IntegrateEnv`
 - Also need to copy in the custom_regions.csv from the desktop
 `scp /Users/m741s365/Desktop/custom_regions.csv runcklesslab@10.119.46.137:/home/runcklesslab/Maggie/INTEGRATE-gRNA`
 - Tool Github says that I can run this command to make sure dependencies are installed
@@ -32,19 +32,43 @@ Using [INTEGRATE Guide RNA Tool](https://github.com/sternberglab/INTEGRATE-guide
   - Seems like that wasn't right
 - I have gone back and made every bank into something = []
 - I will remove the spacer_gen.py, then copy and paste what is in my desktop version of the file to the Linux when I nano spacer_gen.py (new file)
-- Now it is having an issue with the first line, it cannot find a module named src.main
-  - There is a folder called src, but it's not called src.main
-  - Should I change it to say just src?
-  - No, this does not work. It also says no module named src
-- Ok now I checked the version of python now and it says 2.7.17! This is probably why it doesn't know what src.main is
-- This happened when I did the pip install code... which it said I needed to do.
-- I uninstalled the dependencies, then reinstalled them with conda
-- My issue might be me checking the python version with "python" not "python3" and also not running the code that way
-- So now if I run `python3 spacer_gen.py` I get an error that says there is no module named Bio in the main.py script
-  - I think this might be one of the dependencies Biopython
-  - Maybe using conda to install them was not right, I will retry the pip install code
-  - But first I will uninstall them with conda
-    - This ended up not working, it says they aren't there
-    - So I just reran `pip install -r requirements.txt`
-- Now I will try `python3 spacer_gen.py` again
-- Same issue again, it just says No module named "Bio", I don't know what to do about this 
+
+**Some more errors occured, until we figured out that installing the requirements with the text method does not actually install them, and that to run the python scripts you have to specify python3**
+
+
+### code to run this program locally on my laptop
+- All code below is done in a new environment  
+`conda create -n INTEGRATEenv python=3.9`  
+`conda activate INTEGRATEenv`
+- Make sure bowtie2 is installed in the PATH  
+`conda install -c bioconda/label/broken bowtie2` #works
+- List installed programs (make sure bowtie2 is included)
+`conda list`
+- Show the location of installed programs in the current environment
+`ls -lh /opt/anaconda3/envs/INTEGRATEenv/`
+- Add bowtie2 to your path
+`sudo nano /etc/paths`
+- (need to use password to computer here)
+- Add the following line:
+`/opt/anaconda3/envs/INTEGRATEenv/`
+- Check that it worked
+`echo $PATH`
+- Open up a new terminal window to allow the changes to take effect
+- Now you should be able to run the following without an error:
+`bowtie2 -h`
+- Dependencies
+- Install biopython individually  
+`pip install biopython==1.76`
+- Install simplesam individually   
+`pip install simplesam==0.1.3`
+- There is another program called boto3 that needs to be installed (version unknown)
+`pip install boto3`
+- You have to rename your reference genome as a single letter (no idea why, this program is garbage)
+`cp GCF_004132165.1_ASM413216v1_genomic.fna d`
+- Make new directory to hold indexed reference genome
+`mkdir /Users/maggieschedl/Desktop/KU/INTEGRATE-gRNA/assets/bowtie/DiNV`
+- Run this line to index the reference genome specifying 'd' as input reference genome and a path to output the index files since the program still won't recognize the reference genome
+`bowtie2-build d /Users/maggieschedl/Desktop/KU/INTEGRATE-gRNA/assets/bowtie/DiNV/index`
+- Now finally run the program
+`python spacer_gen.py`
+- Look in the output folder for your identified spacers with minimal off-target binding potential
