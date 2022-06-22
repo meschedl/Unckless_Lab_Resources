@@ -29,7 +29,7 @@
 - Get the 96 well magnet plate out of the drawer where the qubit supplies are
 - After the 15 minutes, place the tubes on the magnet plate and wait ~2 minutes
   - You should be able to see that the beads have gone to the side of the tube against the magnet. There should be a clear brown spot where the beads are, and the liquid should be clear (but green). It is very important to make sure all the beads have gone to the magnet
-- Keep tubes on magnet. Pipette the liquid off without disturbing the beads: to to this set your pipette to ~7ul **less** than the volume in the tube. Do not worry about the extra volume, you just want to avoid removing any beads
+- Keep tubes on magnet. Pipette the liquid off without disturbing the beads: to do this set your pipette to ~7ul **less** than the volume in the tube. Do not worry about the extra volume, you just want to avoid removing any beads
 - Keep tubes on magnet. Add 200ul of fresh 80% ethanol to each tube
 - Wait ~30 seconds
 - Keep tubes on magnet. Remove 200ul liquid from the tubes
@@ -53,7 +53,7 @@
 - Multiply 199 by your n number
   - Example: 199 * 7.7 = 1532.3
 - Add that amount in ul (ex 1532.3ul) of buffer (big bottle) to a new tube
-- Add _n_ul of quant IT reagent (small tube) to the same tube
+- Add _n_ ul of quant IT reagent (small tube) to the same tube
 - Vortex and spin down, this is your working solution
 - Set up qubit tubes (in the same drawer as the qubit kit and machine)
   - You will need 2 tubes for the standards, and 1 tube per sample
@@ -163,7 +163,7 @@ Following [this protocol](https://www.neb.com/protocols/2018/01/30/in-vitro-dige
 - Equation for DNA ng/ul to nM:
     - nM = ((ng/ul)/(660g/mol * size in bp)) * 1000000
 - Example
-  - PCFR product is 34ng/ul and 500bp in size
+  - PCR product is 34ng/ul and 500bp in size
   - ((34ng/ul)/(660g/mol * 500) * 1000000) = 103nM
 - Dilute your PCR product with molecular grade water, you will need 3ul per reaction that uses that PCR product (number of reactions may vary, see below)
 
