@@ -20,7 +20,7 @@
 3. `mkdir Notebook-Directory` Make a directory (same thing as a folder) where you want to put the repository for the Putnam Lab Notebook. This is where all the files will go.
 4. `cd Notebook-Directory` Go into the directory you just made.
 5. `git init` Now make that directory an empty git repository. Git is a way to do version control, which tracks changes in your files and can help you if previous versions of you.
-  - _You may get an error here that says invalid active developer path, use this code_ `xcode - select --install` _in your terminal to fix it, you should then be able to use git init._  
+  - You may get an error here that says invalid active developer path, use this code `xcode - select --install` in your terminal to fix it, you should then be able to use git init.
 6. Login to [GitHub](https://github.com/) and go to [Maggie's Putnam Lab Notebook Repository](https://github.com/meschedl/MESPutnam_Open_Lab_Notebook). If you don't have an account, make one. It's free!
 7. Click the button in the top right corner that says Fork. It will take everything from this repository and create a copy in your account. Once that is done go into the settings of that repository and change the name. For example mine is MESPutnam_Open_Lab_Notebook. Remember to not use spaces in the name, and it is best to make it descriptive so other's can find it on your Github account.
 8. Note: whenever you want to get back to the home of your repository just click the <>Code tab. In that tab click the green button on the right that says Clone or Download. If will give you a link, copy that link.
