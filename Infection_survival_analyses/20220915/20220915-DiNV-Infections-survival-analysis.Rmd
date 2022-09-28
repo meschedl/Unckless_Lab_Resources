@@ -1,0 +1,42 @@
+---
+title: "20220915-DiNV-infections-survival-analysis"
+output: html_document
+date: '2022-09-28'
+---
+This is an analysis of data from an infection experiment where 7-10 day old Drosophila innubila (males and females) were either poked with sterile cell culture medium or fluids from primary D. innubila cells infected with DiNV (day 26). The goal is to test the infectivity of the cell culture fluid/the virons in the fluid. Mortality in each vial was monitored for 11 days, however half the vials were frozen after day 7. So I am only graphing mortaility until day 7 for all the vials. Percent survival was calculated for each vial on each day based off the original number of flies in the vial and how many survive each day. 
+
+
+This script is written with help from this website http://www.sthda.com/english/wiki/survival-analysis-basics 
+
+https://rviews.rstudio.com/2017/09/25/survival-analysis-with-r/
+
+
+
+Load in packages needed for the analysis
+
+```{r}
+library("survival")
+library("survminer")
+```
+
+Load in the male survival to day 7 dataset 
+
+```{r}
+# change the working directory to be the folder with the data 
+setwd("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20220915")
+# check that it worked
+getwd()
+# load in the dataset 
+male_survival <- read.csv("20220915_DiNV_infections_male_percent_survival day_7.csv")
+# check dataset 
+head(male_survival)
+```
+
+
+```{r}
+# build survival object
+survival_object <- with(male_survival, Surv(percent_survival, status))
+
+male_suv_fit <- survfit(Surv(percent_survival, status) ~ 1, data=male_survival)
+ggsurvplot(male_suv_fit)
+```
