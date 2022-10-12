@@ -1,25 +1,39 @@
----
-title: "20220915-DiNV-infections-survival-analysis"
-output: github_document
-date: '2022-09-28'
----
-This is an analysis of data from an infection experiment where 7-10 day old Drosophila innubila (males and females) were either poked with sterile cell culture medium or fluids from primary D. innubila cells infected with DiNV (day 26). The goal is to test the infectivity of the cell culture fluid/the virons in the fluid. Mortality in each vial was monitored for 11 days, however half the vials were frozen after day 7. 
+20220915-DiNV-infections-survival-analysis
+================
+2022-09-28
 
+This is an analysis of data from an infection experiment where 7-10 day
+old Drosophila innubila (males and females) were either poked with
+sterile cell culture medium or fluids from primary D. innubila cells
+infected with DiNV (day 26). The goal is to test the infectivity of the
+cell culture fluid/the virons in the fluid. Mortality in each vial was
+monitored for 11 days, however half the vials were frozen after day 7.
 
-This script is written with help from this website http://www.sthda.com/english/wiki/survival-analysis-basics , example code from Rob (see below), and help from Devon DeRaad. 
-
-
+This script is written with help from this website
+<http://www.sthda.com/english/wiki/survival-analysis-basics> , example
+code from Rob (see below), and help from Devon DeRaad.
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
 ```
 
+    ## Loading required package: ggplot2
 
-### Rob's example code for me
-```{r}
+    ## Loading required package: ggpubr
+
+    ## 
+    ## Attaching package: 'survminer'
+
+    ## The following object is masked from 'package:survival':
+    ## 
+    ##     myeloma
+
+### Rob’s example code for me
+
+``` r
 #generate example data
 vial=c(1,2)
 gt=c("wt","mut")
@@ -33,8 +47,20 @@ D4=c(9,3)
 df=data.frame(vial,gt,D0,D1,D2,D3,D4)
 results=data.frame(vial=character(),gt=character(),dead=numeric(),status=numeric())
 head(df)
-head(results)
+```
 
+    ##   vial  gt D0 D1 D2 D3 D4
+    ## 1    1  wt 10 10 10 10  9
+    ## 2    2 mut 10  9  8  5  3
+
+``` r
+head(results)
+```
+
+    ## [1] vial   gt     dead   status
+    ## <0 rows> (or 0-length row.names)
+
+``` r
 #loop to convert the example dataframe 'df' into properly formatted dataframe 'results'
 for(i in 1:length(df$vial)){
 temp=df[i,]
@@ -55,9 +81,19 @@ if(k>0) {
 head(results)
 ```
 
+    ##   vial gt dead status
+    ## 1    1 wt    4      0
+    ## 2    1 wt    4      1
+    ## 3    1 wt    4      1
+    ## 4    1 wt    4      1
+    ## 5    1 wt    4      1
+    ## 6    1 wt    4      1
+
 ### Commented and adapted version
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
-```{r}
+
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
+
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -115,11 +151,37 @@ return(results)
 #make sure it generates an identical output to Rob's function
 function.results<-convert_df(df)
 results == function.results
+```
+
+    ##    vial   gt dead status
+    ## 1  TRUE TRUE TRUE  FALSE
+    ## 2  TRUE TRUE TRUE  FALSE
+    ## 3  TRUE TRUE TRUE  FALSE
+    ## 4  TRUE TRUE TRUE  FALSE
+    ## 5  TRUE TRUE TRUE  FALSE
+    ## 6  TRUE TRUE TRUE  FALSE
+    ## 7  TRUE TRUE TRUE  FALSE
+    ## 8  TRUE TRUE TRUE  FALSE
+    ## 9  TRUE TRUE TRUE  FALSE
+    ## 10 TRUE TRUE TRUE  FALSE
+    ## 11 TRUE TRUE TRUE  FALSE
+    ## 12 TRUE TRUE TRUE  FALSE
+    ## 13 TRUE TRUE TRUE  FALSE
+    ## 14 TRUE TRUE TRUE  FALSE
+    ## 15 TRUE TRUE TRUE  FALSE
+    ## 16 TRUE TRUE TRUE  FALSE
+    ## 17 TRUE TRUE TRUE  FALSE
+    ## 18 TRUE TRUE TRUE  FALSE
+    ## 19 TRUE TRUE TRUE  FALSE
+    ## 20 TRUE TRUE TRUE  FALSE
+
+``` r
 #note that the entire status column should return false, because we switched the specification of 0 and 1 for death and life from Rob's example code, to follow the input needed for the 'surv' package
 ```
 
 ### Read in the real raw data and make subsets
-```{r}
+
+``` r
 #read the file from csv
 df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20220915/20220915.DiNV.infections.raw.data.csv")
 
@@ -141,7 +203,8 @@ df.female.seven<-df.female[,1:10]
 ```
 
 ### Convert each of these dataframes to long and tidy format using function defined above
-```{r}
+
+``` r
 df.male.complete<-convert_df(df.male.complete)
 df.female.complete<-convert_df(df.female.complete)
 df.male.seven<-convert_df(df.male.seven)
@@ -149,8 +212,10 @@ df.female.seven<-convert_df(df.female.seven)
 ```
 
 ### make survivorship curves
+
 ### Male all 11 days
-```{r}
+
+``` r
 male_eleven_fit<- survfit(Surv(dead, status) ~ treatment, data=df.male.complete)
 ggsurvplot(male_eleven_fit,
           pval = TRUE, conf.int = TRUE,
@@ -162,10 +227,11 @@ ggsurvplot(male_eleven_fit,
           palette = c("#E7B800", "#2E9FDF"))
 ```
 
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-### Males 7 days 
-```{r}
+### Males 7 days
 
+``` r
 male_seven_fit<- survfit(Surv(dead, status) ~ treatment, data=df.male.seven)
 ggsurvplot(male_seven_fit,
           pval = TRUE, conf.int = TRUE,
@@ -177,9 +243,11 @@ ggsurvplot(male_seven_fit,
           palette = c("#E7B800", "#2E9FDF"))
 ```
 
-### Female 11 days
-```{r}
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
+### Female 11 days
+
+``` r
 female_eleven_fit<- survfit(Surv(dead, status) ~ treatment, data=df.female.complete)
 ggsurvplot(female_eleven_fit,
           pval = TRUE, conf.int = TRUE,
@@ -191,8 +259,11 @@ ggsurvplot(female_eleven_fit,
           palette = c("#E7B800", "#2E9FDF"))
 ```
 
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 # Female 7 days
-```{r}
+
+``` r
 female_seven_fit<- survfit(Surv(dead, status) ~ treatment, data=df.female.seven)
 #plot(km_fit, xlab="Days", main = 'Kaplan Meyer Plot')
 ggsurvplot(female_seven_fit,
@@ -203,6 +274,6 @@ ggsurvplot(female_seven_fit,
           surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("#E7B800", "#2E9FDF"))
-
 ```
 
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
