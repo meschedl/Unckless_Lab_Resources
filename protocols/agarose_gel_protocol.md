@@ -84,4 +84,7 @@ Imaging the gel
 - It's easiest to take off one of the outer gloves and have that hand free to touch other things safely
 - Turn out the lights with free hand
 - Turn on the UV light with the extra glove hand and take a picture on your phone with the free hand
-- 
+- Turn off the UV light, take off the cover and place the gel in the gel trash bucket
+- Rinse the light box with DI water and wipe with a paper towel - put that trash in the second trash bucket along with the outer pair of gloves
+
+**Annotating the gel image: look at this [protocol](https://github.com/meschedl/Unckless_Lab_Resources/blob/main/protocols/annotating_gels.md)**
