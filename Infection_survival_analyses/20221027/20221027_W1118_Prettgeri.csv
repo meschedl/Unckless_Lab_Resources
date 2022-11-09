@@ -1,0 +1,8 @@
+Vial,Species,Treatment,Replicate,Day_emerged,Day_Infected,time_infected,fly_age,OD600,Original_number_flies_per_vial,Number_of_flies_per_vial,Day 1 (10/28),Day 2 (10/29),Day 3 (10/30),Day 4 (10/31),Day 5 (11/1),Day 6 (11/2),Day 7 (11/3),Notes,notes 11/2
+1,melanogaster,LB,1,10/19-10/22,20221027,5:11,5-8,NA,10,10,10,10,10,10,10,10,10,,
+2,melanogaster,OD 1,1,10/19-10/22,20221027,5:17,5-8,1,9,9,9,7,8,8,8,6,6,,emma made note that she only saw 8 flies in total in the vial when I had said there were 9
+3,melanogaster,OD 1,2,10/22-10/24,20221027,5:24,3-5,1,10,10,10,5,5,5,5,5,5,,
+4,melanogaster,LB,2,10/19-10/22,20221027,5:30,5-8,NA,10,10,10,10,10,10,10,10,10,,
+5,melanogaster,OD 1,3,10/19-10/22,20221027,5:40,5-8,1,10,10,10,8,8,8,7,7,7,,
+6,melanogaster,LB,3,10/22-10/24,20221027,5:46,3-5,NA,10,10,10,10,10,10,10,10,10,,
+7,melanogaster,OD 1,4,10/19-10/22,20221027,5:52,5-8,1,10,10,10,8,8,8,8,8,8,,
