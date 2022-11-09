@@ -83,7 +83,7 @@ return(results)
 innubila_food_2<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20221022/20221022_innubila_food_vial_test_2.csv")
 
 # Subset dataframe to be only the columns needed
-innubila_food_2_sub<-innubila_food_2[,c(1,4,12,12:26)]
+innubila_food_2_sub<-innubila_food_2[,c(1,4,12:26)]
 ```
 
 ### Convert the dataframe to long and tidy format using function defined above
@@ -106,3 +106,53 @@ ggsurvplot(innubila_food_2_sub_convert_fit,
 ```
 
 ![](2022-10-22-innubila-food-test-2_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+### Separate out based on poke treatment
+
+``` r
+# Subset dataframe to be only the rows for not poked flies
+innubila_food_2_nopoke<-innubila_food_2_sub[c(1,4:7,11),]
+
+# Subset dataframe to be only the rows for poked flies
+innubila_food_2_CCM<-innubila_food_2_sub[c(2:3,8:10,12),]
+```
+
+### Convert the dataframe to long and tidy format using function defined above
+
+``` r
+# no poke
+innubila_food_2_nopoke_convert<-convert_df(innubila_food_2_nopoke)
+
+# CCM
+innubila_food_2_CCM_convert<-convert_df(innubila_food_2_CCM)
+```
+
+### Make full plot for No Poke
+
+``` r
+innubila_food_2_nopoke_convert_fit<- survfit(Surv(dead, status) ~ treatment, data=innubila_food_2_nopoke_convert)
+ggsurvplot(innubila_food_2_nopoke_convert_fit,
+          pval = TRUE, conf.int = TRUE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          linetype = "strata", # Change line type by groups
+          # surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
+```
+
+![](2022-10-22-innubila-food-test-2_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+### Make full plot for CCM
+
+``` r
+innubila_food_2_CCM_convert_fit<- survfit(Surv(dead, status) ~ treatment, data=innubila_food_2_CCM_convert)
+ggsurvplot(innubila_food_2_CCM_convert_fit,
+          pval = TRUE, conf.int = TRUE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          linetype = "strata", # Change line type by groups
+          # surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
+```
+
+![](2022-10-22-innubila-food-test-2_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
