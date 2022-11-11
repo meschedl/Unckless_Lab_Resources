@@ -1,0 +1,7 @@
+condition_when_frozen,p47_PCR_result,percent
+alive,no,80
+alive,yes,20
+alive,maybe,0
+dead,no,80.0
+dead,yes,11.4
+dead,maybe,8.6
