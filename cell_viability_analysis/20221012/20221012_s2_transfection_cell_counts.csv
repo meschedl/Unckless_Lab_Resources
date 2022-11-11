@@ -1,0 +1,13 @@
+Well,treatment_short,treatment ,p_viable_cells
+A1,S2,S2 cells,94.17
+A2,S2_p,S2 cells with pCS2,98.3
+B1,S2_Insect,S2 cells with insect reagent,94.17
+B2,S2_2020,S2 cells with 2020 reagent ,96.44
+C1,S2_p_Insect,S2 cells with pCS2 and insect reagent,94.83
+C2,S2_p_2020,S2 cells with pCS2 and 2020 reagent ,95.36
+A3,S2,S2 cells,97.95
+A4,S2_p,S2 cells with pCS2,97.38
+B3,S2_Insect,S2 cells with insect reagent,96.76
+B4,S2_2020,S2 cells with 2020 reagent ,97.7
+C3,S2_p_Insect,S2 cells with pCS2 and insect reagent,95.16
+C4,S2_p_2020,S2 cells with pCS2 and 2020 reagent ,96.2

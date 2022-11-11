@@ -1,0 +1,6 @@
+Vial,Species,Treatment,Replicate,Day_emerged,Day_Infected,time_infected,fly_age,OD600,Number_of_flies_per_vial,Day 1 (9/28),Day 2 (9/29),Day 3 (9/30),Day 4 (10/1),Day 5 (10/2),Day 6 (10/3),Day 7 (10/4),Notes
+1,W1118,P. rettgeri ,1,9/20-9/22,9/28,5:30,5-7 days,1,10,9,9,9,9,8,8,8,
+2,W1118,P. rettgeri ,2,9/20-9/22,9/28,5:35,5-7 days,1,10,10,10,10,10,10,10,10,
+3,W1118,LB,1,9/20-9/22,9/28,5:41,5-7 days,NA,9,9,9,9,9,9,9,9,
+4,W1118,P. rettgeri ,3,9/20-9/22,9/28,5:46,5-7 days,1,10,10,10,10,10,10,10,9,
+5,W1118,P. rettgeri ,4,9/20-9/22,9/28,5:51,5-7 days,1,10,10,10,10,10,10,10,10,
