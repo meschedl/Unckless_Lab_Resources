@@ -38,7 +38,9 @@ Female_PCR_results$PCR_result <- factor(Female_PCR_results$PCR_result, levels=re
 ggplot(Male_PCR_results, aes(x = PCR_primer, y = percentage, fill = PCR_result, label = percentage)) +
     geom_bar(stat = "identity") + geom_text(size = 3, position = position_stack(vjust = 0.5)) + theme_bw()
 ```
-### Percentage plot for Females
+
+###  Percentage plot for females
+
 ```{r}
 # ggbarplot with the percentage numbers on the bars 
 

@@ -48,7 +48,8 @@ ggplot(Male_PCR_results, aes(x = PCR_primer, y = percentage, fill = PCR_result, 
 ```
 
 ![](20220915-DiNV-PCR-analysis_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
-\### Percentage plot for Females
+
+### Percentage plot for females
 
 ``` r
 # ggbarplot with the percentage numbers on the bars 
