@@ -4,7 +4,7 @@
 ## Forking a Blog Style Github for Notebook Purposes
 
 
-**Important Links:**
+**Important Links:**  
 [Original Jekyll Blog](https://github.com/barryclark/jekyll-now)  
 [Maggie's Notebook Website](https://meschedl.github.io/MESPutnam_Open_Lab_Notebook/)  
 [Maggie's Notebook Github Repository](https://github.com/meschedl/MESPutnam_Open_Lab_Notebook)  
