@@ -202,7 +202,7 @@ Following [this protocol](https://www.neb.com/protocols/2018/01/30/in-vitro-dige
 - Add 1ul water to tubes with no Cas9
 - Pipette mix tubes and spin them down
 - Incubate the tubes in the thermocycler for 10 minutes at 25 degrees C (place tubes in and press skip step in the program. Set a timer for 10 minutes)
-- Take out the tubes and add 3ul of PCR product to each tube that gets that product
+- Take out the tubes and add 3ul of PCR product to each tube that gets that product (do at room temp)
 - Pipette mix and spin down tubes
 - Incubate tubes in the thermocycler for 15 minutes at 37 degrees C (place tubes in and press skip step in the program, set a timer for 15 minutes)
 - Take tubes out and add 1ul of Qiagen proteinase K to each
