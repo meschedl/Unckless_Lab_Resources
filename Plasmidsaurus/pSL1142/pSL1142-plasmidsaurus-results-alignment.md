@@ -50,4 +50,8 @@ samtools view pSL1142.bam
 - This seems pretty good, there are only 2 alignments, but I want to look at the CIGAR strings to be sure 
     - 3604S3103M1I7324M
     - 3604M10428H  
-- This seems to me like it's saying 3,103 bases match, then a 1 base insertion, then 7,324 bases match, then 3,604 bases match. This is a total of 14,031 bases matching with a 1 base insertion. This is the exact number of bases on the Addgene listing of the plasmid, so I would say we are good! 
+- This seems to me like it's saying 3,103 bases match, then a 1 base insertion, then 7,324 bases match, then 3,604 bases match. This is a total of 14,031 bases matching with a 1 base insertion. 14,031 bases is the size of the plasmid on Addgene 
+- The 1 base insertion could be an issue, so I want to check where it is. This can be done in Geneious, where there is also and alignment tool
+- Aligned the Plasmidsaurus GeneBank file to the Addgene GeneBank file 
+- The 1 base insertion is in the backbone origin of replication, so it's not potentially effecting any of the important genes in the plasmid. And because I was able to grow the plasmid, it doesn't seem like the insertion effects replication of the plasmid 
+![](https://raw.githubusercontent.com/meschedl/Unckless_Lab_Resources/main/images/pSL1142-alignment.png)
