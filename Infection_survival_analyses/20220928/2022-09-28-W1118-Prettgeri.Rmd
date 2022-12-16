@@ -70,7 +70,7 @@ return(results)
 
 
 
-### Read in the real raw data and make subsets
+### Read in the raw data and make subsets
 ```{r}
 # read the file from csv
 W1118 <-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20220928/20220928_P_rettegri_W1118.csv")
