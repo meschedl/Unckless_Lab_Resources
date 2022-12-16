@@ -1,19 +1,28 @@
----
-title: "20221201-innubila-food-and-control-poke-test"
-output: github_document
-date: '2022-12-16'
----
+20221201-innubila-food-and-control-poke-test
+================
+2022-12-16
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
 ```
 
+    ## Loading required package: ggplot2
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
-```{r}
+    ## Loading required package: ggpubr
+
+    ## 
+    ## Attaching package: 'survminer'
+
+    ## The following object is masked from 'package:survival':
+    ## 
+    ##     myeloma
+
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
+
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -69,9 +78,9 @@ return(results)
 } #close function
 ```
 
-
 ### Read in the real raw data and make subsets if wanted
-```{r}
+
+``` r
 #read the file from csv
 df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20221201/20221201 _innubila_mushroom_control_experiment.csv")
 
@@ -97,25 +106,22 @@ df.I<-df.I[,c(1,6,14:28)]
 df.NP<-df.NP[,c(1,5,14:28)]
 df.SM<-df.SM[,c(1,5,14:28)]
 df.CCCM<-df.CCCM[,c(1,5,14:28)]
-
 ```
 
 ### Convert each of these dataframes to long and tidy format using function defined above
-```{r}
+
+``` r
 df.convert<-convert_df(df)
 df.IM.convert<-convert_df(df.IM)
 df.I.convert<-convert_df(df.I)
 df.NP.convert<-convert_df(df.NP)
 df.SM.convert<-convert_df(df.SM)
 df.CCCM.convert<-convert_df(df.CCCM)
-
-
 ```
 
+# plot the entire dataset
 
-# plot the entire dataset 
-
-```{r}
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
@@ -128,9 +134,11 @@ ggsurvplot(df_fit,
           palette = c("aquamarine", "blueviolet","cornflowerblue", "lightgreen", "slateblue4", "hotpink"))
 ```
 
-# Plot the different poke types for instant food only 
+![](20221201-innubila-food-and-control-poke-test_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-```{r}
+# Plot the different poke types for instant food only
+
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df.I_fit<- survfit(Surv(dead, status) ~ treatment, data=df.I.convert)
 ggsurvplot(df.I_fit,
@@ -143,9 +151,11 @@ ggsurvplot(df.I_fit,
           palette = c("aquamarine","cornflowerblue", "slateblue4"))
 ```
 
-# Plot the different poke types for instant food with musroom only 
+![](20221201-innubila-food-and-control-poke-test_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-```{r}
+# Plot the different poke types for instant food with musroom only
+
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df.IM_fit<- survfit(Surv(dead, status) ~ treatment, data=df.IM.convert)
 ggsurvplot(df.IM_fit,
@@ -158,9 +168,11 @@ ggsurvplot(df.IM_fit,
           palette = c("blueviolet", "lightgreen", "hotpink"))
 ```
 
-# Plot different food types for Not poked only 
+![](20221201-innubila-food-and-control-poke-test_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-```{r}
+# Plot different food types for Not poked only
+
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df.NP_fit<- survfit(Surv(dead, status) ~ treatment, data=df.NP.convert)
 ggsurvplot(df.NP_fit,
@@ -173,9 +185,11 @@ ggsurvplot(df.NP_fit,
           palette = c("cornflowerblue", "slateblue4"))
 ```
 
-# Plot different food types for Schneider's medium poked only 
+![](20221201-innubila-food-and-control-poke-test_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-```{r}
+# Plot different food types for Schneider’s medium poked only
+
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df.SM_fit<- survfit(Surv(dead, status) ~ treatment, data=df.SM.convert)
 ggsurvplot(df.SM_fit,
@@ -188,9 +202,11 @@ ggsurvplot(df.SM_fit,
           palette = c("lightgreen", "hotpink"))
 ```
 
-# Plot different food types for complete cell culture medium poked only 
+![](20221201-innubila-food-and-control-poke-test_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-```{r}
+# Plot different food types for complete cell culture medium poked only
+
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df.CCCM_fit<- survfit(Surv(dead, status) ~ treatment, data=df.CCCM.convert)
 ggsurvplot(df.CCCM_fit,
@@ -202,3 +218,5 @@ ggsurvplot(df.CCCM_fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("aquamarine", "blueviolet"))
 ```
+
+![](20221201-innubila-food-and-control-poke-test_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
