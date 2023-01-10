@@ -1,7 +1,7 @@
 ### Single Fly DNA Extraction Protocol in Single Tubes
 
 The general steps of a DNA extraction are: 
-1. Homogenization - break open hard tissue to access cells (exoskelton)
+1. Homogenization - break open hard tissue to access cells (exoskeleton)
 2. Cell lysis - break open cells to access nuclei, mitochondria, and the genome
 3. Protein/RNA/debris removal - removal of all other cellular components while leaving DNA in solution
 4. DNA purification - separating out DNA from the extraction solution and eulting it in a solution suitable for downstream use
