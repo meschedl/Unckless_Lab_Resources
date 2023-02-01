@@ -1,6 +1,6 @@
 ---
 title: "Myd88-Dv-1-Cell-DiNV-Infection-qPCR-Analysis"
-output: html_document
+output: github_document
 date: '2023-01-30'
 ---
 Load packages needed 
