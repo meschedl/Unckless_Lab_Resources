@@ -1,0 +1,122 @@
+---
+title: "Myd88-Dv-1-Cell-DiNV-Infection-qPCR-Analysis"
+output: html_document
+date: '2023-01-30'
+---
+Load packages needed 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+
+Read in dataset 
+```{r}
+Cq_data <- read.csv("qPCR_plan_Myd88_Dv-1_combined_plates.csv")
+
+```
+
+
+
+Histogram of all Cq values 
+
+```{r}
+
+ggplot(Cq_data, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(cell_type~sample_type) 
+
+# fill for which primer 
+# facet breaks up the graph into different components 
+# dodge makes each primer have it's own column per value 
+
+```
+Calculate the variances between the qPCR replicates 
+```{r}
+# make a dummy variable that is just the columns we want, columns 4 through 9
+x <- paste(Cq_data$sample_ID, Cq_data$primer, Cq_data$cell_type, Cq_data$sample_type, Cq_data$day, Cq_data$infected.)
+
+# calculate the variances 
+# tapply breaks the dataset up into groups and apply a function to each group
+# we want each sample_ID/primer/day/sample_type group to have the variance calculated for the Cq value 
+# and save this information as a variable 
+variances <- tapply(Cq_data$Cq, x, var)
+
+# look at a histogram of the variances 
+hist(variances)
+# one has really high variance which is not good 
+
+# which variances are above 0.2, which is higher than we want 
+variances[which(variances > 0.2)]
+
+```
+
+Looks like for sample 15 Myd88 RP49 supernatant, the variance is super high. We looked and it seemed like just one replicate PCR was wrong, the other two are very close to each other. This sample is row 62, so we decided to remove row 62 from further analyses. 
+
+Check variances and means without row 62
+```{r}
+#subset dataframe without row 62
+Cq_data_without_62 <- Cq_data[c(1:61, 63:120),]
+
+# make same dummy variable with new dataframe
+x <- paste(Cq_data_without_62$sample_ID, Cq_data_without_62$primer, Cq_data_without_62$cell_type, Cq_data_without_62$sample_type, Cq_data_without_62$day, Cq_data_without_62$infected.)
+
+# calculate variances in new dataframe 
+variances_without_62 <- tapply(Cq_data_without_62$Cq, x, var)
+
+# How does sample 15 Myd88 RP49 supernatant look now?
+variances_without_62[which(variances_without_62 > 0.2)]
+# that sample no longer has a worrying variance, good. 
+
+# what are the Cq means for each sample_ID/primer/day/sample_type group?
+means_without_62 <- tapply(Cq_data_without_62$Cq, x, mean)
+
+# look at the means with a histogram
+hist(means_without_62)
+
+# want to plot the variances versus the means 
+plot(variances_without_62~means_without_62)
+
+# looks like the variances only increase to worrying levels with high means. Rob and I talked about this and for all of them except one (which has the lowest worrying variance), there either shouldn't be any detectable virus(not infected) or vely little (day 0). All of these are for the 115 primer. We are thinking that this level of variance is just what "no virus" looks like. So we will keep these for analysis. 
+
+```
+
+Now I need to reduce my dataframe to only include the means and variances, which means every thrid line basically. Can I convert the means and variances lists into their own dataframes?
+
+```{r}
+# what is the variances thing?
+class(variances_without_62)
+# array
+
+# transform array into df
+variances_df <- as.data.frame.table(variances_without_62)
+# this gives me a dataframe but the entire first column is all the variables 
+# and the second column is the variances which it calls freq (not sure why)
+# use dplyr to separate them out into separate columns 
+
+# name all the columns I want 
+variances_df_sep <- variances_df %>% separate(Var1, c('sample_ID', 'primer', 'cell_type', 'sample_type', 'day', 'infected'))
+# check dataframe 
+head(variances_df_sep)
+# rename the Freq column to var for variance
+names(variances_df_sep)[7] <- "var"
+# check dataframe again
+head(variances_df_sep)
+```
+So I have a df with the variances, now I want the means in it as well 
+```{r}
+
+# going to transform the means array into a df
+means_df <- as.data.frame.table(means_without_62)
+# reaname the Freq column to mean
+names(means_df)[2] <- "mean"
+head(means_df)
+
+# the means and the variances dfs are in the same order which is nice
+# now I want to add the mean column to the variances df
+means_variances_of_Cq_df <- cbind(variances_df_sep, means = means_df$mean)
+# check how it looks
+head(means_variances_of_Cq_df)
+```
+
+
