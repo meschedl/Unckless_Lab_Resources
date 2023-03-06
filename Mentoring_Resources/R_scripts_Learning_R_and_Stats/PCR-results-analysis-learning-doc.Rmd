@@ -1,0 +1,117 @@
+---
+title: "PCR-results-analysis-learning"
+output: github_document
+date: '2023-03-06'
+---
+
+Save your R markdown document in the same folder on your computer where you will put the spreadsheet. This should be a folder for just this analysis. 
+
+Load in packages needed
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+
+You will need to add in the infection/treatment information to the PCR data you have generated. There is a new sheet in the Google Sheet labeled "Datasheet with treatment info". Paste into it your data from the "randomized for extraction" sheet. Then hover over the A above the tube_number column and click the down arrow. Select "sort sheet A-Z" and it should re-order your sheet into 1-x order. Then you can paste in the "treatment abbreviation" column from the raw spreadsheet sheet. Then download the datasheet with treatment info sheet as a csv file and save it to the same folder as your R document. 
+Re-name it "20221015-DiNV-infections-PCR-info.csv"
+
+Read in your dataset
+```{r}
+# make sure you use the full path to your file 
+# look at old R scrips to remind you how to do the path 
+# the path will be different for a Windows computer 
+
+raw_PCR_data <- read.csv("~/Desktop/Github/Unckless_Lab_Resources/Mentoring_Resources/R_scripts_Learning_R_and_Stats/20221015-DiNV-infections-PCR-info.csv")
+
+# check your dataset to make sure it looks right 
+head(raw_PCR_data)
+
+```
+
+Unfortunately the data is not exactly in the correct format for making the figures we are interested in making. We will have to separate it out into groups by treatment, and calculate the percentages of "yes", "no", and "maybe" PCR results for each treatment, and put that information into a new datasheet (in Google Sheets) 
+
+First we will separate out the dataset
+
+```{r}
+# separate to make a dataset for just CCM (cell culture medium) poked files 
+# use subset to tell R which column you want to subset by (treatment.abrev)
+# and what in that column you want separated = rows that say CCM 
+CCM_PCR_data <- subset(raw_PCR_data, treatment.abrev == "CCM")
+#check subsetted data 
+head(CCM_PCR_data)
+```
+
+Separate out dataframes for NP (no poke) and DiNV treatments 
+
+Look at the CCM dataframe. We want to calculate how many CO1 yes, no, and maybes there are. And how many p47 yes, no, and maybes there are
+
+```{r}
+print(CCM_PCR_data)
+# how many rows are there? 
+nrow(CCM_PCR_data)
+# remember this number 
+
+# it can be easier to count the numbers of yes, no, and maybes by clicking on the name of the dataframe 
+# in the environment section on the top right of R studio
+# then it will bring you into a new window with the full dataframe which is easier to look at 
+
+# count the number of yeses for the CO1 primer and put that number in the CCM data sheet in this spreadsheet https://docs.google.com/spreadsheets/d/1Kg863kyNMu37U_wI46kjYXtnXs2pncHTuuwqeX-f_wo/edit#gid=2094850399 
+# repeat for the nos and maybes. And repeat for the yes, no, and maybes for the p47 primer
+# put all that information in the CCM data spreadsheet, then calculate the percentage
+# Divide the number in each row by the number of rows calculated above, and multiply it by 100 
+# this will get you the percent PCR result for each condition for each primer 
+# then reduce the number of significant figures to 1 (ex. 16.5) so that it will be cleaner
+```
+
+Do this same calculations of percentages for the NP and DiNV treatment data subsets. Put those information in the NP data https://docs.google.com/spreadsheets/d/1Kg863kyNMu37U_wI46kjYXtnXs2pncHTuuwqeX-f_wo/edit#gid=229432538 and the DiNV data https://docs.google.com/spreadsheets/d/1Kg863kyNMu37U_wI46kjYXtnXs2pncHTuuwqeX-f_wo/edit#gid=1153699643 spreadsheets 
+
+Now you want to download those three spreadsheets separately as csv files, name them as CCM_data.csv, NP_data.csv, and DiNV_data.csv, save them in your folder, and load them into R 
+
+```{r}
+# read in your CCM data file
+CCM_data <- read.csv("~/Desktop/Github/Unckless_Lab_Resources/Mentoring_Resources/R_scripts_Learning_R_and_Stats/CCM_data.csv")
+
+# check dataframe
+head(CCM_data)
+
+# to make plotting make sense, we want to add "levels" to the PCR results 
+# first order the results 
+results_factor_levels <- c("maybe", "yes", "no")
+# then apply this to the CCM data
+CCM_data$PCR_result <- factor(CCM_data$PCR_result, levels=results_factor_levels)
+```
+
+Now we can plot the percentages for each primer using ggbar plot, starting with the CCM data 
+
+```{r}
+# ggbarplot with the percentage numbers on the bars 
+# use CCM_data as the input, for the aesthetics, the x axis will show which primer was used 
+# the y axis should be the percentage 
+# the fill of the bars will be by the PCR result (eithier yes, no, or maybe)
+# and you want the label to be percentage so that it will label each part of the bar with the actual percent value
+# you can change the text size if you want 
+# the position_stack(vjust = 0.5) puts the text of the percentage in the middle of the bar and stacks the bars
+ggplot(CCM_data, aes(x = PCR_primer, y = percentage, fill = PCR_result, label = percentage)) +
+    geom_bar(stat = "identity") + geom_text(size = 3, position = position_stack(vjust = 0.5)) + theme_bw()
+```
+
+This is the results figure for your PCR data.
+
+Now do the same thing for the NP data and the DiNV data. Load in the datasets, check them, and re-level the results. Then plot them using geom_bar. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

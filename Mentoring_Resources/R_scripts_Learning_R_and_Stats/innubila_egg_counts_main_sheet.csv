@@ -1,0 +1,49 @@
+plate_type,abvreviation,fly_age,type,replicate,yeast,plate_type_ab,unique_abvreviation,experiment_day,egg_count_1,egg_count_2,egg_count_3,average_egg_count
+Mushroom broth and apple juice plate with sugar and yeast fly age “2”,MASY2,two,experimental,1,Y,MAS,MASY2-1,4/7/22,78,80,80,79.3
+Mushroom broth plate with no sugar and yeast fly age “2”,MNSY2,two,experimental,1,Y,MNS,MNSY2-1,4/7/22,52,52,51,51.7
+Apple juice plate with sugar control fly age “2”,AJS2,two,control,1,N,AJS,AJS2-1,4/7/22,33,33,33,33
+Mushroom broth plate with no sugar fly age “2”,MNS2,two,experimental,1,N,MNS,MNS2-1,4/7/22,57,58,56,57
+Mushroom broth plate with no sugar and yeast fly age “2”,MNSY2,two,experimental,2,Y,MNS,MNSY2-2,4/8/22,38,36,38,37.3
+Mushroom broth plate with sugar and yeast fly age “2”,MSY2,two,experimental,1,Y,MS,MSY2-1,4/8/22,38,36,36,36.7
+Mushroom broth plate with no sugar and yeast fly age “2”,MNSY2,two,experimental,3,Y,MNS,MNSY2-3,4/8/22,19,21,21,20.3
+Mushroom broth and apple juice plate with sugar and yeast fly age “2”,MASY2,two,experimental,2,Y,MAS,MASY2-2,4/8/22,53,54,56,54.3
+Mushroom broth and apple juice plate with sugar and yeast fly age “2”,MASY2,two,experimental,3,Y,MAS,MASY2-3,4/15/22,64,67,72,67.7
+Mushroom broth plate with no sugar fly age “2”,MNS2,two,experimental,2,N,MNS,MNS2-2,4/15/22,33,34,34,33.7
+Apple juice plate with sugar control fly age “2”,AJS2,two,control,2,N,AJS,AJS2-2,4/15/22,87,91,90,89.3
+Apple juice plate with sugar and yeast control fly age “2”,AJSY2,two,control,1,Y,AJS,AJSY2-1,4/15/22,48,43,43,44.7
+Mushroom broth plate with sugar and yeast fly age “2”,MSY2,two,experimental,2,Y,MS,MSY2-2,5/5/22,81,81,77,79.7
+Mushroom broth plate with sugar and yeast fly age “2”,MSY2,two,experimental,3,Y,MS,MSY2-3,5/5/22,94,90,91,91.7
+Mushroom broth and apple juice plate with sugar fly age “2”,MAS2,two,experimental,1,N,MAS,MAS2-1,5/5/22,132,133,134,133
+Mushroom broth plate with sugar fly age “2”,MS2,two,experimental,1,N,MS,MS2-1,5/5/22,62,59,63,61.3
+Mushroom broth plate with sugar fly age “2”,MS2,two,experimental,2,N,MS,MS2-2,5/12/22,31,36,35,34
+Mushroom broth and apple juice plate with sugar fly age “2”,MAS2,two,experimental,2,N,MAS,MAS2-2,5/12/22,94,98,95,95.7
+Apple juice plate with sugar control fly age “2”,AJS2,two,control,3,N,AJS,AJS2-3,5/12/22,57,55,60,57.3
+Mushroom broth and apple juice plate with sugar fly age “2”,MAS2,two,experimental,3,N,MAS,MAS2-3,5/12/22,74,71,70,71.7
+Mushroom broth plate with no sugar fly age “2”,MNS2,two,experimental,3,N,MNS,MNS2-3,5/18/22,43,43,41,42.3
+Mushroom broth plate with sugar fly age “2”,MS2,two,experimental,3,N,MS,MS2-3,5/18/22,31,31,28,30
+Apple juice plate with sugar and yeast control fly age “2”,AJSY2,two,control,2,Y,AJS,AJSY2-2,5/18/22,18,20,17,18.3
+Apple juice plate with sugar and yeast control fly age “2”,AJSY2,two,control,3,Y,AJS,AJSY2-3,5/18/22,34,30,31,31.7
+Apple juice plate with sugar and yeast control fly age “3”,AJSY3,three,control,1,Y,AJS,AJSY3-1,3/31/22,140,144,139,141
+Mushroom broth plate with no sugar and yeast fly age “3”,MNSY3,three,experimental,1,Y,MNS,MNSY3-1,3/31/22,66,66,68,66.7
+Mushroom broth plate with no sugar fly age “3”,MNS3,three,experimental,1,N,MNS,MNS3-1,3/31/22,86,82,86,84.7
+Mushroom broth plate with sugar and yeast fly age “3”,MSY3,three,experimental,1,Y,MS,MSY3-1,3/31/22,50,51,50,50.3
+Mushroom broth plate with no sugar and yeast fly age “3”,MNSY3,three,experimental,2,Y,MNS,MNSY3-2,4/14/22,41,43,42,42
+Mushroom broth plate with sugar fly age “3”,MS3,three,experimental,1,N,MS,MS3-1,4/14/22,39,36,39,38
+Apple juice plate with sugar control fly age “3”,AJS3,three,control,1,N,AJS,AJS3-1,4/14/22,53,52,49,51.3
+Mushroom broth and apple juice plate with sugar fly age “3”,MAS3,three,experimental,1,N,MAS,MAS3-1,4/14/22,82,79,83,81.3
+Mushroom broth plate with no sugar fly age “3”,MNS3,three,experimental,2,N,MNS,MNS3-2,4/22/22,113,111,108,110.7
+Mushroom broth and apple juice plate with sugar fly age “3”,MAS3,three,experimental,2,N,MAS,MAS3-2,4/22/22,149,144,151,148
+Apple juice plate with sugar and yeast control fly age “3”,AJSY3,three,control,2,Y,AJS,AJSY3-2,4/22/22,95,91,92,92.7
+Apple juice plate with sugar control fly age “3”,AJS3,three,control,2,N,AJS,AJS3-2,4/22/22,118,109,109,112
+Mushroom broth plate with sugar and yeast fly age “3”,MSY3,three,experimental,2,Y,MS,MSY3-2,4/21/22,51,54,50,51.7
+Apple juice plate with sugar and yeast control fly age “3”,AJSY3,three,control,3,Y,AJS,AJSY3-3,4/21/22,40,44,45,43
+Mushroom broth and apple juice plate with sugar and yeast fly age “3”,MASY3,three,experimental,1,Y,MAS,MASY3-1,4/21/22,123,116,121,120
+Mushroom broth plate with sugar fly age “3”,MS3,three,experimental,2,N,MS,MS3-2,4/21/22,100,105,104,103
+Mushroom broth and apple juice plate with sugar and yeast fly age “3”,MASY3,three,experimental,2,Y,MAS,MASY3-2,5/6/22,70,73,73,72
+Mushroom broth and apple juice plate with sugar and yeast fly age “3”,MASY3,three,experimental,3,Y,MAS,MASY3-3,5/6/22,81,83,82,82
+Mushroom broth and apple juice plate with sugar fly age “3”,MAS3,three,experimental,3,N,MAS,MAS3-3,5/6/22,68,71,67,68.7
+Mushroom broth plate with sugar and yeast fly age “3”,MSY3,three,experimental,3,Y,MS,MSY3-3,5/6/22,111,110,114,111.7
+Apple juice plate with sugar control fly age “3”,AJS3,three,control,3,N,AJS,AJS3-3,5/11/22,93,87,88,89.3
+Mushroom broth plate with no sugar and yeast fly age “3”,MNSY3,three,experimental,3,Y,MNS,MNSY3-3,5/19/22,63,70,62,65
+Mushroom broth plate with sugar fly age “3”,MS3,three,experimental,3,N,MS,MS3-3,5/11/22,42,40,41,41
+Mushroom broth plate with no sugar fly age “3”,MNS3,three,experimental,3,N,MNS,MNS3-3,5/11/22,37,36,37,36.7
