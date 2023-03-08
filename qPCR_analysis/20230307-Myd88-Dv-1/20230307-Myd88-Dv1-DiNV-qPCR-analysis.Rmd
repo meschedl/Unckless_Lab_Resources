@@ -243,3 +243,12 @@ barplot(2^delta_Cqs_cells, names= paste(cell_means_variances_of_Cq_df$cell_type,
 Ok this kind of makes sense, it basically seems to show nothing for Myd88, but stuff for Dv-1. This is interesting when you compare it to the regular PCR data..  
 
 Should I be making delta Cq calculations with this? 
+
+What is the delta Cq for the day 26 innubila primary fluid sample?
+
+```{r}
+mean115 <- 24.11333
+meanlambda <- 24.16333
+deltaCq <- meanlambda - mean115
+print(deltaCq)
+```
