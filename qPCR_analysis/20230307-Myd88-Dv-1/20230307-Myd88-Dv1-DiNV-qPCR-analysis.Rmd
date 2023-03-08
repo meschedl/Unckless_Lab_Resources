@@ -251,4 +251,6 @@ mean115 <- 24.11333
 meanlambda <- 24.16333
 deltaCq <- meanlambda - mean115
 print(deltaCq)
+deltaCq2 <- 2^deltaCq
+print(deltaCq2)
 ```
