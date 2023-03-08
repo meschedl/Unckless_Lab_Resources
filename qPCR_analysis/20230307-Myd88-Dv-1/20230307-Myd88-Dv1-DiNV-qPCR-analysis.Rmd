@@ -1,0 +1,245 @@
+---
+title: "20230307-Myd88-Dv-1-qPCR-DiNV-Analysis"
+output: github_document
+date: '2023-03-07'
+---
+
+Load packages needed 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+Load in the two datasets, supernatant and cells:
+
+```{r}
+supernatant_Cqs <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20230307-Myd88-Dv-1/20230307-supernatants-Cqs.csv")
+
+cells_Cqs <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20230307-Myd88-Dv-1/20230307-cells-Cqs.csv")
+```
+
+Histogram of all Cq values for Supernatant
+
+```{r}
+# supernatant
+ggplot(supernatant_Cqs, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(cell_type~day) 
+# fill for which primer 
+# facet breaks up the graph into different components 
+# dodge makes each primer have it's own column per value 
+```
+
+The NA for day is the 40ul original aliquot/innoculum sample. 
+
+Histogram of all Cq values for Cells
+
+```{r}
+# cells
+ggplot(cells_Cqs, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(cell_type~day) 
+# fill for which primer 
+# facet breaks up the graph into different components 
+# dodge makes each primer have it's own column per value 
+```
+
+You can already tell that it seems like nothing is going on with DiNV for the Myd88 cells in terms of replication. 
+
+Calculate the variances between the qPCR replicates for supernatant samples
+```{r}
+# make a dummy variable that is just the columns we want
+s <- paste(supernatant_Cqs$sample_ID, supernatant_Cqs$primer, supernatant_Cqs$cell_type, supernatant_Cqs$day, supernatant_Cqs$infection)
+
+# calculate the variances 
+# tapply breaks the dataset up into groups and apply a function to each group
+# we want each sample_ID/primer/day/cell_type group to have the variance calculated for the Cq value 
+# and save this information as a variable 
+sup_variances <- tapply(supernatant_Cqs$Cq, s, var)
+
+# look at a histogram of the variances 
+hist(sup_variances)
+# one has really high variance which is not good 
+
+# which variances are above 0.2, which is higher than we want 
+sup_variances[which(sup_variances > 0.2)]
+
+```
+
+Ok looks like there are 2 variances that are too high, both for non-infected 115 reactions. That could make sense because there is nothing to amplify so it is getting not good signal. I am not sure if there is a replicate to remove in these that would make the variances go down meaningfully. Right now I will leave them. 
+
+
+Calculate the variances between the qPCR replicates for cell samples
+```{r}
+# make a dummy variable that is just the columns we want
+c <- paste(cells_Cqs$sample_ID, cells_Cqs$primer, cells_Cqs$cell_type, cells_Cqs$day, cells_Cqs$infected.)
+
+# calculate the variances 
+# tapply breaks the dataset up into groups and apply a function to each group
+# we want each sample_ID/primer/day/cell_type group to have the variance calculated for the Cq value 
+# and save this information as a variable 
+cell_variances <- tapply(cells_Cqs$Cq, c, var)
+
+# look at a histogram of the variances 
+hist(cell_variances)
+# one has really high variance which is not good 
+
+# which variances are above 0.2, which is higher than we want 
+cell_variances[which(cell_variances > 0.2)]
+
+```
+
+Again, I am not sure if I should remove any of the replicates. For these, there does seem to be one replicate that is somewhat off. But, the overall variances are not too worrying. For now I will leave them?
+
+Calculate the mean Cq values for supernatants 
+
+```{r}
+# what are the Cq means for each sample_ID/primer/day/sample_type group?
+sup_means <- tapply(supernatant_Cqs$Cq, s, mean)
+
+# look at the means with a histogram
+hist(sup_means)
+
+# want to plot the variances versus the means 
+plot(sup_variances~sup_means)
+
+```
+
+This shows that as the Cq goes up/approaches the limit, the variance increases. This sort of makes sense, that the values get more erratic at the edge of detection. 
+
+Calculate the mean Cq values for Cells
+
+```{r}
+# what are the Cq means for each sample_ID/primer/day/sample_type group?
+cell_means <- tapply(cells_Cqs$Cq, c, mean)
+
+# look at the means with a histogram
+hist(cell_means)
+
+# want to plot the variances versus the means 
+plot(cell_variances~cell_means)
+
+```
+
+Again, there is the same pattern here of increasing variance with increased Cq mean. However it is not just the close to 40 Cqs, but the "higher" variances are much smaller than those for the supernatant. An interesting pattern. I'm not sure what to make of it. 
+
+Now I need to add the mean and variance values to my main dataframes. 
+First I will do this for the supernatant 
+
+```{r}
+# transform array into df
+sup_variances_df <- as.data.frame.table(sup_variances)
+# this gives me a dataframe but the entire first column is all the variables 
+# and the second column is the variances which it calls freq (not sure why)
+# use dplyr to separate them out into separate columns 
+
+# name all the columns I want 
+sup_variances_df_sep <- sup_variances_df %>% separate(Var1, c('sample_ID', 'primer', 'cell_type', 'day', 'infected'))
+# check dataframe 
+head(sup_variances_df_sep)
+# rename the Freq column to var for variance
+names(sup_variances_df_sep)[6] <- "var"
+# check dataframe again
+head(sup_variances_df_sep)
+```
+
+So I have a df with the variances, now I want the means in it as well 
+```{r}
+# going to transform the means array into a df
+sup_means_df <- as.data.frame.table(sup_means)
+# reaname the Freq column to mean
+names(sup_means_df)[2] <- "mean"
+head(sup_means_df)
+
+# the means and the variances dfs are in the same order which is nice
+# now I want to add the mean column to the variances df
+sup_means_variances_of_Cq_df <- cbind(sup_variances_df_sep, means = sup_means_df$mean)
+# check how it looks
+head(sup_means_variances_of_Cq_df)
+```
+
+Do this same process for the cells data 
+
+```{r}
+# transform array into df
+cells_variances_df <- as.data.frame.table(cell_variances)
+# this gives me a dataframe but the entire first column is all the variables 
+# and the second column is the variances which it calls freq (not sure why)
+# use dplyr to separate them out into separate columns 
+
+# name all the columns I want 
+cells_variances_df_sep <- cells_variances_df %>% separate(Var1, c('sample_ID', 'primer', 'cell_type', 'day', 'infected'))
+# check dataframe 
+head(cells_variances_df_sep)
+# rename the Freq column to var for variance
+names(cells_variances_df_sep)[6] <- "var"
+# check dataframe again
+head(cells_variances_df_sep)
+```
+
+So I have a df with the variances, now I want the means in it as well 
+```{r}
+# going to transform the means array into a df
+cell_means_df <- as.data.frame.table(cell_means)
+# reaname the Freq column to mean
+names(cell_means_df)[2] <- "mean"
+head(cell_means_df)
+
+# the means and the variances dfs are in the same order which is nice
+# now I want to add the mean column to the variances df
+cell_means_variances_of_Cq_df <- cbind(cells_variances_df_sep, means = cell_means_df$mean)
+# check how it looks
+head(cell_means_variances_of_Cq_df)
+```
+
+Plot the raw means of Cqs by primer for supernatant by day 
+```{r}
+ggplot(sup_means_variances_of_Cq_df, aes(y= means, x=primer, fill=infected)) + geom_boxplot() + facet_grid(~day) 
+```
+
+Plot the raw means of Cqs by primer for cells by day 
+```{r}
+ggplot(cell_means_variances_of_Cq_df, aes(y= means, x=primer, fill=infected)) + geom_boxplot() + facet_grid(~day) 
+```
+
+Starting with just supernatant, calculate the delta Cq, then visualize 
+
+```{r}
+# separate out the 40ul sample because that one won't fit in 
+sup_means_var <- sup_means_variances_of_Cq_df[which(sup_means_variances_of_Cq_df$cell_type != "innubila"),]
+
+# Separate that dataframe, incriminating by 2, every number between 1-30 (number of rows in dataframe)
+sup_means_var$means[seq(1,30,2)] # these are the 115 Cq means 
+sup_means_var$means[seq(2,30,2)] # these are the lambda primer Cq means 
+
+# make delta Cq, subtract the 115 value from the lambda primer value 
+delta_Cqs_supernatants <- sup_means_var$means[seq(2,30,2)] - sup_means_var$means[seq(1,30,2)]
+
+# use barplot to look at the delta Cq for each sample
+# use paste to put in the row information, and the seq section to just separate out the rows I want, the 2^ to the delta_Cqs_cells takes it from a negative to a better ratio, and the las=2 makes the labels for the box plots go vertical and readable 
+par(mar = c(8, 3, 3, 3))
+barplot(2^delta_Cqs_supernatants, names= paste(sup_means_var$cell_type, sup_means_var$day, sup_means_var$infected)[seq(1,30,2)], las=2)
+
+```
+
+I wish I knew a way to change the order of these bar plots. 
+
+
+Doing cells, calculate the delta Cq, then visualize 
+
+```{r}
+
+# Separate that dataframe, incriminating by 2, every number between 1-32 (number of rows in dataframe)
+cell_means_variances_of_Cq_df$means[seq(1,32,2)] # these are the 115 Cq means 
+cell_means_variances_of_Cq_df$means[seq(2,32,2)] # these are the RPL11 or RP49 primer Cq means 
+
+# make delta Cq, subtract the 115 value from the control primer value 
+delta_Cqs_cells <- cell_means_variances_of_Cq_df$means[seq(2,32,2)] - cell_means_variances_of_Cq_df$means[seq(1,32,2)]
+
+# use barplot to look at the delta Cq for each sample
+# use paste to put in the row information, and the seq section to just separate out the rows I want, the 2^ to the delta_Cqs_cells takes it from a negative to a better ratio, and the las=2 makes the labels for the box plots go vertical and readable 
+par(mar = c(8, 3, 3, 3))
+barplot(2^delta_Cqs_cells, names= paste(cell_means_variances_of_Cq_df$cell_type, cell_means_variances_of_Cq_df$day, cell_means_variances_of_Cq_df$infected)[seq(1,32,2)], las=2)
+```
+
+Ok this kind of makes sense, it basically seems to show nothing for Myd88, but stuff for Dv-1. This is interesting when you compare it to the regular PCR data..  
+
+Should I be making delta Cq calculations with this? 
