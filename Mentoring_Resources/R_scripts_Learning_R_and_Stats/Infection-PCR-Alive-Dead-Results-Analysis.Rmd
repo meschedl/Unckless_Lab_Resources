@@ -1,0 +1,112 @@
+---
+title: "Infection-PCR-Alive-Dead-Results-Analysis"
+output: github_document
+date: '2023-03-27'
+---
+
+Save your R markdown document in the same folder on your computer where you will put the spreadsheet. This should be a folder for just this analysis. 
+
+Load in packages needed
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+The process for making the percentage graphs is very similar to making the PCR results graphs.
+
+First you will download and input the data for this process. Download the "datasheet with treatment info" tab in this document again as a csv file: https://docs.google.com/spreadsheets/d/1Kg863kyNMu37U_wI46kjYXtnXs2pncHTuuwqeX-f_wo/edit#gid=995836122 it now has the information on whether flies were alive or dead when frozen for the experiment. 
+
+Save that as "20221015-DiNV-infections-mortality-PCR-info.csv"
+
+
+Read in your dataset
+```{r}
+# make sure you use the full path to your file 
+# look at old R scrips to remind you how to do the path 
+# the path will be different for a Windows computer 
+
+raw_Mort_PCR_data <- read.csv("~/Desktop/Github/Unckless_Lab_Resources/Mentoring_Resources/R_scripts_Learning_R_and_Stats/20221015-DiNV-infections-mortality-PCR-info.csv")
+
+# check your dataset to make sure it looks right 
+head(raw_Mort_PCR_data)
+
+```
+
+Separate out dataframes for CCM, NP (no poke) and DiNV treatments
+
+```{r}
+CCM_data <- subset(raw_Mort_PCR_data, treatment.abrev == "CCM")
+#check subsetted data 
+head(CCM_data)
+
+# do the same for NP and DiNV
+```
+
+Look at the CCM dataframe. We want to calculate how many p47 yes, no, and maybes there are, by whether they are alive or dead when frozen. This can be done easier by splitting the CCM dataframe into yes and no alive first 
+
+```{r}
+# separate out all alive when frozen
+CCM_alive_data <- subset(CCM_data, alive_when_frozen == "yes")
+print(CCM_alive_data)
+# how many rows are there? 
+nrow(CCM_alive_data)
+# remember this number 
+
+# separate out all dead when frozen 
+CCM_dead_data <- subset(CCM_data, alive_when_frozen == "no")
+print(CCM_dead_data)
+# how many rows are there? 
+nrow(CCM_dead_data)
+# remember this number
+
+# Now to count up the numbers 
+# it can be easier to count the numbers of yes, no, and maybes by clicking on the name of the dataframe 
+# in the environment section on the top right of R studio
+# then it will bring you into a new window with the full dataframe which is easier to look at 
+
+#again you only want to look at the the p47 PCR info here
+# count the number of yeses for the p47 primer for the alive and put that number in the CCM_Mort_data sheet in this spreadsheet https://docs.google.com/spreadsheets/d/1Kg863kyNMu37U_wI46kjYXtnXs2pncHTuuwqeX-f_wo/edit#gid=1987650703
+# repeat for the nos and maybes. And repeat for the yes, no, and maybes for the dead datasheet
+# put all that information in the CCM_Mort_data spreadsheet, then calculate the percentage
+# Divide the number in each row by the number of rows calculated above, and multiply it by 100 
+# this will get you the percent PCR result for each result for either alive or dead 
+# then reduce the number of significant figures to 1 (ex. 16.5) so that it will be cleaner
+```
+
+Do this same calculations of percentages for the NP and DiNV treatment data subsets. These datasets are ready in the other tabs in the same Google Sheets file 
+
+Now you want to download those three spreadsheets separately as csv files, name them as CCM_Mort_data.csv, NP_Mort_data.csv, and DiNV_Mort_data.csv, save them in your folder, and load them into R 
+
+```{r}
+# read in your CCM data file
+CCM_M_data <- read.csv("~/Desktop/Github/Unckless_Lab_Resources/Mentoring_Resources/R_scripts_Learning_R_and_Stats/Extraction_spreadsheet_for_20220q015_infections_percent_alive_R.csv")
+
+# check dataframe
+head(CCM_M_data)
+
+# to make plotting make sense, we want to add "levels" to the PCR results 
+# first order the results 
+results_factor_levels <- c("maybe", "yes", "no")
+# then apply this to the CCM data
+CCM_M_data$p47_PCR_result <- factor(CCM_M_data$p47_PCR_result, levels=results_factor_levels)
+```
+
+Now we can plot the percentages for each primer using ggbar plot, starting with the CCM data 
+
+```{r}
+# ggbarplot with the percentage numbers on the bars 
+# use CCM_data as the input, for the aesthetics, the x axis will show which primer was used 
+# the y axis should be the percentage 
+# the fill of the bars will be by the PCR result (either yes, no, or maybe)
+# and you want the label to be percentage so that it will label each part of the bar with the actual percent value
+# you can change the text size if you want 
+# the position_stack(vjust = 0.5) puts the text of the percentage in the middle of the bar and stacks the bars
+ggplot(CCM_M_data, aes(x = condition_when_frozen, y = percent, fill = p47_PCR_result, label = percent)) +
+    geom_bar(stat = "identity") + geom_text(size = 3, position = position_stack(vjust = 0.5)) + theme_bw()
+```
+
+Now do the same thing for the NP data and the DiNV data. Load in the datasets, check them, and re-level the results. Then plot them using geom_bar. 
+
+
+
+
