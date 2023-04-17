@@ -93,7 +93,7 @@ Calculate the mean Cq values for supernatants
 
 ```{r}
 # what are the Cq means for each sample_ID/primer/day/sample_type group?
-sup_means <- tapply(supernatant_Cqs$Cq, s, mean)
+sup_means <- tapply(supernatant_Cqs$Cq, s, mean, na.rm=T)
 
 # look at the means with a histogram
 hist(sup_means)
@@ -109,7 +109,7 @@ Calculate the mean Cq values for Cells
 
 ```{r}
 # what are the Cq means for each sample_ID/primer/day/sample_type group?
-cell_means <- tapply(cells_Cqs$Cq, c, mean)
+cell_means <- tapply(cells_Cqs$Cq, c, mean, na.rm=T)
 
 # look at the means with a histogram
 hist(cell_means)
@@ -254,3 +254,110 @@ print(deltaCq)
 deltaCq2 <- 2^deltaCq
 print(deltaCq2)
 ```
+
+
+Can I remake the delta Cq plots in a better format? 
+Start with cells 
+```{r}
+# what format is this 
+delta_Cqs_cells
+# ok it is just a list of values of the delta Cq 
+# I put this into a csv file 
+
+D_Cq_cells <- read.csv("delta_cq_cells.csv")
+
+#reorder days 
+results_factor_levels <- c("5", "0")
+# then apply this to the CCM data
+D_Cq_cells$day <- factor(D_Cq_cells$day, levels=results_factor_levels)
+
+ggplot(D_Cq_cells, aes(y= Delta_Cq_2, x=cell, fill=infection_status)) + geom_boxplot() + facet_grid(~day) + theme_linedraw() 
+
+ggsave("delta_Cq_cells.png")
+
+```
+
+Now do supernatant
+```{r}
+# what format is this 
+delta_Cqs_supernatants
+# ok it is just a list of values of the delta Cq 
+# I put this into a csv file 
+
+D_Cq_sup <- read.csv("delta_cq_sup.csv")
+
+#reorder days 
+results_factor_levels <- c("5", "0")
+# then apply this to the CCM data
+D_Cq_sup$day <- factor(D_Cq_sup$day, levels=results_factor_levels)
+
+ggplot(D_Cq_sup, aes(y= Delta_Cq_2, x=cell, fill=infection_status)) + geom_boxplot() + facet_grid(~day) + theme_linedraw()
+
+ggsave("delta_Cq_sup.png")
+
+```
+
+How might I do delta delta Cq? 
+
+Cells
+
+```{r}
+# I calculated the delta delta Cq by hand 
+
+
+delta_delta <- read.csv("delta_delta_Cq_hand.csv")
+
+# make all NAs equal to 1 because the relative increase in virus in just 1, no increase 
+
+delta_delta <- replace(delta_delta, is.na(delta_delta), 1)
+
+# want to force axis to top out at 5 
+ggplot(delta_delta, aes(y= X2_to_the_delta_delta, x=cell_type, color=infected)) + geom_point(position="jitter") + facet_grid(~sample_type) + theme_linedraw() + ylim(0, 5)
+
+
+
+```
+
+Come back to this analysis for supernatant and try to plot just raw Cqs for 115
+
+
+Lets look at just cell Cqs - but using the means of the replicates
+```{r}
+# separate out just 115 
+cell_means_variances_of_Cq_df
+raw_115_cells <- cell_means_variances_of_Cq_df[which(cell_means_variances_of_Cq_df$primer == "115"),]
+
+# make NaN as 40 
+raw_115_cells <- replace(raw_115_cells, is.na(raw_115_cells), 40)
+
+ggplot(raw_115_cells, aes(y= means, x=day, color=infected)) + geom_point(position="jitter") + facet_grid(~cell_type) + theme_linedraw()
+
+```
+
+Supernatant Cqs - but using the means of the replicates
+```{r}
+# separate out just 115 
+sup_means_variances_of_Cq_df
+# remove the innubila line 
+raw_115_sup <- sup_means_variances_of_Cq_df[which(sup_means_variances_of_Cq_df$cell_type != "innubila"),]
+# make it just 115
+raw_115_sup <- raw_115_sup[which(raw_115_sup$primer == "115"),]
+
+# make NaN as 0 
+raw_115_sup <- replace(raw_115_sup, is.na(raw_115_sup), 40)
+
+ggplot(raw_115_sup, aes(y= means, x=day, color=infected)) + geom_point(position="jitter") + facet_grid(~cell_type) + theme_linedraw()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+

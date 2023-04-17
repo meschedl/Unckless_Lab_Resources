@@ -1,0 +1,9 @@
+﻿sample_ID,primer,cell_type,day,infected,means
+B,115,Dv1,5,yes,28.66889
+H,RPL11,Dv1,5,yes,25.29111
+D,115,Myd88,5,yes,36.51
+F,RP49,Myd88,5,yes,31.35
+A,115,Dv1,5,no,34.51778
+G,RPL11,Dv1,5,no,25.76722
+C,115,Myd88,5,no,NaN
+E,RP49,Myd88,5,no,31.03222
