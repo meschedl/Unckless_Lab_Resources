@@ -11,6 +11,7 @@
 
 **Preparing cells**
 - 24 hours before transfection, plate your cells (to the best of your ability) at 1.5*10^5 cells/mL
+    - Cell densities may need to be changed if you have cells that grow significantly slower than others
 - Use the hemocytometer to measure density of cells, and dilute for plating 
 - Each well in the 12 well plate should have 1.5mL of medium in it 
 - Keep the cells in the incubator overnight 
