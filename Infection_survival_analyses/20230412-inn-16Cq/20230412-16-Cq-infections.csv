@@ -1,0 +1,7 @@
+Vial,Species,Treatment,Treatment_abreave,sex,Replicate,Day_emerged,Day_Infected,time_infected,fly_age,Original_N_number,Number_of_flies_per_vial,day_1 (4/13),day_2 (4/14),day_3 (4/15),day_4 (4/16),day_5 (5/17),day_6 (4/18),day_7 (4/19),day_8 (4/20),day_9 (4/21),day_10 (4/22),day_11 (4/23),day_12 (4/24),day_13 (4/25),day_14 (4/26),day_15 (4/27),day_16 (4/28),day_17 (4/29),day_18 (4/30),day_19 (5/1),day_20 (5/2),,notes on day 14 transfer,
+A,D. innubila,sterile poke,SP,male,1,4/5-4/6,20230412,11:50,6-7 days,10,9,9,9,9,9,9,9,9,9,9,9,8,7,7,7,7,7,7,6,6,6,,1 fly was squished and ended up being dead the next day,
+B,D. innubila,sterile poke,SP,male,2,4/5-4/6,20230412,11:58,6-7 days,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,,,
+C,D. innubila,16 Cq DiNV,16DiNV,male,1,4/5-4/6,20230412,12:05,6-7 days,10,9,9,9,9,9,9,9,9,9,9,8,8,8,8,8,8,8,7,7,7,7,,,1 fly was lost on freezing day
+D,D. innubila,16 Cq DiNV,16DiNV,male,2,4/5-4/6,20230412,12:12,6-7 days,10,10,10,10,10,10,10,10,10,10,10,10,9,9,9,9,9,9,9,9,9,9,,,
+E,D. innubila,16 Cq DiNV,16DiNV,male,3,4/5-4/6,20230412,12:17,6-7 days,10,10,10,10,10,10,10,10,10,9,8,7,5,5,5,5,5,5,5,5,5,5,,,
+F,D. innubila,16 Cq DiNV,16DiNV,male,4,4/5-4/6,20230412,12:24,6-7 days,10,10,10,10,9,9,8,8,8,6,5,5,5,5,5,5,5,5,5,5,5,5,,,

@@ -1,20 +1,28 @@
----
-title: "2022-09-24-food-vial-test"
-output: github_document
-date: '2022-10-12'
----
+20230411-innubila-concentrated-DiNV-2
+================
+2023-05-03
 
-Data from this experiment is 5-7 day old D. innubila poked with sterile cell culture medium and placed on different food vials. Vials were either molasses food, mushroom instant food with cotton roll, sugar agar, or sugar agar with 1/4 mushroom broth. 
+Load in packages needed for the analysis
 
-
-
-```{r}
+``` r
 library("survival")
 library("survminer")
 ```
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
-```{r}
+    ## Loading required package: ggplot2
+
+    ## Loading required package: ggpubr
+
+    ## 
+    ## Attaching package: 'survminer'
+
+    ## The following object is masked from 'package:survival':
+    ## 
+    ##     myeloma
+
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
+
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -68,60 +76,55 @@ results$vial <- as.factor(results$vial) # make sure vial is considered a factor
 # gives you only the results dataframe as output from function 
 return(results) 
 } #close function
-
-
 ```
 
-### Read in the real raw data and make subsets
-```{r}
+Read in raw data
+
+``` r
 #read the file from csv
-food_data<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20220924/20220924_food_vial_test_pokes.csv")
+df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230411-inn-Conc-DiNV/20230411-concentrated-DiNV-infections.csv")
 
-#make subsets of the data frame based on males and females
-food_data.male<-food_data[food_data$sex == "M",]
-food_data.female<-food_data[food_data$sex == "F",]
-
-# remove unpoked flies
-food_data.male <- food_data.male[food_data.male$poked == "yes",]
-food_data.female <- food_data.female[food_data.female$poked == "yes",]
-
-#remove extraneous columns (3&4) from each to get them in proper format
-food_data.male<-food_data.male[,c(1,5,14:28)]
-food_data.female<-food_data.female[,c(1,5,14:28)]
-
+# only want columns with vial, treatment, and daily mortality
+# remove columns not needed for each subset
+df<-df[,c(1,4,12:33)]
 ```
-
 
 ### Convert each of these dataframes to long and tidy format using function defined above
-```{r}
-food_data_male_convert<-convert_df(food_data.male)
-food_data_female_convert<-convert_df(food_data.female)
+
+``` r
+df.convert<-convert_df(df)
 ```
 
-### make survivorship curves
-### Male
-```{r}
-male_fit<- survfit(Surv(dead, status) ~ treatment, data=food_data_male_convert)
-ggsurvplot(male_fit,
+# plot the survival curve not including confidence intervals
+
+``` r
+# change to not have confidence intervals in this one so you can see them 
+df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
+ggsurvplot(df_fit,
+          pval = TRUE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw(), # Change ggplot2 theme
+          palette = c("aquamarine", "blueviolet"))
+```
+
+![](20230411-inn-conc-DiNV_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+# plot the survival curve including confidence intervals
+
+``` r
+# change to not have confidence intervals in this one so you can see them 
+df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
+ggsurvplot(df_fit,
           pval = TRUE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
-          # surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw(), # Change ggplot2 theme
+          palette = c("aquamarine", "blueviolet"))
+```
 
-ggsave("male_foodvial.png")
-```
-### make survivorship curves
-### Female
-```{r}
-female_fit<- survfit(Surv(dead, status) ~ treatment, data=food_data_female_convert)
-ggsurvplot(female_fit,
-          pval = TRUE, conf.int = TRUE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
-          surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
-        
-```
+![](20230411-inn-conc-DiNV_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
