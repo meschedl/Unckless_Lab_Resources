@@ -105,7 +105,7 @@ Insert size peak (evaluated by paired-end reads): 237
 JSON report: fastp.json
 HTML report: fastp.html
 ```
-Looked at the html file  INSERT LINK
+Looked at the [html file](https://rawcdn.githack.com/meschedl/Unckless_Lab_Resources/52a94bf0ec8492fff02477e41735d059fb35c784/16-Cq-Virus-Sequence-Analysis/fastp.html)
 
 Looks like the reads are really good, quality scores between 37 and 35. There is some variability in the QC content until about 12 bases in, so I think I will trim that off. Otherwise these should be good reads. 
 
@@ -113,7 +113,7 @@ Redo the fastp, renaming the html file to trim-fastp.html:
 
 `fastp -i 16Cq-DiNV-R1.fastq.gz -I 16Cq-DiNV-R2.fastq.gz --trim_front1 15 --trim_front2 15 --html trim-fastp.html -o 16Cq-DiNV-R1-trim.fastq.gz -O 16Cq-DiNV-R2-trim.fastq.gz`
 
-INSERT LINK TO FASTP HERE
+Looked at the trimmed [html file](https://rawcdn.githack.com/meschedl/Unckless_Lab_Resources/52a94bf0ec8492fff02477e41735d059fb35c784/16-Cq-Virus-Sequence-Analysis/trim-fastp.html)
 
 
 
