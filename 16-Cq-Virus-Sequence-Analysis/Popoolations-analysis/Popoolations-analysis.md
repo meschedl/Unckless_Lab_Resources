@@ -13,6 +13,7 @@ Using first the samtools mpileup function to make an mpileup file. The -B flag s
 `samtools mpileup -B 16Cq-trim-h-mapped-DiNV.bam KM_3q-trim-h-mapped-DiNV.bam > 16_KM.mpileup`
 
 Then create the synchronized file using a custom perl script from the program. 
+
 `perl /Users/maggieschedl/Documents/programs/popoolation2_1201/mpileup2sync.pl --min-qual 20 --input 16_KM.mpileup --output 16_KM.sync`
 
 The synchronized file has these columns:
