@@ -105,3 +105,70 @@ do
 done
 ```
 
+Take DiNV-mapped only reads and map back to DiNV to look at coverage
+
+`samtools bam2fq 16Cq-trim-h-mapped-DiNV-only.bam > 16Cq-trim-h-mapped-DiNV-only.fastq`
+
+bwa index GCF_004132165.1_DiNV_CH01M_genomic.fna 
+
+`bwa mem GCF_004132165.1_DiNV_CH01M_genomic.fna 16Cq-trim-h-mapped-DiNV-only.fastq | samtools view --threads 5 -h | samtools sort --threads 5 - > 16cq-combo-mapped-re-mapped-DiNv.bam`
+
+`/Users/maggieschedl/Documents/programs/qualimap_v2.2.1/qualimap bamqc -bam 16cq-combo-mapped-re-mapped-DiNv.bam -outfile 16cq-combo-mapped-re-mapped-DiNv.pdf`
+
+Coverage looks good across genome, no obvious missing spots. 
+
+The issue here is that when pulling out the DiNV mapping only reads from the combo genome, a lot fewer reads map than when I map all the reads to just DiNV. I'm not sure if this is because a lot of cell reads missmapped to DiNV, or if my way of separating out DiNV mapping reads is bad. It seems to me unlikely that a 16Cq sample would only have 18,000 virus reads?
+
+| sample   | Mapped to                  | Total reads | Reads mapped | % reads mapped |
+|----------|----------------------------|-------------|--------------|----------------|
+| Dv-1     | DiNV                       | 14,053,370  | 211,350      | 1.5%           |
+| Dv-1     | DiNV-D.vir                 | 14,103,006  | 13,936,836   | 98.82%         |
+| Dv-1     | DiNV-D.vir DiNV reads only | 71,821      | 71,807       | 99.98%         |
+| DinnDiNV | DiNV                       | 25,260,892  | 229,548      | 0.91%          |
+| DinnDiNV | DiNV-D.inn                 | 25,400,881  | 25,310,706   | 99.64%         |
+| DinnDiNV | DiNV-D.inn DiNV reads only | 18,279      | 18,276       | 99.98%         |
+
+
+Trying different ways of separating out the DiNV reads 
+
+Using awk to search for NC_040699.1 (DiNV mapping) in the third column of the bam file, and specifying that the delimiter in the file is tabs. 
+
+`samtools view 16Cq-trim-h-mapped.bam | awk -F '\t' '$3 == "NC_040699.1"' > 16Cq-mapped-DiNV-awk.bam`
+
+Use grep to search for NC_040699.1 in the bam file 
+
+`samtools view 16Cq-trim-h-mapped.bam | grep NC_040699.1 > 16Cq-mapped-DiNV-grep.bam`
+
+Using this method, anything line that had NC_040699.1 in it gets pulled out with grep, so I can do some checking of these methods
+
+I can use grep SA:Z:NC_040699.1 to look for any chimeric alignments in this file 
+
+`samtools view 16Cq-trim-h-mapped.bam | grep SA:Z:NC_040699.1 > 16Cq-mapped-DiNV-grep-SA.bam`
+
+The 7th column is where the "mate" of paired end reads maps, and some of those come out as NC_040699.1 even when the 3rd column is not
+
+This gets rid of all of the lines where DiNV is the main mapper   
+`samtools view 16Cq-trim-h-mapped.bam | awk -F '\t' '$3 != "NC_040699.1"' > 16Cq-mapped-fly-awk.bam`   
+Now to look for lines where it is the mate mapper (note that file is no longer a bam file so I don't have to use samtools anymore)   
+`awk -F '\t' '$7 == "NC_040699.1"' 16Cq-mapped-fly-awk.bam > 16Cq-mapped-DiNV-mate-awk.bam`  
+And to look for lines where it is chimeric with awk  
+`awk '/SA:Z:NC_040699.1/' 16Cq-mapped-fly-awk.bam > 16Cq-mapped-DiNV-chimeric-awk.bam`
+
+Check for line counts of these methods 
+`samtools view 16Cq-trim-h-mapped-DiNV-only.bam | wc -l `    
+`wc -l 16Cq-mapped-DiNV-awk.bam`  
+`wc -l 16Cq-mapped-DiNV-mate-awk.bam`  
+`wc -l 16Cq-mapped-DiNV-chimeric-awk.bam`  
+`wc -l 16Cq-mapped-DiNV-grep.bam`  
+`wc -l 16Cq-mapped-DiNV-grep-SA.bam`  
+
+| method | selection | line count|
+|---|---|---|
+|samtools view| unknown| 18279 |
+|awk|main mapping| 18279|
+|awk| mate mapping|  73|
+|awk|chimeric mapping| 41|
+|grep|all|18386|
+|grep|chimeric|65|
+
+So it really looks like here that there just aren't a lot of DiNV mapping reads, and there isn't a way around it?
