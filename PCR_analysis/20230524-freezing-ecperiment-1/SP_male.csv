@@ -1,0 +1,13 @@
+Primer,PCR_result,count,total,percentage
+CO1,no,0,20,0
+CO1,yes,20,20,100
+CO1,maybe,0,20,0
+p47_35,no,5,20,25
+p47_35,yes,13,20,65
+p47_35,maybe,2,20,10
+p47_30,no,10,20,50
+p47_30,yes,8,20,40
+p47_30,maybe,2,20,10
+TPI,no,0,20,0
+TPI,yes,19,20,95
+TPI,maybe,1,20,5
