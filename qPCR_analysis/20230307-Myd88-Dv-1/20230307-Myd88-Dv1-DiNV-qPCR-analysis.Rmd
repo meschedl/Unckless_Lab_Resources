@@ -312,9 +312,9 @@ delta_delta <- read.csv("delta_delta_Cq_hand.csv")
 delta_delta <- replace(delta_delta, is.na(delta_delta), 1)
 
 # want to force axis to top out at 5 
-ggplot(delta_delta, aes(y= X2_to_the_delta_delta, x=cell_type, color=infected)) + geom_point(position="jitter") + facet_grid(~sample_type) + theme_linedraw() + ylim(0, 5)
+ggplot(delta_delta, aes(y= X2_to_the_delta_delta, x=cell_type, color=infected)) + geom_point(position="jitter", size=3) + facet_grid(~sample_type) + theme_linedraw() + ylim(0, 5)
 
-
+ggsave("delta_delta_cq.png")
 
 ```
 
@@ -330,7 +330,9 @@ raw_115_cells <- cell_means_variances_of_Cq_df[which(cell_means_variances_of_Cq_
 # make NaN as 40 
 raw_115_cells <- replace(raw_115_cells, is.na(raw_115_cells), 40)
 
-ggplot(raw_115_cells, aes(y= means, x=day, color=infected)) + geom_point(position="jitter") + facet_grid(~cell_type) + theme_linedraw()
+ggplot(raw_115_cells, aes(y= means, x=day, color=infected)) + geom_point(position="jitter", size=4) + facet_grid(~cell_type) + theme_linedraw()
+
+ggsave("raw_cell_cq.png")
 
 ```
 
@@ -346,7 +348,9 @@ raw_115_sup <- raw_115_sup[which(raw_115_sup$primer == "115"),]
 # make NaN as 0 
 raw_115_sup <- replace(raw_115_sup, is.na(raw_115_sup), 40)
 
-ggplot(raw_115_sup, aes(y= means, x=day, color=infected)) + geom_point(position="jitter") + facet_grid(~cell_type) + theme_linedraw()
+ggplot(raw_115_sup, aes(y= means, x=day, color=infected)) + geom_point(position="jitter", size =4) + facet_grid(~cell_type) + theme_linedraw()
+
+ggsave("raw_sup_cq.png")
 
 ```
 

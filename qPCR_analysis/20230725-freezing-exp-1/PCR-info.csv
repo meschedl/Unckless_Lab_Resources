@@ -1,0 +1,49 @@
+sample_ID,primer,day_frozen,treatment,sex,p47_35_cycle_result,p47_30_cycle_result,band_strength_35_cycles,band_strength_30_cycles,115_1ng_30_PCR_result,115_30_cycle_PCR_result,115_1ng_30_PCR_band,115_30_cycle_PCR_band
+1,TPI,day0,SP,male,yes,no,mid-strong,none,no,no,none,none
+1,115,day0,SP,male,yes,no,mid-strong,none,no,no,none,none
+9,TPI,day0,SP,female,no,no,none,none,no,no,none,none
+9,115,day0,SP,female,no,no,none,none,no,no,none,none
+10,TPI,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak
+10,115,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak
+16,TPI,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none
+16,115,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none
+23,TPI,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none
+23,115,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none
+30,TPI,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak
+30,115,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak
+32,TPI,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak
+32,115,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak
+37,TPI,day3,SP,female,yes,no,weak,none,no,no,none,none
+37,115,day3,SP,female,yes,no,weak,none,no,no,none,none
+38,TPI,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong
+38,115,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong
+42,TPI,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong
+42,115,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong
+48,TPI,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong
+48,115,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong
+64,TPI,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none
+64,115,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none
+84,TPI,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak
+84,115,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak
+87,TPI,day5,SP,male,maybe,no,weak,none,no,no,none,none
+87,115,day5,SP,male,maybe,no,weak,none,no,no,none,none
+89,TPI,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong
+89,115,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong
+94,TPI,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak
+94,115,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak
+98,TPI,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong
+98,115,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong
+117,TPI,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none
+117,115,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none
+142,TPI,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak
+142,115,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak
+143,TPI,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong
+143,115,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong
+147,TPI,day10,SP,female,yes,no,mid-weak,none,no,no,none,none
+147,115,day10,SP,female,yes,no,mid-weak,none,no,no,none,none
+150,TPI,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong
+150,115,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong
+158,TPI,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong
+158,115,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong
+173,TPI,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak
+173,115,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak

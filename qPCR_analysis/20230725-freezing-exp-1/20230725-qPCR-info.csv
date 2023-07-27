@@ -1,0 +1,145 @@
+well,qPCR_plate,qPCR_replicate,sample_ID,primer,day_frozen,treatment,sex,p47_35_cycle_result,p47_30_cycle_result,band_strength_35_cycles,band_strength_30_cycles,115_1ng_30_PCR_result,115_30_cycle_PCR_result,115_1ng_30_PCR_band,115_30_cycle_PCR_band,Cq
+A01,plate_1,1,1,TPI,day0,SP,male,yes,no,mid-strong,none,no,no,none,none,23.41
+A02,plate_1,2,1,TPI,day0,SP,male,yes,no,mid-strong,none,no,no,none,none,23.00
+A03,plate_1,3,1,TPI,day0,SP,male,yes,no,mid-strong,none,no,no,none,none,22.97
+A04,plate_1,1,9,TPI,day0,SP,female,no,no,none,none,no,no,none,none,23.92
+A05,plate_1,2,9,TPI,day0,SP,female,no,no,none,none,no,no,none,none,24.04
+A06,plate_1,3,9,TPI,day0,SP,female,no,no,none,none,no,no,none,none,24.21
+A07,plate_1,1,10,TPI,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak,22.84
+A08,plate_1,2,10,TPI,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak,22.87
+A09,plate_1,3,10,TPI,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak,22.80
+A10,plate_1,1,23,TPI,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none,23.01
+A11,plate_1,2,23,TPI,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none,23.05
+A12,plate_1,3,23,TPI,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none,23.19
+B01,plate_1,1,30,TPI,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak,23.11
+B02,plate_1,2,30,TPI,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak,22.70
+B03,plate_1,3,30,TPI,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak,22.87
+B04,plate_1,1,16,TPI,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none,23.18
+B05,plate_1,2,16,TPI,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none,23.25
+B06,plate_1,3,16,TPI,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none,23.12
+B07,plate_1,1,37,TPI,day3,SP,female,yes,no,weak,none,no,no,none,none,23.94
+B08,plate_1,2,37,TPI,day3,SP,female,yes,no,weak,none,no,no,none,none,24.14
+B09,plate_1,3,37,TPI,day3,SP,female,yes,no,weak,none,no,no,none,none,23.97
+B10,plate_1,1,32,TPI,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak,23.45
+B11,plate_1,2,32,TPI,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak,23.32
+B12,plate_1,3,32,TPI,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak,23.65
+C01,plate_1,1,38,TPI,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong,23.38
+C02,plate_1,2,38,TPI,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong,23.27
+C03,plate_1,3,38,TPI,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong,23.35
+C04,plate_1,1,42,TPI,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,24.80
+C05,plate_1,2,42,TPI,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,24.93
+C06,plate_1,3,42,TPI,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,25.02
+C07,plate_1,1,48,TPI,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong,24.09
+C08,plate_1,2,48,TPI,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong,23.97
+C09,plate_1,3,48,TPI,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong,24.40
+C10,plate_1,1,64,TPI,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none,23.59
+C11,plate_1,2,64,TPI,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none,23.69
+C12,plate_1,3,64,TPI,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none,23.38
+D01,plate_1,1,1,115,day0,SP,male,yes,no,mid-strong,none,no,no,none,none,29.36
+D02,plate_1,2,1,115,day0,SP,male,yes,no,mid-strong,none,no,no,none,none,29.41
+D03,plate_1,3,1,115,day0,SP,male,yes,no,mid-strong,none,no,no,none,none,29.33
+D04,plate_1,1,9,115,day0,SP,female,no,no,none,none,no,no,none,none,27.72
+D05,plate_1,2,9,115,day0,SP,female,no,no,none,none,no,no,none,none,27.92
+D06,plate_1,3,9,115,day0,SP,female,no,no,none,none,no,no,none,none,28.14
+D07,plate_1,1,10,115,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak,27.08
+D08,plate_1,2,10,115,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak,27.12
+D09,plate_1,3,10,115,day0,SP,female,yes,yes,strong,weak,no,yes,none,mid-weak,27.14
+D10,plate_1,1,23,115,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none,31.33
+D11,plate_1,2,23,115,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none,31.01
+D12,plate_1,3,23,115,day0,16Cq DiNV,female,yes,no,weak,none,no,no,none,none,31.37
+E01,plate_1,1,30,115,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak,29.39
+E02,plate_1,2,30,115,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak,29.62
+E03,plate_1,3,30,115,day0,16Cq DiNV,female,yes,yes,strong,mid-weak,no,yes,none,mid-weak,29.57
+E04,plate_1,1,16,115,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none,28.65
+E05,plate_1,2,16,115,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none,28.55
+E06,plate_1,3,16,115,day0,16Cq DiNV,male,no,no,none,none,no,no,none,none,28.78
+E07,plate_1,1,37,115,day3,SP,female,yes,no,weak,none,no,no,none,none,29.87
+E08,plate_1,2,37,115,day3,SP,female,yes,no,weak,none,no,no,none,none,29.58
+E09,plate_1,3,37,115,day3,SP,female,yes,no,weak,none,no,no,none,none,29.94
+E10,plate_1,1,32,115,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak,29.28
+E11,plate_1,2,32,115,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak,29.72
+E12,plate_1,3,32,115,day3,SP,male,yes,yes,mid-strong,weak,no,maybe,none,weak,29.97
+F01,plate_1,1,38,115,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong,29.98
+F02,plate_1,2,38,115,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong,29.91
+F03,plate_1,3,38,115,day3,SP,female,yes,yes,strong,mid-weak,no,yes,none,mid-strong,29.99
+F04,plate_1,1,42,115,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,21.48
+F05,plate_1,2,42,115,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,21.44
+F06,plate_1,3,42,115,day3,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,21.62
+F07,plate_1,1,48,115,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong,29.60
+F08,plate_1,2,48,115,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong,29.90
+F09,plate_1,3,48,115,day3,16Cq DiNV,male,yes,yes,mid-strong,mid-weak,no,yes,none,mid-strong,29.62
+F10,plate_1,1,64,115,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none,29.91
+F11,plate_1,2,64,115,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none,29.57
+F12,plate_1,3,64,115,day3,16Cq DiNV,female,yes,no,mid-weak,none,no,no,none,none,29.92
+A01,plate_2,1,84,TPI,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak,24.43
+A02,plate_2,2,84,TPI,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak,24.48
+A03,plate_2,3,84,TPI,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak,24.35
+A04,plate_2,1,87,TPI,day5,SP,male,maybe,no,weak,none,no,no,none,none,24.99
+A05,plate_2,2,87,TPI,day5,SP,male,maybe,no,weak,none,no,no,none,none,25.21
+A06,plate_2,3,87,TPI,day5,SP,male,maybe,no,weak,none,no,no,none,none,25.32
+A07,plate_2,1,89,TPI,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong,24.85
+A08,plate_2,2,89,TPI,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong,25.08
+A09,plate_2,3,89,TPI,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong,24.76
+A10,plate_2,1,94,TPI,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak,24.32
+A11,plate_2,2,94,TPI,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak,24.33
+A12,plate_2,3,94,TPI,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak,24.60
+B01,plate_2,1,98,TPI,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong,24.33
+B02,plate_2,2,98,TPI,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong,24.14
+B03,plate_2,3,98,TPI,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong,24.16
+B04,plate_2,1,117,TPI,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none,24.03
+B05,plate_2,2,117,TPI,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none,23.97
+B06,plate_2,3,117,TPI,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none,24.02
+B07,plate_2,1,142,TPI,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak,24.27
+B08,plate_2,2,142,TPI,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak,24.30
+B09,plate_2,3,142,TPI,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak,24.31
+B10,plate_2,1,147,TPI,day10,SP,female,yes,no,mid-weak,none,no,no,none,none,24.09
+B11,plate_2,2,147,TPI,day10,SP,female,yes,no,mid-weak,none,no,no,none,none,24.06
+B12,plate_2,3,147,TPI,day10,SP,female,yes,no,mid-weak,none,no,no,none,none,24.51
+C01,plate_2,1,143,TPI,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong,24.44
+C02,plate_2,2,143,TPI,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong,24.32
+C03,plate_2,3,143,TPI,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong,24.37
+C04,plate_2,1,150,TPI,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,28.16
+C05,plate_2,2,150,TPI,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,28.48
+C06,plate_2,3,150,TPI,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,28.57
+C07,plate_2,1,158,TPI,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong,24.68
+C08,plate_2,2,158,TPI,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong,24.74
+C09,plate_2,3,158,TPI,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong,24.66
+C10,plate_2,1,173,TPI,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak,24.14
+C11,plate_2,2,173,TPI,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak,24.23
+C12,plate_2,3,173,TPI,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak,24.30
+D01,plate_2,1,84,115,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak,30.74
+D02,plate_2,2,84,115,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak,30.48
+D03,plate_2,3,84,115,day5,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-weak,30.80
+D04,plate_2,1,87,115,day5,SP,male,maybe,no,weak,none,no,no,none,none,30.89
+D05,plate_2,2,87,115,day5,SP,male,maybe,no,weak,none,no,no,none,none,30.64
+D06,plate_2,3,87,115,day5,SP,male,maybe,no,weak,none,no,no,none,none,30.73
+D07,plate_2,1,89,115,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong,29.67
+D08,plate_2,2,89,115,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong,29.77
+D09,plate_2,3,89,115,day5,SP,female,yes,yes,strong,mid-strong,no,yes,none,strong,29.86
+D10,plate_2,1,94,115,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak,32.03
+D11,plate_2,2,94,115,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak,31.83
+D12,plate_2,3,94,115,day5,16Cq DiNV,male,yes,no,mid-strong,none,no,maybe,none,weak,31.88
+E01,plate_2,1,98,115,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong,27.08
+E02,plate_2,2,98,115,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong,26.98
+E03,plate_2,3,98,115,day5,16Cq DiNV,male,yes,yes,strong,mid-strong,yes,yes,mid-weak,strong,27.44
+E04,plate_2,1,117,115,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none,31.43
+E05,plate_2,2,117,115,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none,31.84
+E06,plate_2,3,117,115,day5,16Cq DiNV,female,maybe,no,weak,none,no,no,none,none,31.74
+E07,plate_2,1,142,115,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak,31.07
+E08,plate_2,2,142,115,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak,31.27
+E09,plate_2,3,142,115,day10,SP,male,yes,no,mid-strong,none,no,maybe,none,weak,30.77
+E10,plate_2,1,147,115,day10,SP,female,yes,no,mid-weak,none,no,no,none,none,31.67
+E11,plate_2,2,147,115,day10,SP,female,yes,no,mid-weak,none,no,no,none,none,31.36
+E12,plate_2,3,147,115,day10,SP,female,yes,no,mid-weak,none,no,no,none,none,31.72
+F01,plate_2,1,143,115,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong,30.72
+F02,plate_2,2,143,115,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong,30.99
+F03,plate_2,3,143,115,day10,SP,male,yes,yes,strong,mid-weak,no,yes,none,mid-strong,30.33
+F04,plate_2,1,150,115,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,17.59
+F05,plate_2,2,150,115,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,17.53
+F06,plate_2,3,150,115,day10,16Cq DiNV,male,yes,yes,strong,strong,yes,yes,strong,strong,17.56
+F07,plate_2,1,158,115,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong,29.98
+F08,plate_2,2,158,115,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong,30.06
+F09,plate_2,3,158,115,day10,16Cq DiNV,male,yes,yes,strong,mid-strong,no,yes,none,strong,29.39
+F10,plate_2,1,173,115,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak,31.63
+F11,plate_2,2,173,115,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak,31.37
+F12,plate_2,3,173,115,day10,16Cq DiNV,female,yes,yes,mid-strong,weak,no,yes,none,mid-weak,31.86
