@@ -4,6 +4,10 @@ output: github_document
 date: '2023-07-25'
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
 #### Load in libraries needed for analysis
 ```{r}
 # load library
@@ -188,7 +192,7 @@ It seems a little strange how many fixed differences from the reference genome t
 
 112 fixed differences between the two samples is interesting. It is hard to say if any of these are adaptive or not, but they do show clear evolution between the two viral populations.
 
-#### Plot manhattan plot with fixed differences between the samples highlighted in red
+#### Plot manhattan plot with fixed differences between the samples highlighted in blue
 ```{r}
 #isolate a dataframe containing only those fixed SNPs
 fixed <- DiNV_SNPs[DiNV_SNPs$af.dif== 1,]
@@ -202,4 +206,137 @@ ggplot(DiNV_SNPs, aes(x=POS, y=neg_log_pval))+
   theme_classic() + xlab("Position") + ylab("Negative log10 p-value")
 
 ```
+
+
+#### Look at the raw read counts for SNPs Tom found and plot them, 
+```{r, fig.height=4, fig.width=7, units="in"}
+# starting with the 6 SNPs originally found in Tom's work
+# these didn't show much, but I can plot the counts 
+found_snps_table <- DiNV_SNPs[DiNV_SNPs$POS %in% found.snps,]
+
+# separate out the table above into 4 tables, 1 for each allele, and the combine them together
+
+inn_ref <- found_snps_table[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(found_snps_table)){
+  #isolate the row (SNP) you want to work on
+  inn_ref[i,]<-found_snps_table[i,c(2:5,9:11)]
+  }
+inn_ref$cell_type <- rep("innubila", times = nrow(inn_ref))
+inn_ref$allele <- rep("reference", times = nrow(inn_ref))
+
+inn_alt <- found_snps_table[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(found_snps_table)){
+  #isolate the row (SNP) you want to work on
+  inn_alt[i,]<-found_snps_table[i,c(2:4,6, 9:11)]
+  }
+inn_alt$cell_type <- rep("innubila", times = nrow(inn_alt))
+inn_alt$allele <- rep("alternate", times = nrow(inn_alt))
+
+vir_ref <- found_snps_table[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(found_snps_table)){
+  #isolate the row (SNP) you want to work on
+  vir_ref[i,]<-found_snps_table[i,c(2:4,7,9:11)]
+  }
+vir_ref$cell_type <- rep("Dv-1", times = nrow(vir_ref))
+vir_ref$allele <- rep("reference", times = nrow(vir_ref))
+
+vir_alt <- found_snps_table[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(found_snps_table)){
+  #isolate the row (SNP) you want to work on
+  vir_alt[i,]<-found_snps_table[i,c(2:4,8:11)]
+  }
+vir_alt$cell_type <- rep("Dv-1", times = nrow(vir_alt))
+vir_alt$allele <- rep("alternate", times = nrow(vir_alt))
+
+found_snps_tidy <- rbind(inn_alt, inn_ref, vir_alt, vir_ref)
+colnames(found_snps_tidy)[4] <- "count"
+
+found_snps_tidy$count <- as.numeric(found_snps_tidy$count)
+
+ggplot(data=found_snps_tidy, aes(x=allele, y=count, fill = cell_type)) +
+  geom_bar(stat="identity", position=position_dodge()) + facet_grid(~POS) + theme_bw() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + geom_text(aes(label=count), position=position_dodge(width=0.8), vjust=-0.35)
+
+
+```
+
+#### Look at the raw read counts for highly significant SNPs and plot them
+
+```{r, fig.height=7, fig.width=7, units="in"}
+# make an adjusted pval column for my significant SNPs
+sig.snps$adjusted_pval <- sig.snps$fisher_pval*10437
+
+# order the sig.snps dataframe 
+sig.snps <- sig.snps[order(sig.snps$adjusted_pval),]
+
+# separate out the lowesst 25 adjusted pvalues
+top_25_sig_snps <- sig.snps[1:25,]
+
+# separate out the table above into 4 tables, 1 for each allele, and the combine them together
+
+inn_ref <- top_25_sig_snps[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(top_25_sig_snps)){
+  #isolate the row (SNP) you want to work on
+  inn_ref[i,]<-top_25_sig_snps[i,c(2:5,9:11)]
+  }
+inn_ref$cell_type <- rep("innubila", times = nrow(inn_ref))
+inn_ref$allele <- rep("reference", times = nrow(inn_ref))
+
+inn_alt <- top_25_sig_snps[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(top_25_sig_snps)){
+  #isolate the row (SNP) you want to work on
+  inn_alt[i,]<-top_25_sig_snps[i,c(2:4,6, 9:11)]
+  }
+inn_alt$cell_type <- rep("innubila", times = nrow(inn_alt))
+inn_alt$allele <- rep("alternate", times = nrow(inn_alt))
+
+vir_ref <- top_25_sig_snps[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(top_25_sig_snps)){
+  #isolate the row (SNP) you want to work on
+  vir_ref[i,]<-top_25_sig_snps[i,c(2:4,7,9:11)]
+  }
+vir_ref$cell_type <- rep("Dv-1", times = nrow(vir_ref))
+vir_ref$allele <- rep("reference", times = nrow(vir_ref))
+
+vir_alt <- top_25_sig_snps[0,c(2:5,9:11)]
+# make in.ref dataframe
+  for(i in 1:nrow(top_25_sig_snps)){
+  #isolate the row (SNP) you want to work on
+  vir_alt[i,]<-top_25_sig_snps[i,c(2:4,8:11)]
+  }
+vir_alt$cell_type <- rep("Dv-1", times = nrow(vir_alt))
+vir_alt$allele <- rep("alternate", times = nrow(vir_alt))
+
+top_25_snps_tidy <- rbind(inn_alt, inn_ref, vir_alt, vir_ref)
+colnames(top_25_snps_tidy)[4] <- "count"
+
+top_25_snps_tidy$count <- as.numeric(top_25_snps_tidy$count)
+
+ggplot(data=top_25_snps_tidy, aes(x=allele, y=count, fill = cell_type)) +
+  geom_bar(stat="identity", position=position_dodge()) + scale_y_continuous(limits = c(0, 150))+ facet_wrap(~POS, nrow = 5) + theme_bw() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + geom_text(aes(label=count), position=position_dodge(width=0.8), vjust=-0.35)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
