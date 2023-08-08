@@ -9,7 +9,7 @@
 - Flies should be aged 5-7 days to be used for infecting, a day or two older is ok but not younger
 - Only males will be used for infecting, so it can be helpful to pre-make vials a few days before to make sexing easier. However, you don't want to leave only males in a vial when doing this because they will be stressed without females (and thus effect infection). I have had success with pre-making vials with ~22 or ~12 males, and 10 or 6 females respectively. You will likely loose some to death randomly between the time you separate them and the time you use them so it can be helpful to put in a few more than you plan on needing
 - When learning how to infect flies, it can be good practice to do a lot of control flies (LB), however when doing actual experiments, having about 1/3rd to 1/4th the amount of control flies as compared to infection flies is acceptable
-- _D. innubila_ flies after infections do not go on mushroom food, they go on sugar agar where they are less likely to get stuck in the food and die of infection-unrelated causes
+- _D. innubila_ flies go on regular mushroom food during infections
 - Once you have picked a time to infect (either morning or afternoon), it is best to always stay with the same time. You can have varying poking ability at different times in the day
 
 
@@ -25,10 +25,9 @@
   - Notebook for notes
   - Bacteria and LB tubes in a rack
   - Fly vials with your flies aged 5-7 days
-  - Box of sugar agar for after infection
+  - New mushroom food vials 
   - Cotton balls, sharpie, and feather brush
-- Prepare the first sugar agar vial or two. This depends on how many flies you will have on a CO2 pad at one time. You want to have vials with flies all from the same time on the CO2. This is important because you keep track of what time all the flies are infected at. You should only put up to 10 flies in a sugar agar vial after infection. Additionally, you should not have any flies on the CO2 for longer than 10 minutes, including sexing the flies and infecting them. Thus, it is best to either make 1 or 2 sugar agar vials per vial put on CO2. The maximum amount of flies infected in 10 minutes is probably 20, it is best to start with 10 when learning
-- You want to write the species and line of fly, the date, and the treatment the flies get (either LB or the bacteria concentration)
+- Prepare the first food vial, you want to write the species and line of fly, the date, and the treatment the flies get (either LB or the bacteria concentration)
 - At this time you will also start making a table in your notebook for keeping track of all this information:
 
 |vial #|treatment|time infected|number of flies|notes|
