@@ -107,7 +107,7 @@ The import from table function has added in some columns. They mean:
 * REF_FRQ - reference allele depth for both samples divided by total read depth for both samples
 * deltaSNP - The change in SNP index, high bulk index minus low bulk index 
 
-#### Filtering by read depth 
+#### Looking at SNPs to get an idea for filtering 
 
 "QTLseqr offers some options for filtering that may help reduce noise and improve results. Filtering is mainly based on read depth for each SNP, such that we can try to eliminate SNPs with low confidence, due to low coverage, and SNPs that may be in repetitive regions and thus have inflated read depth. You can also filter based on the absolute difference in read depth between the bulks."
 
@@ -117,12 +117,12 @@ The import from table function has added in some columns. They mean:
 # total read depth histogram:
 
 ggplot(data = Gprime_df) + 
-    geom_histogram(aes(x = DP.HIGH + DP.LOW)) + 
+    geom_histogram(aes(x = DP.HIGH + DP.LOW), bins = 50) + 
     xlim(0,500)
 
 # total reference allele frequency:
 ggplot(data = Gprime_df) +
-    geom_histogram(aes(x = REF_FRQ))
+    geom_histogram(aes(x = REF_FRQ), bins = 50)
 
 # this one looks different than their example, their ref_frq was centered around 0.5... but maybe their data is really different. This looks like the vast majority of the SNPs are reference allele? Not sure exactly what that means...
 
@@ -131,13 +131,73 @@ ggplot(data = Gprime_df) +
 
 # for innubila sample
 ggplot(data = Gprime_df) +
-    geom_histogram(aes(x = SNPindex.HIGH))
+    geom_histogram(aes(x = SNPindex.HIGH, bins = 50))
 
 # for vir sample
 ggplot(data = Gprime_df) +
-    geom_histogram(aes(x = SNPindex.LOW))
+    geom_histogram(aes(x = SNPindex.LOW), bins = 50)
+
+# this is not an F2 population (not even possible with our virus) so this is maybe why these don't look as expected 
+
 ```
 
+#### Filtering SNPs 
+
+"Now that we have an idea about our read depth distribution we can filter out low confidence SNPS. In general we recommend filtering extremely low and high coverage SNPs, either in both bulks (`minTotalDepth/maxTotalDepth`) and/or in each bulk separately (`minSampleDepth`). We have the option to filter based on reference allele frequency (`refAlleleFreq`), this removes SNPs that for some reason are over- or under-represented in *BOTH* bulks. We can also filter SNPs that have large discrepancies in read depth between the bulks(i.e. one bulk has a depth of 500 and the other has 5). Such discrepancies can throw off the G statistic.  We can also use the GATK GQ score (Genotype Quality) to filter out low confidence SNPs. If the `verbose` parameter is set to `TRUE` (default) the function will report the numbers of SNPs filtered in each step."
+
+```{r}
+# use the filtering snps 
+# minimum depth should probably be 6? This is total so both samples 
+# max depth of 200? not sure 
+# don't have GATK score so not filtering by that 
+# min coverage per sample of 4 reads, seems pretty low but there are inn samples that I'm sure have few reads 
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ of less than or equal to 0.999. Which seems high but I have so many SNPs where the REF_FRQ is almost 1... 
+
+Gprime_df_filt <-
+    filterSNPs(
+        SNPset = Gprime_df,
+        refAlleleFreq = 0.001,
+        minTotalDepth = 6,
+        maxTotalDepth = 200, 
+        minSampleDepth = 4,
+        verbose = TRUE
+    )
+
+```
+
+#### Running G prime analysis
+
+```{r}
+Gprime_df_filt_prime <- runGprimeAnalysis(Gprime_df_filt,
+    windowSize = 2000,
+    outlierFilter = "deltaSNP",
+    filterThreshold = 0.1)
+
+# there are many errors with this... 
+
+
+#Due to the fact that p-values are estimated from the null distribution of G', an important check is to see if the null distribution of G' values is close to log normally distributed. For this purpose we use the `plotGprimeDist` function, which plots the G' histograms of both raw and filtered G' sets alongside the log-normal null distribution (which is reported in the legend). We can also use this to test which filtering method (Hampel or DeltaSNP) estimates a more accurate null distribution. If you use the `"deltaSNP"` method plotting G' distributions with different filter thresholds might also help reveal a better G' null distribution. 
+
+# Hampel method
+plotGprimeDist(SNPset = Gprime_df_filt_prime, outlierFilter = "Hampel")
+# deltaSNP method 
+plotGprimeDist(SNPset = Gprime_df_filt_prime, outlierFilter = "deltaSNP", filterThreshold = 0.1)
+
+# both of these plots sort of look like a log normal distribution
+
+# plot number of SNPs in a window
+p1 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "nSNPs")
+p1
+
+# plot the G' statistic
+# try to plot the thereshold can pass the FDR (q) of 0.01.
+p3 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "Gprime", plotThreshold = TRUE, q = 0.01)
+# nope, nothing can pass the threshold of 0.01, actually it has to get to 0.7 to draw the line which is pretty bad 
+p3
+
+# nothing significant for this statistic 
+
+```
 
 
 
