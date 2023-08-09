@@ -325,6 +325,28 @@ ggplot(data=top_25_snps_tidy, aes(x=allele, y=count, fill = cell_type)) +
 ```
 
 
+Check for Tom's important SNPs in case they were filtered out with biallelic filter 
+```{r}
+# read in vcf again 
+DiNV_vcf_all <- read.vcfR("~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/continuous-DiNV.vcf")
+# look at vcf
+y<-DiNV_vcf_all@fix
+# extract out all columns 
+DiNV_SNPs_all<-as.data.frame(DiNV_vcf_all@fix[,c(1,2,4,5,8)])
+
+# search for the SNPs 
+table(snps %in% DiNV_SNPs_all$POS)
+# ok so now there are 8 found and 4 not found 
+# isolate the details of the found SNPs
+# separate out the 6 that are present in DiNV_SNPs
+found.snps.all <- snps[snps %in% DiNV_SNPs_all$POS]
+found.snps.all
+
+# what are the alleles 
+DiNV_SNPs_all[DiNV_SNPs_all$POS %in% found.snps.all,]
+
+```
+
 
 
 
