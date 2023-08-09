@@ -1,0 +1,149 @@
+---
+title: "Gprime-pooled-continuous-analysis"
+format: gfm
+editor: visual
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+Load packages 
+
+```{r}
+#install.packages("devtools")
+#devtools::install_github("bmansfeld/QTLseqr")
+# install.packages("vcfR")
+#install.packages("SNPfiltR")
+library(SNPfiltR)
+library(QTLseqr)
+library(ggplot2)
+library(vcfR)
+```
+
+#### Load in dataset 
+
+```{r}
+# read in vcf
+DiNV_vcf <- read.vcfR("~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/continuous-DiNV.vcf")
+
+# filter vcf to remove sites (SNPs) with more than two alleles present (from SNPfiltR package)
+DiNV_vcf <- filter_biallelic(DiNV_vcf)
+
+# extract the number of reads supporting the reference allele for each sample at each SNP 
+# DiNV_vcf has a column containing RO or reference allele information
+# the extract.gt function will subset from that column
+# the same column contains a lot of other information separated by : and , which is why a specific function is needed 
+ref <- as.data.frame(extract.gt(DiNV_vcf, element = "RO"))
+# extract the number of reads supporting the alternate allele for each sample at each SNP 
+# AO is alternate allele
+# because I removed all SNPs that are more than biallelic, there should only be 1 alternate allele
+alt <- as.data.frame(extract.gt(DiNV_vcf, element = "AO"))
+DiNV_SNPs<-as.data.frame(DiNV_vcf@fix[,c(1,2,4,5)])
+# add the read counts supporting the reference and alternate alleles for each of the two sequenced strains as their own columns
+DiNV_SNPs$inn.ref<-ref$INN
+DiNV_SNPs$inn.alt<-alt$INN
+DiNV_SNPs$vir.ref<-ref$VIR
+DiNV_SNPs$vir.alt<-alt$VIR
+
+# there might be some missing data in this file, which would come out as rows where either inn or vir have an NA for alleles 
+# remove any rows that have an NA 
+DiNV_SNPs <- na.omit(DiNV_SNPs)
+```
+
+#### Prepare SNP dataset for Gprime format. Based off of QTLSeqr program. 
+
+```{r}
+# what I need is columns that say:
+# chrom, position, ref base, alt base, and allele counts per sample
+# but the allele counts have to be named AD_ALT.sample or AD_REF.sample 
+# so I need AD_ALT.inn, AD_REF.inn, AD_ALT.vir, and AD_REF.vir
+
+colnames(DiNV_SNPs)[5] ="AD_REF.inn"
+colnames(DiNV_SNPs)[6] ="AD_ALT.inn"
+colnames(DiNV_SNPs)[7] ="AD_REF.vir"
+colnames(DiNV_SNPs)[8] ="AD_ALT.vir"
+
+head(DiNV_SNPs)
+# looks good so far
+
+# save this as a csv because the program doesn't seem to want it in R 
+write.csv(DiNV_SNPs, file = "~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/DiNV_SNPs_For_Gprime.csv", row.names = FALSE)
+
+```
+
+#### More preparing the table and loading in
+
+```{r}
+# vignette says "We define the sample name for each of the bulks."
+# from what I can tell, a bulk is a pooled sample or a bulked sample
+# for whatever reason this program calls them a high bulk and a low bulk 
+# but I'm not sure what those terms mean 
+
+# naming the samples exactly what it says after AD_REF. 
+# also want to 
+HighBulk <- "inn"
+LowBulk <- "vir"
+# assuming this is the way they want to represent chromosomes
+# they usually want you to specify which chromosomes to use
+# because there is just one it doesn't matter probably 
+Chroms <- "NC_040699.1"
+
+# see if importing the table works 
+Gprime_df <- importFromTable(file = "~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/DiNV_SNPs_For_Gprime.csv",
+                      highBulk = HighBulk,
+                      lowBulk = LowBulk,
+                      chromList = Chroms)
+
+# for whatever reason it renamed my columns, so I will just have to remember that high is innubila cells and low is virilis cells
+```
+
+The import from table function has added in some columns. They mean: 
+
+* GQ.HIGH - The genotype quality score, (how confident we are in the genotyping)
+* SNPindex.HIGH - The calculated SNP-index for the high bulk. SNP index is alternate allele depth over total read depth
+* Same as above for the low bulk
+* REF_FRQ - reference allele depth for both samples divided by total read depth for both samples
+* deltaSNP - The change in SNP index, high bulk index minus low bulk index 
+
+#### Filtering by read depth 
+
+"QTLseqr offers some options for filtering that may help reduce noise and improve results. Filtering is mainly based on read depth for each SNP, such that we can try to eliminate SNPs with low confidence, due to low coverage, and SNPs that may be in repetitive regions and thus have inflated read depth. You can also filter based on the absolute difference in read depth between the bulks."
+
+```{r}
+#One way to assess filtering thresholds and check the quality of our data is by plotting histograms of the read depths. We can get an idea of where to draw our thresholds
+
+# total read depth histogram:
+
+ggplot(data = Gprime_df) + 
+    geom_histogram(aes(x = DP.HIGH + DP.LOW)) + 
+    xlim(0,500)
+
+# total reference allele frequency:
+ggplot(data = Gprime_df) +
+    geom_histogram(aes(x = REF_FRQ))
+
+# this one looks different than their example, their ref_frq was centered around 0.5... but maybe their data is really different. This looks like the vast majority of the SNPs are reference allele? Not sure exactly what that means...
+
+
+# We can plot our per-bulk SNP-index to check if our data is good.We expect to find two small peaks on each end and most of the SNPs should be approximiately normally distributed arround 0.5 in an F2 population. Here is the HIGH bulk for example:
+
+# for innubila sample
+ggplot(data = Gprime_df) +
+    geom_histogram(aes(x = SNPindex.HIGH))
+
+# for vir sample
+ggplot(data = Gprime_df) +
+    geom_histogram(aes(x = SNPindex.LOW))
+```
+
+
+
+
+
+
+
+
+
+

@@ -476,3 +476,77 @@ ggplot(data=top_25_snps_tidy, aes(x=allele, y=count, fill = cell_type)) +
 ```
 
 ![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+Check for Tom’s important SNPs in case they were filtered out with
+biallelic filter
+
+``` r
+# read in vcf again 
+DiNV_vcf_all <- read.vcfR("~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/continuous-DiNV.vcf")
+```
+
+    ## Scanning file to determine attributes.
+    ## File attributes:
+    ##   meta lines: 59
+    ##   header_line: 60
+    ##   variant count: 13116
+    ##   column count: 11
+    ## Meta line 59 read in.
+    ## All meta lines processed.
+    ## gt matrix initialized.
+    ## Character matrix gt created.
+    ##   Character matrix gt rows: 13116
+    ##   Character matrix gt cols: 11
+    ##   skip: 0
+    ##   nrows: 13116
+    ##   row_num: 0
+    ## Processed variant 1000Processed variant 2000Processed variant 3000Processed variant 4000Processed variant 5000Processed variant 6000Processed variant 7000Processed variant 8000Processed variant 9000Processed variant 10000Processed variant 11000Processed variant 12000Processed variant 13000Processed variant: 13116
+    ## All variants processed
+
+``` r
+# look at vcf
+y<-DiNV_vcf_all@fix
+# extract out all columns 
+DiNV_SNPs_all<-as.data.frame(DiNV_vcf_all@fix[,c(1,2,4,5,8)])
+
+# search for the SNPs 
+table(snps %in% DiNV_SNPs_all$POS)
+```
+
+    ## 
+    ## FALSE  TRUE 
+    ##     4     8
+
+``` r
+# ok so now there are 8 found and 4 not found 
+# isolate the details of the found SNPs
+# separate out the 6 that are present in DiNV_SNPs
+found.snps.all <- snps[snps %in% DiNV_SNPs_all$POS]
+found.snps.all
+```
+
+    ## [1]  14249  41210  59194  59275  66615  78978  78991 140117
+
+``` r
+# what are the alleles 
+DiNV_SNPs_all[DiNV_SNPs_all$POS %in% found.snps.all,]
+```
+
+    ##             CHROM    POS    REF                           ALT
+    ## 1079  NC_040699.1  14249      G                             T
+    ## 3323  NC_040699.1  41210 CTTTCC TTTTCCC,CTTTTCC,TTTTCC,CTTTTC
+    ## 4896  NC_040699.1  59194      A                             G
+    ## 4903  NC_040699.1  59275     CT                            AC
+    ## 5536  NC_040699.1  66615      G                             A
+    ## 6713  NC_040699.1  78978      C                             T
+    ## 6715  NC_040699.1  78991      G                             A
+    ## 11801 NC_040699.1 140117      T                             C
+    ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        INFO
+    ## 1079                                                                                                                                                                                                                                                                       AB=0;ABP=0;AC=4;AF=1;AN=4;AO=25;CIGAR=1X;DP=26;DPB=26;DPRA=0;EPP=3.09716;EPPR=5.18177;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=2;NUMALT=1;ODDS=15.6793;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=939;QR=37;RO=1;RPL=13;RPP=3.09716;RPPR=5.18177;RPR=12;RUN=1;SAF=10;SAP=5.18177;SAR=15;SRF=1;SRP=5.18177;SRR=0;TYPE=snp;technology.ILLUMINA=1
+    ## 3323  AB=0,0.454545,0.363636,0.181818;ABP=0,3.20771,4.78696,12.6832;AC=2,1,1,0;AF=0.5,0.25,0.25,0;AN=4;AO=1,5,4,2;CIGAR=1X3M1I2M,1M1I5M,1X5M,4M1X1M;DP=12;DPB=13;DPRA=0,11,11,11;EPP=5.18177,6.91895,5.18177,7.35324;EPPR=0;GTI=1;LEN=7,1,1,1;MEANALT=1,3,3,3;MQM=60,60,60,60;MQMR=0;NS=2;NUMALT=4;ODDS=0.693147;PAIRED=0,0,0,0;PAIREDR=0;PAO=0,3,0,0;PQA=0,111,0,0;PQR=0;PRO=0;QA=37,173,136,74;QR=0;RO=0;RPL=1,3,1,2;RPP=5.18177,3.44459,5.18177,7.35324;RPPR=0;RPR=0,2,3,0;RUN=1,1,1,1;SAF=1,2,2,0;SAP=5.18177,3.44459,3.0103,7.35324;SAR=0,3,2,2;SRF=0;SRP=0;SRR=0;TYPE=complex,ins,snp,snp;technology.ILLUMINA=1,1,1,1
+    ## 4896                                                                                                                                                                                                                                                                                            AB=0;ABP=0;AC=4;AF=1;AN=4;AO=27;CIGAR=1X;DP=27;DPB=27;DPRA=0;EPP=3.09072;EPPR=0;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=0;NS=2;NUMALT=1;ODDS=21.789;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=1024;QR=0;RO=0;RPL=18;RPP=9.52472;RPPR=0;RPR=9;RUN=1;SAF=11;SAP=5.02092;SAR=16;SRF=0;SRP=0;SRR=0;TYPE=snp;technology.ILLUMINA=1
+    ## 4903                                                                                                                                                                                                                                                            AB=0.181818;ABP=12.6832;AC=3;AF=0.75;AN=4;AO=9;CIGAR=2X;DP=18;DPB=18;DPRA=0;EPP=3.25157;EPPR=14.8328;GTI=0;LEN=2;MEANALT=1;MQM=60;MQMR=60;NS=2;NUMALT=1;ODDS=3.3615;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=357;QR=333;RO=9;RPL=5;RPP=3.25157;RPPR=3.25157;RPR=4;RUN=1;SAF=5;SAP=3.25157;SAR=4;SRF=5;SRP=3.25157;SRR=4;TYPE=mnp;technology.ILLUMINA=1
+    ## 5536                                                                                                                                                                                                                                                                AB=0.5;ABP=3.0103;AC=3;AF=0.75;AN=4;AO=14;CIGAR=1X;DP=17;DPB=17;DPRA=0;EPP=3.63072;EPPR=3.73412;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=60;NS=2;NUMALT=1;ODDS=9.37129;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=562;QR=111;RO=3;RPL=3;RPP=12.937;RPPR=3.73412;RPR=11;RUN=1;SAF=5;SAP=5.49198;SAR=9;SRF=2;SRP=3.73412;SRR=1;TYPE=snp;technology.ILLUMINA=1
+    ## 6713                                                                                                                                                                                                                                                                                                    AB=0;ABP=0;AC=4;AF=1;AN=4;AO=7;CIGAR=1X;DP=7;DPB=7;DPRA=0;EPP=3.32051;EPPR=0;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=0;NS=2;NUMALT=1;ODDS=9.797;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=271;QR=0;RO=0;RPL=3;RPP=3.32051;RPPR=0;RPR=4;RUN=1;SAF=3;SAP=3.32051;SAR=4;SRF=0;SRP=0;SRR=0;TYPE=snp;technology.ILLUMINA=1
+    ## 6715                                                                                                                                                                                                                                                                                                   AB=0;ABP=0;AC=4;AF=1;AN=4;AO=8;CIGAR=1X;DP=8;DPB=8;DPRA=0;EPP=4.09604;EPPR=0;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=0;NS=2;NUMALT=1;ODDS=10.0847;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=308;QR=0;RO=0;RPL=3;RPP=4.09604;RPPR=0;RPR=5;RUN=1;SAF=4;SAP=3.0103;SAR=4;SRF=0;SRP=0;SRR=0;TYPE=snp;technology.ILLUMINA=1
+    ## 11801                                                                                                                                                                                                                                                                                          AB=0;ABP=0;AC=4;AF=1;AN=4;AO=25;CIGAR=1X;DP=25;DPB=25;DPRA=0;EPP=5.18177;EPPR=0;GTI=0;LEN=1;MEANALT=1;MQM=60;MQMR=0;NS=2;NUMALT=1;ODDS=20.5205;PAIRED=0;PAIREDR=0;PAO=0;PQA=0;PQR=0;PRO=0;QA=965;QR=0;RO=0;RPL=15;RPP=5.18177;RPPR=0;RPR=10;RUN=1;SAF=15;SAP=5.18177;SAR=10;SRF=0;SRP=0;SRR=0;TYPE=snp;technology.ILLUMINA=1
