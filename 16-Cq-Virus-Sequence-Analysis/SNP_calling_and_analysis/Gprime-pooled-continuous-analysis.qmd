@@ -4,12 +4,11 @@ format: gfm
 editor: visual
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi=300,fig.width=7)
 ```
 
-Load packages 
+Load packages
 
 ```{r}
 #install.packages("devtools")
@@ -22,7 +21,7 @@ library(ggplot2)
 library(vcfR)
 ```
 
-#### Load in dataset 
+#### Load in dataset
 
 ```{r}
 # read in vcf
@@ -52,7 +51,7 @@ DiNV_SNPs$vir.alt<-alt$VIR
 DiNV_SNPs <- na.omit(DiNV_SNPs)
 ```
 
-#### Prepare SNP dataset for Gprime format. Based off of QTLSeqr program. 
+#### Prepare SNP dataset for Gprime format. Based off of QTLSeqr program.
 
 ```{r}
 # what I need is columns that say:
@@ -99,15 +98,15 @@ Gprime_df <- importFromTable(file = "~/Desktop/KU/sequences/16Cq-DiNV-Test/freeb
 # for whatever reason it renamed my columns, so I will just have to remember that high is innubila cells and low is virilis cells
 ```
 
-The import from table function has added in some columns. They mean: 
+The import from table function has added in some columns. They mean:
 
-* GQ.HIGH - The genotype quality score, (how confident we are in the genotyping)
-* SNPindex.HIGH - The calculated SNP-index for the high bulk. SNP index is alternate allele depth over total read depth
-* Same as above for the low bulk
-* REF_FRQ - reference allele depth for both samples divided by total read depth for both samples
-* deltaSNP - The change in SNP index, high bulk index minus low bulk index 
+-   GQ.HIGH - The genotype quality score, (how confident we are in the genotyping)
+-   SNPindex.HIGH - The calculated SNP-index for the high bulk. SNP index is alternate allele depth over total read depth
+-   Same as above for the low bulk
+-   REF_FRQ - reference allele depth for both samples divided by total read depth for both samples
+-   deltaSNP - The change in SNP index, high bulk index minus low bulk index
 
-#### Looking at SNPs to get an idea for filtering 
+#### Looking at SNPs to get an idea for filtering
 
 "QTLseqr offers some options for filtering that may help reduce noise and improve results. Filtering is mainly based on read depth for each SNP, such that we can try to eliminate SNPs with low confidence, due to low coverage, and SNPs that may be in repetitive regions and thus have inflated read depth. You can also filter based on the absolute difference in read depth between the bulks."
 
@@ -141,25 +140,26 @@ ggplot(data = Gprime_df) +
 
 ```
 
-#### Filtering SNPs 
+#### Filtering SNPs
 
-"Now that we have an idea about our read depth distribution we can filter out low confidence SNPS. In general we recommend filtering extremely low and high coverage SNPs, either in both bulks (`minTotalDepth/maxTotalDepth`) and/or in each bulk separately (`minSampleDepth`). We have the option to filter based on reference allele frequency (`refAlleleFreq`), this removes SNPs that for some reason are over- or under-represented in *BOTH* bulks. We can also filter SNPs that have large discrepancies in read depth between the bulks(i.e. one bulk has a depth of 500 and the other has 5). Such discrepancies can throw off the G statistic.  We can also use the GATK GQ score (Genotype Quality) to filter out low confidence SNPs. If the `verbose` parameter is set to `TRUE` (default) the function will report the numbers of SNPs filtered in each step."
+"Now that we have an idea about our read depth distribution we can filter out low confidence SNPS. In general we recommend filtering extremely low and high coverage SNPs, either in both bulks (`minTotalDepth/maxTotalDepth`) and/or in each bulk separately (`minSampleDepth`). We have the option to filter based on reference allele frequency (`refAlleleFreq`), this removes SNPs that for some reason are over- or under-represented in *BOTH* bulks. We can also filter SNPs that have large discrepancies in read depth between the bulks(i.e. one bulk has a depth of 500 and the other has 5). Such discrepancies can throw off the G statistic. We can also use the GATK GQ score (Genotype Quality) to filter out low confidence SNPs. If the `verbose` parameter is set to `TRUE` (default) the function will report the numbers of SNPs filtered in each step."
 
 ```{r}
 # use the filtering snps 
-# minimum depth should probably be 6? This is total so both samples 
+# minimum depth should probably be 10? This is total so both samples, basically same as min sample depth
 # max depth of 200? not sure 
 # don't have GATK score so not filtering by that 
-# min coverage per sample of 4 reads, seems pretty low but there are inn samples that I'm sure have few reads 
-# for refAlleleFreq this is keeping all SNPs with a REF_FRQ of less than or equal to 0.999. Which seems high but I have so many SNPs where the REF_FRQ is almost 1... 
+# min coverage per sample of 5 reads, seems pretty low but there are inn samples that I'm sure have few reads 
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ between 0.05 and 0.95
+# looks like if I use refAlleleFreq = something over .05 it will give a significant result for the Hampel method... 
 
 Gprime_df_filt <-
     filterSNPs(
         SNPset = Gprime_df,
-        refAlleleFreq = 0.001,
-        minTotalDepth = 6,
+        refAlleleFreq = 0.05,
+        minTotalDepth = 10,
         maxTotalDepth = 200, 
-        minSampleDepth = 4,
+        minSampleDepth = 5,
         verbose = TRUE
     )
 
@@ -168,9 +168,11 @@ Gprime_df_filt <-
 #### Running G prime analysis
 
 ```{r}
+
+# use Hampel method for outlier filter 
 Gprime_df_filt_prime <- runGprimeAnalysis(Gprime_df_filt,
     windowSize = 2000,
-    outlierFilter = "deltaSNP",
+    outlierFilter = "Hampel",
     filterThreshold = 0.1)
 
 # there are many errors with this... 
@@ -183,7 +185,7 @@ plotGprimeDist(SNPset = Gprime_df_filt_prime, outlierFilter = "Hampel")
 # deltaSNP method 
 plotGprimeDist(SNPset = Gprime_df_filt_prime, outlierFilter = "deltaSNP", filterThreshold = 0.1)
 
-# both of these plots sort of look like a log normal distribution
+# The hampel method looks most like a log normal distribution
 
 # plot number of SNPs in a window
 p1 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "nSNPs")
@@ -192,18 +194,87 @@ p1
 # plot the G' statistic
 # try to plot the thereshold can pass the FDR (q) of 0.01.
 p3 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "Gprime", plotThreshold = TRUE, q = 0.01)
-# nope, nothing can pass the threshold of 0.01, actually it has to get to 0.7 to draw the line which is pretty bad 
+
 p3
 
-# nothing significant for this statistic 
+
 
 ```
 
 
+```{r}
+ggplot(Gprime_df_filt_prime, aes(x=POS, y=negLog10Pval))+
+  geom_point()+
+  theme_classic() + xlab("Position") + ylab("Negative log10 p-value")
+```
 
 
+#### Original Filtering and running 
+```{r}
+# filtering how I originally did it, which ended with no significant peaks 
+# min sample depth 4
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ between 0.001 and 0.999
 
+Gprime_df_filt2 <-
+    filterSNPs(
+        SNPset = Gprime_df,
+        refAlleleFreq = 0.001,
+        minTotalDepth = 6,
+        maxTotalDepth = 200, 
+        minSampleDepth = 4,
+        verbose = TRUE
+    )
 
+# uses deltaSNP method for outlier filter
 
+Gprime_df_filt_prime2 <- runGprimeAnalysis(Gprime_df_filt2,
+    windowSize = 2000,
+    outlierFilter = "deltaSNP",
+    filterThreshold = 0.1)
+
+# Hampel method
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "Hampel")
+# deltaSNP method 
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "deltaSNP", filterThreshold = 0.1)
+
+# both plots look like log normal distribution
+
+p4 <- plotQTLStats(SNPset = Gprime_df_filt_prime2, var = "Gprime", plotThreshold = TRUE, q = 0.01)
+p4
+```
+
+#### original filter and running with hampel method
+```{r}
+# filtering how I originally did it, which ended with no significant peaks 
+# min sample depth 4
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ between 0.001 and 0.999
+
+Gprime_df_filt2 <-
+    filterSNPs(
+        SNPset = Gprime_df,
+        refAlleleFreq = 0.001,
+        minTotalDepth = 6,
+        maxTotalDepth = 200, 
+        minSampleDepth = 4,
+        verbose = TRUE
+    )
+
+# uses deltaSNP method for outlier filter
+
+Gprime_df_filt_prime2 <- runGprimeAnalysis(Gprime_df_filt2,
+    windowSize = 2000,
+    outlierFilter = "Hampel",
+    filterThreshold = 0.1)
+
+# Hampel method
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "Hampel")
+# deltaSNP method 
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "deltaSNP", filterThreshold = 0.1)
+
+# both plots look like log normal distribution
+
+p4 <- plotQTLStats(SNPset = Gprime_df_filt_prime2, var = "Gprime", plotThreshold = TRUE, q = 0.01)
+p4
+```
 
 

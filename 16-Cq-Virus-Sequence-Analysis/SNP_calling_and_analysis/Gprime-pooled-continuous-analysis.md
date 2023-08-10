@@ -260,47 +260,49 @@ the numbers of SNPs filtered in each step.”
 
 ``` r
 # use the filtering snps 
-# minimum depth should probably be 6? This is total so both samples 
+# minimum depth should probably be 10? This is total so both samples, basically same as min sample depth
 # max depth of 200? not sure 
 # don't have GATK score so not filtering by that 
-# min coverage per sample of 4 reads, seems pretty low but there are inn samples that I'm sure have few reads 
-# for refAlleleFreq this is keeping all SNPs with a REF_FRQ of less than or equal to 0.999. Which seems high but I have so many SNPs where the REF_FRQ is almost 1... 
+# min coverage per sample of 5 reads, seems pretty low but there are inn samples that I'm sure have few reads 
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ between 0.05 and 0.95
+# looks like if I use refAlleleFreq = something over .05 it will give a significant result for the Hampel method... 
 
 Gprime_df_filt <-
     filterSNPs(
         SNPset = Gprime_df,
-        refAlleleFreq = 0.001,
-        minTotalDepth = 6,
+        refAlleleFreq = 0.05,
+        minTotalDepth = 10,
         maxTotalDepth = 200, 
-        minSampleDepth = 4,
+        minSampleDepth = 5,
         verbose = TRUE
     )
 ```
 
-    Filtering by reference allele frequency: 0.001 <= REF_FRQ <= 0.999
+    Filtering by reference allele frequency: 0.05 <= REF_FRQ <= 0.95
 
-    ...Filtered 17 SNPs
+    ...Filtered 9642 SNPs
 
-    Filtering by total sample read depth: Total DP >= 6
+    Filtering by total sample read depth: Total DP >= 10
 
-    ...Filtered 5 SNPs
+    ...Filtered 24 SNPs
 
     Filtering by total sample read depth: Total DP <= 200
 
-    ...Filtered 8 SNPs
+    ...Filtered 2 SNPs
 
-    Filtering by per sample read depth: DP >= 4
+    Filtering by per sample read depth: DP >= 5
 
-    ...Filtered 86 SNPs
+    ...Filtered 55 SNPs
 
-    Original SNP number: 10437, Filtered: 116, Remaining: 10321
+    Original SNP number: 10437, Filtered: 9723, Remaining: 714
 
 #### Running G prime analysis
 
 ``` r
+# use Hampel method for outlier filter 
 Gprime_df_filt_prime <- runGprimeAnalysis(Gprime_df_filt,
     windowSize = 2000,
-    outlierFilter = "deltaSNP",
+    outlierFilter = "Hampel",
     filterThreshold = 0.1)
 ```
 
@@ -310,16 +312,16 @@ Gprime_df_filt_prime <- runGprimeAnalysis(Gprime_df_filt,
 
     Calculating G and G' statistics...
 
-    Warning: There were 11 warnings in `dplyr::mutate()`.
+    Warning: There were 36 warnings in `dplyr::mutate()`.
     The first warning was:
     ℹ In argument: `Gprime = tricubeStat(POS = POS, Stat = G, windowSize =
       windowSize, ...)`.
     ℹ In group 1: `CHROM = NC_040699.1`.
     Caused by warning in `lfproc()`:
     ! procv: no points with non-zero weight
-    ℹ Run `dplyr::last_dplyr_warnings()` to see the 10 remaining warnings.
+    ℹ Run `dplyr::last_dplyr_warnings()` to see the 35 remaining warnings.
 
-    Using deltaSNP-index to filter outlier regions with a threshold of 0.1
+    Using Hampel's rule to filter outlier regions
 
     Estimating the mode of a trimmed G prime set using the 'modeest' package...
 
@@ -356,18 +358,13 @@ plotGprimeDist(SNPset = Gprime_df_filt_prime, outlierFilter = "Hampel")
 plotGprimeDist(SNPset = Gprime_df_filt_prime, outlierFilter = "deltaSNP", filterThreshold = 0.1)
 ```
 
-    Warning: encountered a tie, and the difference between minimal and 
-                       maximal value is > length('x') * 'tie.limit'
-    the distribution could be multimodal
-
     Warning: Removed 2 rows containing missing values (`geom_bar()`).
-
-    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+    Removed 2 rows containing missing values (`geom_bar()`).
 
 ![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-7-2.png)
 
 ``` r
-# both of these plots sort of look like a log normal distribution
+# The hampel method looks most like a log normal distribution
 
 # plot number of SNPs in a window
 p1 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "nSNPs")
@@ -380,19 +377,250 @@ p1
 # plot the G' statistic
 # try to plot the thereshold can pass the FDR (q) of 0.01.
 p3 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "Gprime", plotThreshold = TRUE, q = 0.01)
-```
 
-    Warning in plotQTLStats(SNPset = Gprime_df_filt_prime, var = "Gprime",
-    plotThreshold = TRUE, : The q threshold is too low. No threshold line will be
-    drawn
-
-``` r
-# nope, nothing can pass the threshold of 0.01, actually it has to get to 0.7 to draw the line which is pretty bad 
 p3
 ```
 
 ![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-7-4.png)
 
 ``` r
-# nothing significant for this statistic 
+ggplot(Gprime_df_filt_prime, aes(x=POS, y=negLog10Pval))+
+  geom_point()+
+  theme_classic() + xlab("Position") + ylab("Negative log10 p-value")
 ```
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-8-1.png)
+
+#### Original Filtering and running
+
+``` r
+# filtering how I originally did it, which ended with no significant peaks 
+# min sample depth 4
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ between 0.001 and 0.999
+
+Gprime_df_filt2 <-
+    filterSNPs(
+        SNPset = Gprime_df,
+        refAlleleFreq = 0.001,
+        minTotalDepth = 6,
+        maxTotalDepth = 200, 
+        minSampleDepth = 4,
+        verbose = TRUE
+    )
+```
+
+    Filtering by reference allele frequency: 0.001 <= REF_FRQ <= 0.999
+
+    ...Filtered 17 SNPs
+
+    Filtering by total sample read depth: Total DP >= 6
+
+    ...Filtered 5 SNPs
+
+    Filtering by total sample read depth: Total DP <= 200
+
+    ...Filtered 8 SNPs
+
+    Filtering by per sample read depth: DP >= 4
+
+    ...Filtered 86 SNPs
+
+    Original SNP number: 10437, Filtered: 116, Remaining: 10321
+
+``` r
+# uses deltaSNP method for outlier filter
+
+Gprime_df_filt_prime2 <- runGprimeAnalysis(Gprime_df_filt2,
+    windowSize = 2000,
+    outlierFilter = "deltaSNP",
+    filterThreshold = 0.1)
+```
+
+    Counting SNPs in each window...
+
+    Calculating tricube smoothed delta SNP index...
+
+    Calculating G and G' statistics...
+
+    Warning: There were 11 warnings in `dplyr::mutate()`.
+    The first warning was:
+    ℹ In argument: `Gprime = tricubeStat(POS = POS, Stat = G, windowSize =
+      windowSize, ...)`.
+    ℹ In group 1: `CHROM = NC_040699.1`.
+    Caused by warning in `lfproc()`:
+    ! procv: no points with non-zero weight
+    ℹ Run `dplyr::last_dplyr_warnings()` to see the 10 remaining warnings.
+
+    Using deltaSNP-index to filter outlier regions with a threshold of 0.1
+
+    Estimating the mode of a trimmed G prime set using the 'modeest' package...
+
+    Calculating p-values...
+
+    Warning: There was 1 warning in `dplyr::mutate()`.
+    ℹ In argument: `pvalue = getPvals(...)`.
+    Caused by warning:
+    ! encountered a tie, and the difference between minimal and 
+                       maximal value is > length('x') * 'tie.limit'
+    the distribution could be multimodal
+
+``` r
+# Hampel method
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "Hampel")
+```
+
+    Warning: encountered a tie, and the difference between minimal and 
+                       maximal value is > length('x') * 'tie.limit'
+    the distribution could be multimodal
+
+    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+    Removed 2 rows containing missing values (`geom_bar()`).
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-9-1.png)
+
+``` r
+# deltaSNP method 
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "deltaSNP", filterThreshold = 0.1)
+```
+
+    Warning: encountered a tie, and the difference between minimal and 
+                       maximal value is > length('x') * 'tie.limit'
+    the distribution could be multimodal
+
+    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
+    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-9-2.png)
+
+``` r
+# both plots look like log normal distribution
+
+p4 <- plotQTLStats(SNPset = Gprime_df_filt_prime2, var = "Gprime", plotThreshold = TRUE, q = 0.01)
+```
+
+    Warning in plotQTLStats(SNPset = Gprime_df_filt_prime2, var = "Gprime", : The q
+    threshold is too low. No threshold line will be drawn
+
+``` r
+p4
+```
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-9-3.png)
+
+#### original filter and running with hampel method
+
+``` r
+# filtering how I originally did it, which ended with no significant peaks 
+# min sample depth 4
+# for refAlleleFreq this is keeping all SNPs with a REF_FRQ between 0.001 and 0.999
+
+Gprime_df_filt2 <-
+    filterSNPs(
+        SNPset = Gprime_df,
+        refAlleleFreq = 0.001,
+        minTotalDepth = 6,
+        maxTotalDepth = 200, 
+        minSampleDepth = 4,
+        verbose = TRUE
+    )
+```
+
+    Filtering by reference allele frequency: 0.001 <= REF_FRQ <= 0.999
+
+    ...Filtered 17 SNPs
+
+    Filtering by total sample read depth: Total DP >= 6
+
+    ...Filtered 5 SNPs
+
+    Filtering by total sample read depth: Total DP <= 200
+
+    ...Filtered 8 SNPs
+
+    Filtering by per sample read depth: DP >= 4
+
+    ...Filtered 86 SNPs
+
+    Original SNP number: 10437, Filtered: 116, Remaining: 10321
+
+``` r
+# uses deltaSNP method for outlier filter
+
+Gprime_df_filt_prime2 <- runGprimeAnalysis(Gprime_df_filt2,
+    windowSize = 2000,
+    outlierFilter = "Hampel",
+    filterThreshold = 0.1)
+```
+
+    Counting SNPs in each window...
+
+    Calculating tricube smoothed delta SNP index...
+
+    Calculating G and G' statistics...
+
+    Warning: There were 11 warnings in `dplyr::mutate()`.
+    The first warning was:
+    ℹ In argument: `Gprime = tricubeStat(POS = POS, Stat = G, windowSize =
+      windowSize, ...)`.
+    ℹ In group 1: `CHROM = NC_040699.1`.
+    Caused by warning in `lfproc()`:
+    ! procv: no points with non-zero weight
+    ℹ Run `dplyr::last_dplyr_warnings()` to see the 10 remaining warnings.
+
+    Using Hampel's rule to filter outlier regions
+
+    Estimating the mode of a trimmed G prime set using the 'modeest' package...
+
+    Calculating p-values...
+
+    Warning: There was 1 warning in `dplyr::mutate()`.
+    ℹ In argument: `pvalue = getPvals(...)`.
+    Caused by warning:
+    ! encountered a tie, and the difference between minimal and 
+                       maximal value is > length('x') * 'tie.limit'
+    the distribution could be multimodal
+
+``` r
+# Hampel method
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "Hampel")
+```
+
+    Warning: encountered a tie, and the difference between minimal and 
+                       maximal value is > length('x') * 'tie.limit'
+    the distribution could be multimodal
+
+    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+    Removed 2 rows containing missing values (`geom_bar()`).
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-10-1.png)
+
+``` r
+# deltaSNP method 
+plotGprimeDist(SNPset = Gprime_df_filt_prime2, outlierFilter = "deltaSNP", filterThreshold = 0.1)
+```
+
+    Warning: encountered a tie, and the difference between minimal and 
+                       maximal value is > length('x') * 'tie.limit'
+    the distribution could be multimodal
+
+    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
+    Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-10-2.png)
+
+``` r
+# both plots look like log normal distribution
+
+p4 <- plotQTLStats(SNPset = Gprime_df_filt_prime2, var = "Gprime", plotThreshold = TRUE, q = 0.01)
+```
+
+    Warning in plotQTLStats(SNPset = Gprime_df_filt_prime2, var = "Gprime", : The q
+    threshold is too low. No threshold line will be drawn
+
+``` r
+p4
+```
+
+![](Gprime-pooled-continuous-analysis_files/figure-commonmark/unnamed-chunk-10-3.png)
