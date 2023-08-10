@@ -348,6 +348,13 @@ DiNV_SNPs_all[DiNV_SNPs_all$POS %in% found.snps.all,]
 ```
 
 
+#### Trying analyses using the filtered SNP set from Gprime analysis
+```{r}
+Gprime_filtered_SNPs <- read.csv("~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/Gprime_df_filt.csv")
+
+
+
+```
 
 
 
