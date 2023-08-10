@@ -19,6 +19,7 @@ library(SNPfiltR)
 library(QTLseqr)
 library(ggplot2)
 library(vcfR)
+library(dplyr)
 ```
 
 #### Load in dataset
@@ -197,7 +198,14 @@ p3 <- plotQTLStats(SNPset = Gprime_df_filt_prime, var = "Gprime", plotThreshold 
 
 p3
 
-
+# neg log ten pvalue
+QTLplots <- plotQTLStats(
+    SNPset = Gprime_df_filt_prime, 
+    var = "negLog10Pval", 
+    plotThreshold = TRUE, 
+    q = 0.01, 
+    )
+QTLplots
 
 ```
 
@@ -387,11 +395,79 @@ p4 <- plotQTLStats(SNPset = Gprime_df_filt_prime4, var = "Gprime", plotThreshold
 p4
 ```
 
+#### Do the SNPs filtered with original filtering (714) overlap with the 555 from the filtering after removing single read SNPs?
+
+```{r}
+# vector of positions of SNPs from original filtering, 714
+positions_original <- Gprime_df_filt_prime$POS
+
+# how many of these are in the 555 from the second filtering?
+table(positions_original %in% prime_df_filt3$POS)
+# ok so there are exactly 555 that match and it's the 159 that are lost, which are probably the singletons
+
+# make a vector of the 159 that don't match
+```
+
+#### Do those 159 SNPs filtered out matter?
+
+```{r}
+# what are the 159 not shared snps
+not_shared <- anti_join(Gprime_df_filt_prime, prime_df_filt3, by = "POS")
+# make a vector of the positions
+not_shared_pos <- not_shared$POS
+
+# get dataset of all significant SNPs for original filtering (714)
+QTL <- getSigRegions(SNPset = Gprime_df_filt_prime, alpha = 0.01)
+# this is a list of 8, so it says there are 8 QTLs... 
+# make these all into dataframes
+QTL1 <- QTL[[1]]
+QTL2 <- QTL[[2]]
+QTL3 <- QTL[[3]]
+QTL4 <- QTL[[4]]
+QTL5 <- QTL[[5]]
+QTL6 <- QTL[[6]]
+QTL7 <- QTL[[7]]
+QTL8 <- QTL[[8]]
+# combine these all into 1 for now 
+
+QTLS <- rbind(QTL1, QTL2, QTL3, QTL4, QTL5, QTL6, QTL7, QTL8)
+
+# are there not shared snp positions in the QTLs of the originial filtering (714)
+table(not_shared_pos %in% QTLS$POS)
+# yes there are 34 positions (SNPs)
+
+# what are those 34 SNPS?
+not_shared_sig_snps <- not_shared_pos[not_shared_pos %in% QTLS$POS]
+# make them into a df 
+not_shared_sign_SNPS <- Gprime_df_filt_prime[Gprime_df_filt_prime$POS %in% not_shared_sig_snps,]
+# look at the dataset 
+
+# ok after looking at this dataset, I can tell that the filtering out of rows with 1 read was not what I should do. 
+not_shared_sign_SNPS[5,2:10]
+# see here one sample has all alternate and no reference, and the other sample has almost all ref and only 1 read for alternate. This is the exact kind of sample I want to keep 
+
+# however there are also samples like this:
+not_shared_sign_SNPS[7,2:10]
+# where both samples are mostly ref 
+# I am not sure why it kept this SNP or it came out as significant because the two samples basically are the same here 
+# I need to figure out a way to remove these kind of SNPs, where one allele has only 1 read, but only if it basically is showing the same pattern as the other sample. 
+```
+
+
+
+```{r}
+
+```
+
+
+
+
+
 
 
 save filtered dataset from here
 ```{r}
-# write.csv(Gprime_df_filt, "~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/Gprime_df_filt.csv")
+#write.csv(Gprime_df_filt_prime4, "~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/Gprime_df_filt.csv")
 
 ```
 
