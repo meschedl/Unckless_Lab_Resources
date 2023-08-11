@@ -41,6 +41,13 @@ ref <- as.data.frame(extract.gt(DiNV_vcf, element = "RO"))
 # AO is alternate allele
 # because I removed all SNPs that are more than biallelic, there should only be 1 alternate allele
 alt <- as.data.frame(extract.gt(DiNV_vcf, element = "AO"))
+# ref and alt are just SNPs and the number of reads
+# But I want to also add other information with these, like what are the actual bases for the alleles, and have a column for the position 
+# that information is in the fix portion of the vcf file, which is hard to look at 
+# check what it looks like by naming it and looking at it 
+x<-DiNV_vcf@fix
+# after looking at x, I can see that the columns I want are 1: chromosome, 2: position, 4: reference allele, and 5: alternate allele
+# subset out those columns 
 DiNV_SNPs<-as.data.frame(DiNV_vcf@fix[,c(1,2,4,5)])
 # add the read counts supporting the reference and alternate alleles for each of the two sequenced strains as their own columns
 DiNV_SNPs$inn.ref<-ref$INN
@@ -51,6 +58,13 @@ DiNV_SNPs$vir.alt<-alt$VIR
 # there might be some missing data in this file, which would come out as rows where either inn or vir have an NA for alleles 
 # remove any rows that have an NA 
 DiNV_SNPs <- na.omit(DiNV_SNPs)
+
+# additionally, the position needs to be read as a number by R
+# turn it into numeric
+head(DiNV_SNPs) # check numbers before
+DiNV_SNPs$POS <- as.numeric(DiNV_SNPs$POS)
+head(DiNV_SNPs) # check to make sure numbers stay the same, sometimes as.numeric can change numbers
+
 ```
 
 #### Prepare SNP dataset for Gprime format. Based off of QTLSeqr program.

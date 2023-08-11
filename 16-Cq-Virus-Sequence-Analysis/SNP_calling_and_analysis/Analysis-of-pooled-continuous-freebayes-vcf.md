@@ -40,95 +40,6 @@ library(units)
 
     ## udunits database from /Library/Frameworks/R.framework/Versions/4.2/Resources/library/units/share/udunits/udunits2.xml
 
-#### Read in vcf, filter it, and generate a dataframe that includes the position, allele counts, and bases for each SNP separated by reference and alternate allele. Only considering biallelic SNPs here.
-
-``` r
-# read in vcf
-DiNV_vcf <- read.vcfR("~/Desktop/KU/sequences/16Cq-DiNV-Test/freebayes/continuous-DiNV.vcf")
-```
-
-    ## Scanning file to determine attributes.
-    ## File attributes:
-    ##   meta lines: 59
-    ##   header_line: 60
-    ##   variant count: 13116
-    ##   column count: 11
-    ## Meta line 59 read in.
-    ## All meta lines processed.
-    ## gt matrix initialized.
-    ## Character matrix gt created.
-    ##   Character matrix gt rows: 13116
-    ##   Character matrix gt cols: 11
-    ##   skip: 0
-    ##   nrows: 13116
-    ##   row_num: 0
-    ## Processed variant 1000Processed variant 2000Processed variant 3000Processed variant 4000Processed variant 5000Processed variant 6000Processed variant 7000Processed variant 8000Processed variant 9000Processed variant 10000Processed variant 11000Processed variant 12000Processed variant 13000Processed variant: 13116
-    ## All variants processed
-
-``` r
-# filter vcf to remove sites (SNPs) with more than two alleles present (from SNPfiltR package)
-DiNV_vcf <- filter_biallelic(DiNV_vcf)
-```
-
-    ## 2668 SNPs, 0.203% of all input SNPs, contained more than 2 alleles, and were removed from the VCF
-
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
-
-``` r
-# extract the number of reads supporting the reference allele for each sample at each SNP 
-# DiNV_vcf has a column containing RO or reference allele information
-# the extract.gt function will subset from that column
-# the same column contains a lot of other information separated by : and , which is why a specific function is needed 
-ref <- as.data.frame(extract.gt(DiNV_vcf, element = "RO"))
-# extract the number of reads supporting the alternate allele for each sample at each SNP 
-# AO is alternate allele
-# because I removed all SNPs that are more than biallelic, there should only be 1 alternate allele
-alt <- as.data.frame(extract.gt(DiNV_vcf, element = "AO"))
-
-# ref and alt are just SNPs and the number of reads
-# But I want to also add other information with these, like what are the actual bases for the alleles, and have a column for the position 
-# that information is in the fix portion of the vcf file, which is hard to look at 
-# check what it looks like by naming it and looking at it 
-x<-DiNV_vcf@fix
-# after looking at x, I can see that the columns I want are 1: chromosome, 2: position, 4: reference allele, and 5: alternate allele
-# subset out those columns 
-DiNV_SNPs<-as.data.frame(DiNV_vcf@fix[,c(1,2,4,5)])
-# add the read counts supporting the reference and alternate alleles for each of the two sequenced strains as their own columns
-DiNV_SNPs$inn.ref<-ref$INN
-DiNV_SNPs$inn.alt<-alt$INN
-DiNV_SNPs$vir.ref<-ref$VIR
-DiNV_SNPs$vir.alt<-alt$VIR
-
-# there might be some missing data in this file, which would come out as rows where either inn or vir have an NA for alleles 
-# remove any rows that have an NA 
-DiNV_SNPs <- na.omit(DiNV_SNPs)
-
-# additionally, the position needs to be read as a number by R
-# turn it into numeric
-head(DiNV_SNPs) # check numbers before
-```
-
-    ##         CHROM POS REF ALT inn.ref inn.alt vir.ref vir.alt
-    ## 1 NC_040699.1  43   A   C       8       0      47       1
-    ## 2 NC_040699.1  47   T   G       9       0      55       1
-    ## 3 NC_040699.1  66   T   G      10       0      80       1
-    ## 4 NC_040699.1  70   T   A      11       0      79       2
-    ## 5 NC_040699.1  79   A   C      12       0      90       1
-    ## 6 NC_040699.1  84   T   A      13       0      93       1
-
-``` r
-DiNV_SNPs$POS <- as.numeric(DiNV_SNPs$POS)
-head(DiNV_SNPs) # check to make sure numbers stay the same, sometimes as.numeric can change numbers
-```
-
-    ##         CHROM POS REF ALT inn.ref inn.alt vir.ref vir.alt
-    ## 1 NC_040699.1  43   A   C       8       0      47       1
-    ## 2 NC_040699.1  47   T   G       9       0      55       1
-    ## 3 NC_040699.1  66   T   G      10       0      80       1
-    ## 4 NC_040699.1  70   T   A      11       0      79       2
-    ## 5 NC_040699.1  79   A   C      12       0      90       1
-    ## 6 NC_040699.1  84   T   A      13       0      93       1
-
 #### Read in Filtered dataframe from G prime analysis \[LINK\] to see how it was filtered
 
 ``` r
@@ -210,7 +121,7 @@ for (i in 1:nrow(filtered_SNPs)){
 hist(pval, breaks = 50)
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 # add in the pval vector to the DiNV_SNPs and name it 
@@ -247,7 +158,7 @@ ggplot(filtered_SNPs, aes(x=POS, y=neg_log_pval))+
   theme_classic() + xlab("Position") + ylab("Negative log10 p-value")
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 # which SNPs have a p-value less than the multiple testing threshold
@@ -337,7 +248,7 @@ hist(freq.in, breaks=100, xlab = "allele frequency divergence from reference gen
 abline(v=mean(freq.in), col="red")
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 # plot a histogram of the allele freq divergence from the ref genome for virilis with mean value highlighted by vertical red line
@@ -345,7 +256,7 @@ hist(freq.vir, breaks=100, xlab = "allele frequency divergence from reference ge
 abline(v=mean(freq.vir), col="red")
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
 Interesting here that many more SNPs are fixed alternate in virilis
 cells than in innubila cells. I’m not sure what to make of this. 13 SNPs
@@ -368,7 +279,7 @@ ggplot(filtered_SNPs, aes(x=POS, y=neg_log_pval))+
   theme_classic() + xlab("Position") + ylab("Negative log10 p-value")
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Most fixed SNPs are above the significance line, which makes sense. But
 there does not seem to be a pattern to them. And some of the highest
@@ -439,7 +350,7 @@ ggplot(data=top_25_snps_tidy, aes(x=allele, y=count, fill = cell_type)) +
   geom_bar(stat="identity", position=position_dodge()) + scale_y_continuous(limits = c(0, 150))+ facet_wrap(~POS, nrow = 5) + theme_bw() + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + geom_text(aes(label=count), position=position_dodge(width=0.8), vjust=-0.35)
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 Most of the most significant SNPs are where the dv-1 virus has mostly
 fixed alternate reads, and the innubila virus has mostly fixed reference
@@ -461,7 +372,7 @@ ggVennDiagram(c, category.names = c("Gprime QTL SNPs", "Fisher Exact Test SNPs")
  theme(legend.position = "none")
 ```
 
-![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 #### What are the overlapping SNPs?
 
