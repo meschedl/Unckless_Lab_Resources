@@ -430,3 +430,82 @@ ggplot(subset_filtered_SNPs, aes(x=total_SNP_depth, y=neg_log_pval))+
 ```
 
 ![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+#### Look at SNP depth and pvalue, but for the different samples separately
+
+``` r
+# snp depth for Dinn
+# empty vector for adding the depth
+inn_SNP_depth <- c()
+
+# looks over adding each count in each row up, then adding them to the depth vector 
+for (i in 1:nrow(subset_filtered_SNPs)){
+  depth <- subset_filtered_SNPs$inn.ref[i] + subset_filtered_SNPs$inn.alt[i] 
+  
+  inn_SNP_depth[i] <- depth
+}
+
+# check to see if works on random snp
+inn_SNP_depth[35]
+```
+
+    ## [1] 19
+
+``` r
+# check in df
+subset_filtered_SNPs$inn.ref[35] + subset_filtered_SNPs$inn.alt[35]
+```
+
+    ## [1] 19
+
+``` r
+# same number
+# add to df
+subset_filtered_SNPs$Dinn_SNP_depth <- inn_SNP_depth
+
+# snp depth for Dvir
+# empty vector for adding the depth
+vir_SNP_depth <- c()
+
+# looks over adding each count in each row up, then adding them to the depth vector 
+for (i in 1:nrow(subset_filtered_SNPs)){
+  depth <- subset_filtered_SNPs$vir.ref[i] + subset_filtered_SNPs$vir.alt[i] 
+  
+  vir_SNP_depth[i] <- depth
+}
+
+# check to see if works on random snp
+vir_SNP_depth[135]
+```
+
+    ## [1] 40
+
+``` r
+# check in df
+subset_filtered_SNPs$vir.ref[135] + subset_filtered_SNPs$vir.alt[135]
+```
+
+    ## [1] 40
+
+``` r
+# same number
+# add to df
+subset_filtered_SNPs$Dvir_SNP_depth <- vir_SNP_depth
+
+
+# plot scatter plot of innubila SNP depth and count 
+ggplot(subset_filtered_SNPs, aes(x=Dinn_SNP_depth, y=neg_log_pval))+
+  geom_point()+
+  theme_classic() + xlab("Dinn SNP depth") + ylab("Negative log10 p-value")
+```
+
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+``` r
+# plot scatter plot of virilis SNP depth and count 
+ggplot(subset_filtered_SNPs, aes(x=Dvir_SNP_depth, y=neg_log_pval))+
+  geom_point()+
+  theme_classic() + xlab("Dvir SNP depth") + ylab("Negative log10 p-value")
+```
+
+![](Analysis-of-pooled-continuous-freebayes-vcf_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
