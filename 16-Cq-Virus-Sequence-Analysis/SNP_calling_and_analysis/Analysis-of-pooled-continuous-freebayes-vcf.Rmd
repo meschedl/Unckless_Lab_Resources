@@ -290,7 +290,37 @@ shared_SNPS <- Gprime_SNPS[Gprime_SNPS$POS %in% Fisher_SNP_POS,]
 
 Go through each of these SNPs, find their locations and if they change the amino acid codon. 
 
+### Subset FET p<0.001 and plot -log10(Pval) against total count (Ref+Alt Dv1 + Ref + Alt Dinn3.0)
+```{r}
+# subset p-value less than 0.001
+subset_filtered_SNPs <- filtered_SNPs[filtered_SNPs$fisher_pval < 0.001, ]
 
+# add in a column of total read count to this subset 
+
+# empty vector for adding the depth
+SNP_depth <- c()
+
+# looks over adding each count in each row up, then adding them to the depth vector 
+for (i in 1:nrow(subset_filtered_SNPs)){
+  depth <- subset_filtered_SNPs$inn.ref[i] + subset_filtered_SNPs$inn.alt[i] + subset_filtered_SNPs$vir.ref[i] + subset_filtered_SNPs$vir.alt[i]
+  
+  SNP_depth[i] <- depth
+}
+
+# check to see if works on random snp
+SNP_depth[23]
+# check in df
+subset_filtered_SNPs$inn.ref[23] + subset_filtered_SNPs$inn.alt[23] + subset_filtered_SNPs$vir.ref[23] + subset_filtered_SNPs$vir.alt[23]
+# same number 
+
+# add SNP depth to the subset_filtered_SNPs df 
+subset_filtered_SNPs$total_SNP_depth <- SNP_depth
+
+# plot scatter plot of SNP depth and count? 
+ggplot(subset_filtered_SNPs, aes(x=total_SNP_depth, y=neg_log_pval))+
+  geom_point()+
+  theme_classic() + xlab("total SNP depth") + ylab("Negative log10 p-value")
+```
 
 
 
