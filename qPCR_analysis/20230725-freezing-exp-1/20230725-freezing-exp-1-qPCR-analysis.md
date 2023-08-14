@@ -121,8 +121,8 @@ variances_df <- as.data.frame.table(variances)
 variances_df_sep <- variances_df %>% separate(Var1, c('sample_ID', 'primer', 'day_frozen', "treatment"))
 ```
 
-    ## Warning: Expected 4 pieces. Additional pieces discarded in 24 rows [5, 6, 13,
-    ## 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 31, 32, 33, 34, 35, 36, ...].
+    ## Warning: Expected 4 pieces. Additional pieces discarded in 24 rows [5, 6, 13, 14, 15,
+    ## 16, 17, 18, 19, 20, 21, 22, 23, 24, 31, 32, 33, 34, 35, 36, ...].
 
 ``` r
 # check dataframe 

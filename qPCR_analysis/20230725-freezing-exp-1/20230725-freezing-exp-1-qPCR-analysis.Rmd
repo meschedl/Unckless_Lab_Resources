@@ -4,6 +4,10 @@ output: github_document
 date: '2023-07-26'
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
 Load packages 
 ```{r}
 library(ggplot2)
