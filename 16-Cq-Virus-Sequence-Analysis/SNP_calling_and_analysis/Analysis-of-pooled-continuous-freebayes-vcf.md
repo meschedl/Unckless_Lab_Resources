@@ -366,9 +366,9 @@ Gprime_SNP_POS <- Gprime_SNPS$POS
 Fisher_SNP_POS <- sig.snps$POS
 
 # combine those vectors into a list
-c <- list(Gprime_SNP_POS, Fisher_SNP_POS)
+c <- list( Fisher_SNP_POS, Gprime_SNP_POS)
 # use function to make a venn diagram from that list
-ggVennDiagram(c, category.names = c("Gprime QTL SNPs", "Fisher Exact Test SNPs"), label = "count") + scale_fill_gradient(low = "lavenderblush1", high = "lightcyan1") +
+ggVennDiagram(c, category.names = c( "Fisher Exact Test SNPs", "Gprime QTL SNPs"), label = "count") + scale_fill_gradient(low = "lavenderblush1", high = "lightcyan1") +
  theme(legend.position = "none")
 ```
 
