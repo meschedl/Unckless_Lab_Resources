@@ -34,7 +34,7 @@
   - You want the piece to take up ~1/3 to 1/4 of the space inside the vial if you are looking directly down into it
 - Cut 1 mushroom piece for each vial
 - If you have additional vials that you are saving for larvae to grow into adults after transferring, cut 1 new mushroom piece for each as well
-- Get a wheel of cotton rolls from the box on the shelves above the stock flies
+- Get a container of autoclaved cotton rolls (usually on the shelf in the fly room), cotton rolls are autoclaved so that they are cleaned from their manufacturing location
 - For each new vial add 1 cotton roll (push down to be half in the food) and 1 mushroom piece (push down into the food the same way)
 - Cover up the food with the press-n-seal again
 - Seal the extra mushroom pieces in a pouch of press-n-seal to protect from escaped flies
@@ -73,5 +73,5 @@
 ### Other Notes
 - _D. innubila_ do not like CO2, if you have to knock them out to sex them, do not expect them to reproduce well for another 2 days after that
 - They only lay well closely confined and crowded in the small mating cages
-- They prefer agar plates made with apple juice, mushroom broth, and sugar
-- They do not like yeast paste 
+- They prefer agar plates made with apple juice, mushroom broth, and sugar, or just apple juice and sugar
+- They do not have a preference for yeast paste 
