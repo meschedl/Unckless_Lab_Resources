@@ -92,7 +92,7 @@
 - Each reaction contains (in order):
   - 2ul molecular grade water
   - 10ul 2X sgRNA reaction mix
-  - 1ul of 1uM primer
+  - 5ul of 1uM primer
   - 1ul 0.1M DTT
   - 2ul sgRNA enzyme mix
 - Pipette mix tubes with 10ul
