@@ -80,11 +80,11 @@ Read in raw data
 
 ``` r
 #read the file from csv
-df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230901-inn-16Cq-injt/20230901-half-sheet.csv")
+df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230901-inn-16Cq-injt/20230901-inject-infect-sheet.csv")
 
 # only want columns with vial, treatment, and daily mortality
 # remove columns not needed for each subset
-df<-df[,c(1,7,10:20)]
+df<-df[,c(1,7,10:22)]
 ```
 
 ### Convert each of these dataframes to long and tidy format using function defined above
@@ -103,7 +103,7 @@ ggsurvplot(df_fit,
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet"))
+          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation")
 ```
 
 ![](20230901-16Cq-innubila-injection-1_files/figure-commonmark/unnamed-chunk-5-1.png)

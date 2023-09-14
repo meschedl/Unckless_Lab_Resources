@@ -101,7 +101,7 @@ ggsurvplot(df_fit,
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet"))
+          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation")
 ```
 
 
