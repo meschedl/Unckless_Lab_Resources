@@ -78,11 +78,11 @@ return(results)
 Read in raw data
 ```{r}
 #read the file from csv
-df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230901-inn-16Cq-injt/20230901-half-sheet.csv")
+df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230901-inn-16Cq-injt/20230901-inject-infect-sheet.csv")
 
 # only want columns with vial, treatment, and daily mortality
 # remove columns not needed for each subset
-df<-df[,c(1,7,10:20)]
+df<-df[,c(1,7,10:22)]
 ```
 
 
