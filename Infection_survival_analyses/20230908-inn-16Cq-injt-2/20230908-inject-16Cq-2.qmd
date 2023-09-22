@@ -1,6 +1,6 @@
 ---
 title: "20230908-16Cq-injt-2"
-format: html
+format: gfm
 editor: visual
 ---
 

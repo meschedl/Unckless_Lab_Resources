@@ -1,23 +1,26 @@
----
-title: "Combined-16Cq-inject"
-format: gfm
-editor: visual
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7)
-```
+# Combined-16Cq-inject
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
 ```
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
+    Loading required package: ggplot2
 
-```{r}
+    Loading required package: ggpubr
+
+
+    Attaching package: 'survminer'
+
+    The following object is masked from 'package:survival':
+
+        myeloma
+
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
+
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -75,7 +78,7 @@ return(results)
 
 Read in raw data
 
-```{r}
+``` r
 #read the file from csv
 df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/Combined-rep-1-2-16Cq-injt/Combined-2-replicate-dataset.csv")
 
@@ -84,11 +87,11 @@ df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infectio
 
 ### Convert each of these dataframes to long and tidy format using function defined above
 
-```{r}
+``` r
 df.convert<-convert_df(df)
 ```
 
-```{r}
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
@@ -100,3 +103,5 @@ ggsurvplot(df_fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
+
+![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-5-1.png)
