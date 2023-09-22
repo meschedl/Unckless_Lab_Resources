@@ -1,6 +1,6 @@
 ---
-title: "20230901-16Cq-innubila-injection-1"
-format: gfm
+title: "20230908-16Cq-injt-2"
+format: html
 editor: visual
 ---
 
@@ -77,7 +77,7 @@ Read in raw data
 
 ```{r}
 #read the file from csv
-df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230901-inn-16Cq-injt/20230901-inject-infect-sheet.csv")
+df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230908-inn-16Cq-injt-2/20230908-test-nanoject-2-sheet.csv")
 
 # only want columns with vial, treatment, and daily mortality
 # remove columns not needed for each subset
@@ -100,5 +100,5 @@ ggsurvplot(df_fit,
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation")
+          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```

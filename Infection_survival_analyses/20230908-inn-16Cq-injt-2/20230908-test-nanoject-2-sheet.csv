@@ -1,0 +1,8 @@
+vial,species,sex,days_emerged,day_infected,age_infected,treatment,volume,original_N_number,adjusted_N_number,day 1 9/9,day 2 9/10,day 3 9/11,day 4 9/12,day 5 9/13,day 6 9/14,day 7 9/15,day 8 9/16,day 9 9/17,day 10 9/18,day 11 9/19,day 12 9/20,,,notes
+3,D. innubila,male,9/1-9/4,20230908,4-7 days,cell culture medium,27.6nl,9,9,9,9,9,9,9,9,9,9,9,9,9,9,,,
+4,D. innubila,male,9/1-9/4,20230908,4-7 days,cell culture medium,27.6nl,10,10,10,10,10,10,10,10,10,10,10,10,10,10,,,
+5,D. innubila,male,9/1-9/4,20230908,4-7 days,cell culture medium,27.6nl,10,9,9,9,9,9,9,9,9,9,9,9,9,9,,,1 flew away during day 6 transfer
+6,D. innubila,male,9/1-9/4,20230908,4-7 days,16Cq DiNV,27.6nl,10,10,10,10,10,10,10,10,10,8,6,4,2,0,,,
+7,D. innubila,male,9/1-9/4,20230908,4-7 days,16Cq DiNV,27.6nl,10,10,10,10,10,10,10,10,10,9,5,2,0,0,,,
+8,D. innubila,male,9/1-9/4,20230908,4-7 days,16Cq DiNV,27.6nl,10,10,10,10,10,10,10,10,10,10,5,4,3,0,,,
+9,D. innubila,male,9/1-9/4,20230908,4-7 days,16Cq DiNV,27.6nl,10,10,10,9,9,9,9,7,7,7,3,1,1,0,,,
