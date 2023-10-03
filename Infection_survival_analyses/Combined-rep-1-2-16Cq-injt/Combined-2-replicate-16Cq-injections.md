@@ -89,19 +89,125 @@ df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infectio
 
 ``` r
 df.convert<-convert_df(df)
+
+# add in block after conversion 
+# create a new column that is all Bs
+df.convert$block <- "B"
+# make the vials that are 1-7 have A for block (so the samples can be separated out by replicate infection)
+df.convert$block[which(df.convert$vial %in% 1:7)] = "A"
 ```
 
+### Make the survival curve
+
 ``` r
-# change to not have confidence intervals in this one so you can see them 
-df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
+# add in treatment and block in the model 
+df_fit<- survfit(Surv(dead, status) ~ treatment + block, data=df.convert)
+
+
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation") + xlab("Days post injection")
+          palette = c("aquamarine", "lightgreen", "lightcoral", "hotpink")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
 ![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-5-1.png)
+
+### Comparing Models and Looking at Stats
+
+Try to look at the models with Block as a factor, as well as block \*
+treatment as an interaction effect, then see which model fits best using
+AIC.
+
+extractAIC gives two vlues:  
+edf the \`\`equivalent degrees of freedom’’ of the fitted model fit.  
+AIC the (generalized) Akaike Information Criterion for fit.
+
+``` r
+# reoder treatment order so that the statistics make sense
+df.convert$treatment <- relevel(as.factor(df.convert$treatment), ref = "cell culture medium")
+
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment + block, data=df.convert)
+# look at the statistics of the model
+summary(df_fit2)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ treatment + block, data = df.convert)
+
+      n= 135, number of events= 80 
+
+                           coef exp(coef) se(coef)      z Pr(>|z|)    
+    treatment16Cq DiNV   5.0567  157.0731   0.7499  6.743 1.55e-11 ***
+    blockB              -0.6811    0.5061   0.2283 -2.984  0.00285 ** 
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                       exp(coef) exp(-coef) lower .95 upper .95
+    treatment16Cq DiNV  157.0731   0.006366   36.1213  683.0304
+    blockB                0.5061   1.976023    0.3235    0.7916
+
+    Concordance= 0.857  (se = 0.021 )
+    Likelihood ratio test= 168.6  on 2 df,   p=<2e-16
+    Wald test            = 51.6  on 2 df,   p=6e-12
+    Score (logrank) test = 143.8  on 2 df,   p=<2e-16
+
+``` r
+# add model with interaction term (so treatment * block)
+# no errors in this model when I made 9 fly die during experimental time in the control treatment for each block
+# if no flies had died in one treatment in 1 block it would give infinate values for some confidence intervals which is not great
+df_fit3<- coxph(Surv(dead, status) ~ block + treatment  + treatment * block, data=df.convert)
+# look at the statistics of the model with interaction term
+summary(df_fit3)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ block + treatment + treatment * 
+        block, data = df.convert)
+
+      n= 135, number of events= 80 
+
+                                   coef exp(coef)  se(coef)      z Pr(>|z|)    
+    blockB                      0.01222   1.01230   1.41422  0.009    0.993    
+    treatment16Cq DiNV          5.35505 211.67372   1.03808  5.159 2.49e-07 ***
+    blockB:treatment16Cq DiNV  -0.71109   0.49111   1.43295 -0.496    0.620    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                              exp(coef) exp(-coef) lower .95 upper .95
+    blockB                       1.0123   0.987854   0.06332    16.184
+    treatment16Cq DiNV         211.6737   0.004724  27.67247  1619.146
+    blockB:treatment16Cq DiNV    0.4911   2.036210   0.02961     8.145
+
+    Concordance= 0.857  (se = 0.023 )
+    Likelihood ratio test= 168.8  on 3 df,   p=<2e-16
+    Wald test            = 52.89  on 3 df,   p=2e-11
+    Score (logrank) test = 155.2  on 3 df,   p=<2e-16
+
+``` r
+# extract AIC of df_fit2 (no interaction term)
+extractAIC(df_fit2)
+```
+
+    [1]   2.0000 559.9158
+
+``` r
+# 2.0000 559.9158
+# extract AIC of df_fit3 (with interaction term)
+extractAIC(df_fit3)
+```
+
+    [1]   3.0000 561.6742
+
+``` r
+# 3.0000 561.6742
+```
+
+The smaller value is the more fit model? “If two models explain the same
+amount of variation, the one with fewer parameters will have a lower AIC
+score and will be the better-fit model.” So the model without the
+interaction term is slightly better, but not by much.

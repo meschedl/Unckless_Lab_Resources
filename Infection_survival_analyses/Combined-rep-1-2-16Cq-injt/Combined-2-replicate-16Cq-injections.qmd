@@ -86,17 +86,68 @@ df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infectio
 
 ```{r}
 df.convert<-convert_df(df)
+
+# add in block after conversion 
+# create a new column that is all Bs
+df.convert$block <- "B"
+# make the vials that are 1-7 have A for block (so the samples can be separated out by replicate infection)
+df.convert$block[which(df.convert$vial %in% 1:7)] = "A"
+
 ```
 
+
+### Make the survival curve
 ```{r}
-# change to not have confidence intervals in this one so you can see them 
-df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
+# add in treatment and block in the model 
+df_fit<- survfit(Surv(dead, status) ~ treatment + block, data=df.convert)
+
+
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation") + xlab("Days post injection")
+          palette = c("aquamarine", "lightgreen", "lightcoral", "hotpink")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
+
+
+### Comparing Models and Looking at Stats
+
+Try to look at the models with Block as a factor, as well as block * treatment as an interaction effect, then see which model fits best using AIC. 
+
+extractAIC gives two vlues:  
+edf	the ``equivalent degrees of freedom'' of the fitted model fit.  
+AIC	the (generalized) Akaike Information Criterion for fit.
+
+```{r}
+# reoder treatment order so that the statistics make sense
+df.convert$treatment <- relevel(as.factor(df.convert$treatment), ref = "cell culture medium")
+
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment + block, data=df.convert)
+# look at the statistics of the model
+summary(df_fit2)
+
+# add model with interaction term (so treatment * block)
+# no errors in this model when I made 9 fly die during experimental time in the control treatment for each block
+# if no flies had died in one treatment in 1 block it would give infinate values for some confidence intervals which is not great
+df_fit3<- coxph(Surv(dead, status) ~ block + treatment  + treatment * block, data=df.convert)
+# look at the statistics of the model with interaction term
+summary(df_fit3)
+
+# extract AIC of df_fit2 (no interaction term)
+extractAIC(df_fit2)
+# 2.0000 559.9158
+# extract AIC of df_fit3 (with interaction term)
+extractAIC(df_fit3)
+# 3.0000 561.6742
+```
+
+The smaller value is the more fit model? "If two models explain the same amount of variation, the one with fewer parameters will have a lower AIC score and will be the better-fit model." So the model without the interaction term is slightly better, but not by much. 
+
+
+
+
+
