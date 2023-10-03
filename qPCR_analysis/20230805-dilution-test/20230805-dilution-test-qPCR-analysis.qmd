@@ -4,7 +4,7 @@ format: gfm
 editor: visual
 ---
 
-Load packages needed 
+Load packages needed
 
 ```{r}
 library(ggplot2)
@@ -12,15 +12,15 @@ library(dplyr)
 library(tidyr)
 ```
 
-Load in dataset 
+Load in dataset
 
 ```{r}
 Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20230805-dilution-test/dilution_qPCR_info.csv")
 
 ```
 
+Histogram of all Cq vaules
 
-Histogram of all Cq vaules 
 ```{r}
 # order the dilution
 results_factor_levels <- c("oneng", "pointoneng", "pointohtwong")
@@ -36,9 +36,10 @@ ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge"
 
 ```
 
-Interesting, I did think the Cq values would change more with this level of dilution. 
+Interesting, I did think the Cq values would change more with this level of dilution.
 
 Calculate the variances between the qPCR replicates for supernatant samples
+
 ```{r}
 # make a dummy variable that is just the columns we want
 s <- paste(Cq_values$sample_ID, Cq_values$primer, Cq_values$p47_35_cycle_result, Cq_values$project, Cq_values$treatment, Cq_values$dilution, Cq_values$sample_number, Cq_values$day_frozen)
@@ -60,7 +61,7 @@ variances[which(variances > 0.4)]
 # there isn't an obvious outlier in this one, the Cqs are 33, 32, and 34. So I can't drop one value. So I will leave these in. This is just a test anyways
 ```
 
-Calculate the mean Cq values 
+Calculate the mean Cq values
 
 ```{r}
 # what are the Cq means for each sample_ID/primer/day/sample_type group?
@@ -74,9 +75,9 @@ plot(variances~means)
 
 ```
 
-This is the usual pattern, where the higher the mean, the higher the varience. That one sample stands out a lot, the others look good. 
+This is the usual pattern, where the higher the mean, the higher the varience. That one sample stands out a lot, the others look good.
 
-Now I need to add the mean and variance values to my main dataframes. 
+Now I need to add the mean and variance values to my main dataframes.
 
 ```{r}
 # transform array into df
@@ -95,7 +96,8 @@ names(variances_df_sep)[9] <- "var"
 head(variances_df_sep)
 ```
 
-So I have a df with the variances, now I want the means in it as well 
+So I have a df with the variances, now I want the means in it as well
+
 ```{r}
 # going to transform the means array into a df
 means_df <- as.data.frame.table(means)
@@ -111,6 +113,7 @@ head(means_variances_of_Cq_df)
 ```
 
 Plot the raw means of Cqs by primer by dilution for the two projects
+
 ```{r}
 # order the dilution
 results_factor_levels <- c("oneng", "pointoneng", "pointohtwong")
@@ -120,12 +123,11 @@ means_variances_of_Cq_df$dilution <- factor(means_variances_of_Cq_df$dilution, l
 ggplot(means_variances_of_Cq_df, aes(y= means, x=primer, fill=dilution)) + geom_boxplot() + facet_grid(~project) 
 ```
 
-Ok so this looks good, clear differences between the dilutions here in the exact pattern we expect. However the 115 is still not very high even for the stock flies at 0.02ng/ul DNA... 
+Ok so this looks good, clear differences between the dilutions here in the exact pattern we expect. However the 115 is still not very high even for the stock flies at 0.02ng/ul DNA...
 
+At this point, I am going to separate out the stock flies and the infection flies because those were two different experiments
 
-At this point, I am going to separate out the stock flies and the infection flies because those were two different experiments 
-
-Calculating delta Cq values for the stock flies 
+Calculating delta Cq values for the stock flies
 
 ```{r}
 stock_Cq_df <- means_variances_of_Cq_df[which(means_variances_of_Cq_df$project == "stock"),]
@@ -149,7 +151,6 @@ stock_delta_Cq_df <- stock_Cq_df[which(stock_Cq_df$primer == "115"),]
 stock_delta_Cq_df$delta_Cq <- delta_Cqs_stock
 ```
 
-
 ```{r}
 # add another column that is 2^deltaCq
 
@@ -161,7 +162,7 @@ stock_delta_Cq_df$delta_Cq_2 <- 2^(delta_Cqs_stock)
 ggplot(stock_delta_Cq_df, aes(y= delta_Cq_2, x=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3)
 ```
 
-I'm not sure the delta Cq is the most informative here 
+I'm not sure the delta Cq is the most informative here
 
 Plot the raw Cqs (for 115) in the same way
 
@@ -172,14 +173,14 @@ ggplot(stock_delta_Cq_df, aes(y= means, x=dilution)) + geom_boxplot()  + theme_l
 ```
 
 Plot mean Cq value for 115 by sample by dilution
+
 ```{r}
 
 ggplot(stock_delta_Cq_df, aes(y= means, x=dilution, color = sample_ID))  + theme_linedraw() + geom_point() 
 
 ```
 
-
-Calculating delta Cq values for the infection experiment flies 
+Calculating delta Cq values for the infection experiment flies
 
 ```{r}
 infection_Cq_df <- means_variances_of_Cq_df[which(means_variances_of_Cq_df$project == "infection"),]
@@ -216,10 +217,9 @@ ggplot(infection_delta_Cq_df, aes(y= delta_Cq_2, x=treatment, fill=dilution)) + 
 # I am not sure why the points are not separated out by dilution... and I don't know how to fix it 
 ```
 
-For the delta Cqs there doesn't seem to be that much of a pattern with the diultion, except that the delta gets higher for the SPs with more dilution. 
+For the delta Cqs there doesn't seem to be that much of a pattern with the diultion, except that the delta gets higher for the SPs with more dilution.
 
-
-I think again, the raw Cqs might be better to look at 
+I think again, the raw Cqs might be better to look at
 
 ```{r}
 
@@ -227,14 +227,16 @@ ggplot(infection_delta_Cq_df, aes(y= means, x=treatment, fill = dilution)) + geo
 
 ```
 
-Plot mean Cq value for 115 by sample by dilution and separate by treatment 
+Plot mean Cq value for 115 by sample by dilution and separate by treatment
+
 ```{r}
 
 ggplot(infection_delta_Cq_df, aes(y= means, x=dilution, color = sample_ID))  + theme_linedraw() + geom_point() + facet_grid(~treatment)
 
 ```
 
-Plot the 2^delta Cq by sample by dilution and separate by treatment
+Plot the 2\^delta Cq by sample by dilution and separate by treatment
+
 ```{r}
 
 ggplot(infection_delta_Cq_df, aes(y= delta_Cq_2, x=dilution, color = sample_ID))  + theme_linedraw() + geom_point() + facet_grid(~treatment) + coord_trans(y='log10')
@@ -242,16 +244,9 @@ ggplot(infection_delta_Cq_df, aes(y= delta_Cq_2, x=dilution, color = sample_ID))
 ```
 
 Plot the delta Cq by sample by dilution and separate by treatment
+
 ```{r}
 
 ggplot(infection_delta_Cq_df, aes(y= delta_Cq, x=dilution, color = sample_ID))  + theme_linedraw() + geom_point() + facet_grid(~treatment)
 
 ```
-
-
-
-
-
-
-
-

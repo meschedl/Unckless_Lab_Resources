@@ -1,0 +1,131 @@
+---
+title: "20230928-qPCR-analysis"
+format: gfm
+editor: visual
+---
+
+Load packages needed
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+Load in dataset
+
+```{r}
+Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20230928-poke-vs-inject-16Cq-dilutions/poke-inject-dil-sheet.csv")
+
+```
+
+
+Histogram of all Cq vaules
+
+```{r}
+# order the dilution
+results_factor_levels <- c("1nanogram", "point1nanogram", "pointzero1nanogram", "1to10", "1to100")
+# then apply this to the CCM data
+Cq_values$dilution.long <- factor(Cq_values$dilution.long, levels=results_factor_levels)
+
+# plot raw Cqs by dilution
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution.long) 
+
+# fill for which primer 
+# facet breaks up the graph into different components by sample type
+# dodge makes each primer have it's own column per value 
+
+# plot raw Cqs by infection type
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~treatment)  
+
+```
+
+Hisogram of Cq values for dilutions with the treatments split up
+
+```{r}
+# separate out the poked flies
+Cq_values_poke <- Cq_values[which(Cq_values$treatment == "16Cq DiNV needle poke"),]
+# histogram of just poked flies Cqs separated out by dilution
+ggplot(Cq_values_poke, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution.long)
+
+# separate out the injected flies
+Cq_values_inject <- Cq_values[which(Cq_values$treatment == "16Cq DiNV injection"),]
+# histogram of just injected flies Cqs separated out by dilution
+ggplot(Cq_values_inject, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution.long)
+```
+
+This looks to me as somewhat what we would expect. The poked flies have higher Cq values for virus than the injected flies, and they seem to have more variability. The very dilute condition is probably too dilute for either type of injection, but that is good to know. 
+
+
+Calculate the variances in Cq and the mean Cq between the qPCR replicates 
+
+```{r}
+
+# calculate variences in Cq value
+Cq_values$Cq_var <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=var)
+# this adds a column with the variances, however because there are 3 replicates for each sample/dilution, 
+# there are all three columns retained. We want to keep those right now for calculating the mean Cq
+
+# calculate mean in Cq value
+Cq_values$Cq_mean <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=mean)
+
+# now want to keep all rows where the replicate is 1
+# make into new Df so we keep the original with all the info
+Cq_values_1rep <- Cq_values[which(Cq_values$replicate == "1"),]
+
+# histogram of all variances
+hist(Cq_values_1rep$Cq_var)
+# most are very low, but some are worryingly high
+# also a lot are missing here because the function wouldn't calculate variences for replicates that had an NA
+# I am not sure what to do about those 
+
+# is there a difference in variance between the two treatments?
+# just poke
+Cq_values_1rep_poke <- Cq_values_1rep[which(Cq_values_1rep$treatment == "16Cq DiNV needle poke"),]
+# just inject
+Cq_values_1rep_inject <- Cq_values_1rep[which(Cq_values_1rep$treatment == "16Cq DiNV injection"),]
+
+# histogram of poke variances
+hist(Cq_values_1rep_poke$Cq_var)
+
+# histogram of inject variances
+hist(Cq_values_1rep_inject$Cq_var)
+```
+
+Check variance by dilution
+```{r}
+# slightly more variance in the poke, but not really, what about the different dilutions?
+
+# 1ng
+Cq_values_1rep_1ng <- Cq_values_1rep[which(Cq_values_1rep$dilution.long == "1nanogram"),]
+# 0.1ng
+Cq_values_1rep_.1ng <- Cq_values_1rep[which(Cq_values_1rep$dilution.long == "point1nanogram"),]
+# 0.01ng
+Cq_values_1rep_.01ng <- Cq_values_1rep[which(Cq_values_1rep$dilution.long == "pointzero1nanogram"),]
+# 1:10
+Cq_values_1rep_1_10 <- Cq_values_1rep[which(Cq_values_1rep$dilution.long == "1to10"),]
+# 1:100
+Cq_values_1rep_1_100 <- Cq_values_1rep[which(Cq_values_1rep$dilution.long == "1to100"),]
+
+# 1ng
+hist(Cq_values_1rep_1ng$Cq_var)
+# 0.1ng
+hist(Cq_values_1rep_.1ng$Cq_var)
+# 0.01ng
+hist(Cq_values_1rep_.01ng$Cq_var)
+# 1:10
+hist(Cq_values_1rep_1_10$Cq_var)
+# 1:100
+hist(Cq_values_1rep_1_100$Cq_var)
+
+# nope, all over the place really 
+```
+
+Which variances seem like they are too high? (over 1)
+
+```{r}
+high_var <- subset(Cq_values, Cq_var > 1)
+
+
+```
+
