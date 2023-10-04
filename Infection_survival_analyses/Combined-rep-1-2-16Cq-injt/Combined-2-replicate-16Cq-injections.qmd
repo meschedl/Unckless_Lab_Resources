@@ -143,9 +143,29 @@ extractAIC(df_fit2)
 # extract AIC of df_fit3 (with interaction term)
 extractAIC(df_fit3)
 # 3.0000 561.6742
+
+# compare AICs 
+
+exp((559.9158 - 561.6742)/2)
+# 0.415, this would be a p value comparing the non interaction and the interaction models. There is no significant difference between the two AICs, so either one is a good fit 
+
+# what about is I compare a model with just treatment to a model with treatment and block?
+
+df_fit_t<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
+# look at the statistics of the model
+summary(df_fit_t)
+# get the AIC for the model with just treatment
+extractAIC(df_fit_t)
+# 1.0000 566.6194 
+
+# Compare AICs
+
+exp((559.9158 - 566.6194)/2)
+# 0.03502126 
+# So this would suggest that there is a singificant difference in the AIC between the two models, and with AIC the lower number is the best one, indicating that the model that uses block + treatment is the best model
 ```
 
-The smaller value is the more fit model? "If two models explain the same amount of variation, the one with fewer parameters will have a lower AIC score and will be the better-fit model." So the model without the interaction term is slightly better, but not by much. 
+
 
 
 

@@ -279,14 +279,16 @@ Calculating delta Cqs from the TPI to the PIF 3 for the 1ng dilution
 # can I order them by well code?
 Cq_values_40_1rep_1ng <- Cq_values_40_1rep_1ng[order(Cq_values_40_1rep_1ng$well.code),]
 
+# remove the control sample
+Cq_values_40_1rep_1ng <- Cq_values_40_1rep_1ng[which(Cq_values_40_1rep_1ng$treatment != "none"),]
 # yes this worked great, I have the TPI first, then the PIF 3 
 
-# Separate that dataframe, incriminating by 2, every number between 1-14 (number of rows in dataframe)
-Cq_values_40_1rep_1ng$Cq_mean[seq(1,14,2)] # these are the TPI Cq means 
-Cq_values_40_1rep_1ng$Cq_mean[seq(2,14,2)] # these are the PIF 3 primer Cq means 
+# Separate that dataframe, incriminating by 2, every number between 1-12 (number of rows in dataframe)
+Cq_values_40_1rep_1ng$Cq_mean[seq(1,12,2)] # these are the TPI Cq means 
+Cq_values_40_1rep_1ng$Cq_mean[seq(2,12,2)] # these are the PIF 3 primer Cq means 
 
 # make delta Cq, subtract the PIF 3 value from the TPI primer value 
-delta_Cqs_1ng <- Cq_values_40_1rep_1ng$Cq_mean[seq(1,14,2)] - Cq_values_40_1rep_1ng$Cq_mean[seq(2,14,2)]
+delta_Cqs_1ng <- Cq_values_40_1rep_1ng$Cq_mean[seq(1,12,2)] - Cq_values_40_1rep_1ng$Cq_mean[seq(2,12,2)]
 
 delta_Cqs_1ng
 
@@ -308,6 +310,42 @@ ggplot(Cq_values_40_1rep_1ng_Delta, aes(y= delta_Cq_2, x=treatment)) + geom_boxp
 ```
 
 I am not sure exactly what delta Cq means in this context, I think it is relative amount of virus genome to host genome? 
+
+How to compare the delta Cqs ^2? 
+
+Calculate mean of the delta Cqs ^2, the variance, and then the coeddicient of variation 
+```{r}
+# calculate the mean of delta_Cq_2 for each treatment 
+tapply(Cq_values_40_1rep_1ng_Delta$delta_Cq_2, Cq_values_40_1rep_1ng_Delta$treatment, mean)
+
+# calculate the variance of delta_Cq_2 for each treatment
+sqrt(tapply(Cq_values_40_1rep_1ng_Delta$delta_Cq_2, Cq_values_40_1rep_1ng_Delta$treatment, var))
+
+# mean for inject is 0.00607
+# mean for needle is 0.000728
+
+# this means that the injection gives about 10X as much viral genomes as the needle
+
+# coefficient of variation 
+# injection 
+0.0014898800/0.006069361
+
+#0.2454756 as the amount of variation
+
+# needle 
+0.0005287672/0.0007248124
+
+# 0.7295228 as the amount of variation 
+
+# how do these compare
+0.7295228/0.2454756
+
+# 2.971875 so the needle is about 3 times more variable? 
+```
+
+
+
+
 
 
 How does the 1:10 dilution look?
@@ -374,16 +412,41 @@ ggplot(Cq_values_40_1rep_1_10_Delta, aes(y= delta_Cq_2, x=treatment)) + geom_box
 
 ```
 
-Interesting, the delta Cq is basically exactly the same between the 1ng and the 1:10 dilution, this is good? 
+How to compare the delta Cqs ^2? 
 
-Look at the 0.1ng
-
+Calculate mean of the delta Cqs ^2, the variance, and then the coeddicient of variation 
 ```{r}
-Cq_values_40_1rep_01ng <- Cq_values_40_1rep[which(Cq_values_40_1rep$dilution == "0.1ng"),]
+# calculate the mean of delta_Cq_2 for each treatment 
+tapply(Cq_values_40_1rep_1_10_Delta$delta_Cq_2, Cq_values_40_1rep_1_10_Delta$treatment, mean)
 
-hist(Cq_values_40_1rep_01ng$Cq_var)
+# calculate the variance of delta_Cq_2 for each treatment
+sqrt(tapply(Cq_values_40_1rep_1_10_Delta$delta_Cq_2, Cq_values_40_1rep_1_10_Delta$treatment, var))
+
+# mean for inject is 0.0057
+# mean for needle is 0.0055
+
+# this means that the injection gives about 10X as much viral genomes as the needle
+
+# coefficient of variation 
+# injection 
+0.0004362141/0.0056649179
+
+# 0.07700272 as the amount of variation
+
+# needle 
+0.0007610579/0.0005539033
+
+# 1.373991 as the amount of variation 
+
+# how do these compare
+1.373991/0.07700272
+
+# 17.84341 so the needle is about 18 times more variable? 
 ```
 
-Variance increases a ton for these. What are the samples with super high variance? These are two injection samples for PIF3 
+
+
+
+
 
 
