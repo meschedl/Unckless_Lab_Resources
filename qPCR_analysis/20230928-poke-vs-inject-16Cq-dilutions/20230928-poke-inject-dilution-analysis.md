@@ -480,7 +480,7 @@ Cq_values_40_1rep_1ng_Delta$delta_Cq_2 <- 2^(delta_Cqs_1ng)
 
 #Plot by treatment
 
-ggplot(Cq_values_40_1rep_1ng_Delta, aes(y= delta_Cq_2, x=treatment)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3)
+ggplot(Cq_values_40_1rep_1ng_Delta, aes(y= delta_Cq_2, x=treatment, fill=treatment)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) + theme(legend.position = "none")
 ```
 
 ![](20230928-poke-inject-dilution-analysis_files/figure-commonmark/unnamed-chunk-15-1.png)
@@ -625,7 +625,7 @@ Cq_values_40_1rep_1_10_Delta$delta_Cq_2 <- 2^(delta_Cqs_1_10)
 
 #Plot by treatment
 
-ggplot(Cq_values_40_1rep_1_10_Delta, aes(y= delta_Cq_2, x=treatment)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3)
+ggplot(Cq_values_40_1rep_1_10_Delta, aes(y= delta_Cq_2, x=treatment, fill=treatment)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) + theme(legend.position = "none")
 ```
 
 ![](20230928-poke-inject-dilution-analysis_files/figure-commonmark/unnamed-chunk-20-1.png)
