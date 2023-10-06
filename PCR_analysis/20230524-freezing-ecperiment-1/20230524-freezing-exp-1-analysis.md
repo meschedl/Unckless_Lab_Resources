@@ -57,7 +57,7 @@ SP_M_results <- subset(SP_results, sex == "male")
 Now I need to calculate the percentages for either yes, no, or maybe for
 each primer. To do this I just count the number of each yes, no, or
 maybe for each primer, then divide that by the total number of samples.
-This is done in a separate spreadsheet and then loaded in. SP_M\_percent
+This is done in a separate spreadsheet and then loaded in. SP_M_percent
 has the calculations.
 
 Read in percentage SP male dataset
@@ -187,3 +187,95 @@ ggplot(DiNV_F_percent, aes(x =factor(Primer, level=c('CO1', 'TPI', 'p47_35', 'p4
 ```
 
 ![](20230524-freezing-exp-1-analysis_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+Redo analysis just for males and put p47 30 cycle and sterile poke on
+same graph
+
+Starting with the full results (freezing1_PCR_results)
+
+``` r
+# subset to only look at males 
+Male_PCR_results <- subset(freezing1_PCR_results, sex == "male")
+
+# start by making percentages for sterile poked males
+PCR_results_C <- subset(Male_PCR_results, treatment == "sterile poke")
+
+# how many rows does this DF have?
+nrow(PCR_results_C)
+```
+
+    ## [1] 20
+
+``` r
+# how many yes, no, and maybe PCR results are there for the p47 PCR for the DiNV poked flies?
+# using only 30 cycle to be consistant with all other analysis
+# make this into a table 
+C_p47_results <- PCR_results_C %>% 
+                    count(p47_30_cycle_result)
+
+# add a column to that table that is the count (column name is n) divided by the number of rows to get a proportion
+
+C_p47_results$Result_prop <- C_p47_results$n / nrow(PCR_results_C)
+
+# add a column to that table with the percentage (proportion *100)
+C_p47_results$Result_percent <- C_p47_results$Result_prop * 100
+
+# add a column to that table with the primer name
+
+C_p47_results$Primer <- "p47"
+
+# add a column that says treatment
+C_p47_results$Treatment <- "Sterile Poke"
+```
+
+Make percentages for DiNV poked flies
+
+``` r
+PCR_results_D <- subset(Male_PCR_results, treatment == "16Cq DiNV")
+
+# how many rows does this DF have?
+nrow(PCR_results_D)
+```
+
+    ## [1] 68
+
+``` r
+# how many yes, no, and maybe PCR results are there for the p47 PCR for the DiNV poked flies?
+# using only 30 cycle to be consistant with all other analysis
+# make this into a table 
+D_p47_results <- PCR_results_D %>% 
+                    count(p47_30_cycle_result)
+
+# add a column to that table that is the count (column name is n) divided by the number of rows to get a proportion
+
+D_p47_results$Result_prop <- D_p47_results$n / nrow(PCR_results_D)
+
+# add a column to that table with the percentage (proportion *100)
+D_p47_results$Result_percent <- D_p47_results$Result_prop * 100
+
+# add a column to that table with the primer name
+
+D_p47_results$Primer <- "p47"
+
+# add a column that says treatment
+D_p47_results$Treatment <- "DiNV"
+```
+
+Combine dataframes and plot them
+
+``` r
+percent_table_p47 <- rbind(D_p47_results, C_p47_results)
+
+# round percent column 
+percent_table_p47$Round_percent <- round(percent_table_p47$Result_percent)
+
+legend_title <- "PCR result"
+ggplot(percent_table_p47, aes(x =factor(Treatment, level=c("Sterile Poke", "DiNV")), y = Round_percent, label=Round_percent,
+                              fill =factor(p47_30_cycle_result, level=c('no', 'maybe', 'yes')))) +
+    geom_bar(stat = "identity")  + theme_bw() + xlab("Treatment") +
+    theme(legend.text=element_text(size=12), axis.text=element_text(size=12)) + 
+    scale_fill_manual(values = c( 'palevioletred1', "khaki1", 'darkseagreen1'), legend_title ) + 
+    ylab("Percent PCR Result") +  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+![](20230524-freezing-exp-1-analysis_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
