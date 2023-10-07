@@ -5,6 +5,7 @@ editor: visual
 ---
 
 Load in packages necessary
+
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -14,8 +15,8 @@ library(dplyr)
 knitr::opts_chunk$set(dpi=300,fig.width=7)
 ```
 
-
 Load in dataset
+
 ```{r}
 PCR_results <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/PCR_analysis/20221015-DiNV-infections/20221015-infection-data.csv")
 
@@ -25,10 +26,10 @@ PCR_results_s <- subset(PCR_results, treatment.abrev != "NP")
 
 ```
 
-
 Try to make the proportions with R code
 
 Just DiNV poked flies
+
 ```{r}
 PCR_results_D <- subset(PCR_results_s, treatment.abrev == "DiNV")
 
@@ -55,8 +56,8 @@ D_p47_results$Primer <- "p47"
 D_p47_results$Treatment <- "DiNV"
 ```
 
-
 Just CCM poked flies
+
 ```{r}
 PCR_results_C <- subset(PCR_results_s, treatment.abrev == "CCM")
 
@@ -83,8 +84,7 @@ C_p47_results$Primer <- "p47"
 C_p47_results$Treatment <- "CCM"
 ```
 
-
-Combine dataframes and plot them 
+Combine dataframes and plot them
 
 ```{r}
 
@@ -102,22 +102,3 @@ ggplot(percent_table_p47, aes(x =Treatment, y = Round_percent, label=Round_perce
     ylab("Percent PCR Result") +  geom_text(size = 3, position = position_stack(vjust = 0.5))
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

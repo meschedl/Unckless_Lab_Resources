@@ -17,6 +17,10 @@ library("survival")
 library("survminer")
 ```
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
 
 ### Rob's example code for me
 ```{r}
@@ -153,14 +157,23 @@ df.female.seven<-convert_df(df.female.seven)
 ```{r}
 male_eleven_fit<- survfit(Surv(dead, status) ~ treatment, data=df.male.complete)
 ggsurvplot(male_eleven_fit,
-          pval = TRUE, conf.int = TRUE,
-          risk.table = TRUE, # Add risk table
-          risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
-          surv.median.line = "hv", # Specify median survival
+          pval = FALSE, conf.int = TRUE,
+          risk.table = FALSE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("#E7B800", "#2E9FDF"))
+          palette = c("aquamarine", "lightcoral")) +  ylab("Survival Proporation") + xlab("Days post infection")
 ```
+
+Get some model summary statistics 
+```{r}
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment, data=df.male.complete)
+# look at the statistics of the model
+summary(df_fit2)
+```
+
 
 
 ### Males 7 days 
@@ -176,6 +189,10 @@ ggsurvplot(male_seven_fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("#E7B800", "#2E9FDF"))
 ```
+
+
+
+
 
 ### Female 11 days
 ```{r}

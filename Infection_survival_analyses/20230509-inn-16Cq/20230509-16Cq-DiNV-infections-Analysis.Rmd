@@ -100,11 +100,22 @@ df.convert<-convert_df(df)
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet"))
+          palette = c ("aquamarine", "lightcoral")) + ylab("Survival Proporation") + xlab("Days post infection")
 ```
+
+Get some model summary statistics 
+```{r}
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
+# look at the statistics of the model
+summary(df_fit2)
+```
+
+
+

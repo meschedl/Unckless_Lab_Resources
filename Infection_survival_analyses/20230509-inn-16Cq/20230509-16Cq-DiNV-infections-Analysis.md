@@ -105,13 +105,40 @@ df.convert<-convert_df(df)
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet"))
+          palette = c("aquamarine", "lightcoral")) + ylab("Survival Proporation") + xlab("Days post infection")
 ```
 
 ![](20230509-16Cq-DiNV-infections-Analysis_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+Get some model summary statistics
+
+``` r
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
+# look at the statistics of the model
+summary(df_fit2)
+```
+
+    ## Call:
+    ## coxph(formula = Surv(dead, status) ~ treatment, data = df.convert)
+    ## 
+    ##   n= 136, number of events= 45 
+    ## 
+    ##                coef exp(coef) se(coef)      z Pr(>|z|)    
+    ## treatmentSP -1.6994    0.1828   0.3909 -4.347 1.38e-05 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ##             exp(coef) exp(-coef) lower .95 upper .95
+    ## treatmentSP    0.1828       5.47   0.08497    0.3933
+    ## 
+    ## Concordance= 0.693  (se = 0.027 )
+    ## Likelihood ratio test= 25.24  on 1 df,   p=5e-07
+    ## Wald test            = 18.9  on 1 df,   p=1e-05
+    ## Score (logrank) test = 23.8  on 1 df,   p=1e-06

@@ -1,0 +1,82 @@
+tube,treatment,extraction date,PCR date,TPI result,p47 result
+extraction control 1,NA,20230920,20230921,no,no
+1,cell culture medium ,20230920,20230921,yes,no
+2,cell culture medium ,20230920,20230921,yes,no
+3,cell culture medium ,20230920,20230921,yes,no
+4,cell culture medium ,20230920,20230921,yes,no
+5,cell culture medium ,20230920,20230921,yes,no
+11,cell culture medium ,20230920,20230921,yes,no
+44,cell culture medium ,20230920,20230921,yes,no
+45,cell culture medium ,20230920,20230921,yes,no
+46,cell culture medium ,20230920,20230921,yes,no
+47,cell culture medium ,20230920,20230921,yes,no
+48,cell culture medium ,20230920,20230921,yes,no
+49,cell culture medium ,20230920,20230921,yes,no
+50,cell culture medium ,20230920,20230921,yes,no
+51,cell culture medium ,20230920,20230921,yes,no
+52,cell culture medium ,20230920,20230921,yes,no
+53,cell culture medium ,20230920,20230921,yes,no
+54,cell culture medium ,20230920,20230921,yes,no
+55,cell culture medium ,20230920,20230921,yes,no
+56,cell culture medium ,20230920,20230921,yes,no
+57,cell culture medium ,20230920,20230921,yes,no
+6,16Cq DiNV,20230920,20230921,yes,yes
+7,16Cq DiNV,20230920,20230921,yes,no
+8,16Cq DiNV,20230920,20230921,yes,maybe
+9,16Cq DiNV,20230920,20230921,yes,no
+10,16Cq DiNV,20230920,20230921,yes,no
+12,16Cq DiNV,20230920,20230921,yes,yes
+13,16Cq DiNV,20230920,20230921,yes,yes
+14,16Cq DiNV,20230920,20230921,yes,yes
+15,16Cq DiNV,20230920,20230921,yes,yes
+16,16Cq DiNV,20230920,20230921,no,yes
+17,16Cq DiNV,20230920,20230921,yes,yes
+18,16Cq DiNV,20230920,20230921,yes,yes
+19,16Cq DiNV,20230920,20230921,yes,yes
+20,16Cq DiNV,20230920,20230921,yes,yes
+21,16Cq DiNV,20230920,20230921,yes,yes
+22,16Cq DiNV,20230920,20230921,yes,yes
+23,16Cq DiNV,20230920,20230921,yes,yes
+24,16Cq DiNV,20230920,20230921,yes,yes
+25,16Cq DiNV,20230920,20230921,yes,yes
+extraction control 2,NA,20230920,20230921,no,no
+extraction control 3,NA,20210921,20230922,no,no
+58,cell culture medium ,20210921,20230922,yes,no
+59,cell culture medium ,20210921,20230922,yes,no
+60,cell culture medium ,20210921,20230922,yes,no
+61,cell culture medium ,20210921,20230922,yes,no
+62,cell culture medium ,20210921,20230922,yes,no
+63,cell culture medium ,20210921,20230922,yes,no
+64,cell culture medium ,20210921,20230922,yes,no
+65,cell culture medium ,20210921,20230922,yes,no
+66,cell culture medium ,20210921,20230922,yes,no
+67,cell culture medium ,20210921,20230922,yes,no
+68,cell culture medium ,20210921,20230922,yes,no
+69,cell culture medium ,20210921,20230922,yes,no
+70,cell culture medium ,20210921,20230922,yes,no
+71,cell culture medium ,20210921,20230922,yes,no
+26,16Cq DiNV,20210921,20230922,yes,yes
+27,16Cq DiNV,20210921,20230922,yes,yes
+28,16Cq DiNV,20210921,20230922,yes,yes
+29,16Cq DiNV,20210921,20230922,yes,yes
+30,16Cq DiNV,20210921,20230922,yes,yes
+31,16Cq DiNV,20210921,20230922,yes,yes
+32,16Cq DiNV,20210921,20230922,yes,yes
+33,16Cq DiNV,20210921,20230922,maybe,yes
+34,16Cq DiNV,20210921,20230922,yes,yes
+35,16Cq DiNV,20210921,20230922,yes,yes
+36,16Cq DiNV,20210921,20230922,yes,yes
+37,16Cq DiNV,20210921,20230922,yes,yes
+38,16Cq DiNV,20210921,20230922,yes,yes
+39,16Cq DiNV,20210921,20230922,yes,yes
+40,16Cq DiNV,20210921,20230922,yes,yes
+41,16Cq DiNV,20210921,20230922,yes,yes
+42,16Cq DiNV,20210921,20230922,yes,yes
+43,16Cq DiNV,20210921,20230922,yes,yes
+72,16Cq DiNV,20210921,20230922,yes,yes
+73,16Cq DiNV,20210921,20230922,yes,yes
+74,16Cq DiNV,20210921,20230922,yes,yes
+75,16Cq DiNV,20210921,20230922,yes,yes
+76,16Cq DiNV,20210921,20230922,yes,yes
+77,16Cq DiNV,20210921,20230922,yes,yes
+extraction control 4,NA,20210921,20230922,no,no

@@ -218,16 +218,41 @@ df.female.seven<-convert_df(df.female.seven)
 ``` r
 male_eleven_fit<- survfit(Surv(dead, status) ~ treatment, data=df.male.complete)
 ggsurvplot(male_eleven_fit,
-          pval = TRUE, conf.int = TRUE,
-          risk.table = TRUE, # Add risk table
-          risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
-          surv.median.line = "hv", # Specify median survival
+          pval = FALSE, conf.int = TRUE,
+          risk.table = FALSE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("#E7B800", "#2E9FDF"))
+          palette = c("aquamarine", "lightcoral")) +  ylab("Survival Proporation") + xlab("Days post infection")
 ```
 
 ![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+Get some model summary statistics
+
+``` r
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment, data=df.male.complete)
+# look at the statistics of the model
+summary(df_fit2)
+```
+
+    ## Call:
+    ## coxph(formula = Surv(dead, status) ~ treatment, data = df.male.complete)
+    ## 
+    ##   n= 41, number of events= 41 
+    ## 
+    ##              coef exp(coef) se(coef)     z Pr(>|z|)
+    ## treatmentM 0.3136    1.3684   0.3611 0.869    0.385
+    ## 
+    ##            exp(coef) exp(-coef) lower .95 upper .95
+    ## treatmentM     1.368     0.7308    0.6743     2.777
+    ## 
+    ## Concordance= 0.527  (se = 0.046 )
+    ## Likelihood ratio test= 0.72  on 1 df,   p=0.4
+    ## Wald test            = 0.75  on 1 df,   p=0.4
+    ## Score (logrank) test = 0.76  on 1 df,   p=0.4
 
 ### Males 7 days
 
@@ -243,7 +268,7 @@ ggsurvplot(male_seven_fit,
           palette = c("#E7B800", "#2E9FDF"))
 ```
 
-![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ### Female 11 days
 
@@ -259,7 +284,7 @@ ggsurvplot(female_eleven_fit,
           palette = c("#E7B800", "#2E9FDF"))
 ```
 
-![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 # Female 7 days
 
@@ -276,4 +301,4 @@ ggsurvplot(female_seven_fit,
           palette = c("#E7B800", "#2E9FDF"))
 ```
 
-![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](20220915-DiNV-Infections-survival-analysis_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->

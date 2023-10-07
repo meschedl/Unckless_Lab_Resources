@@ -114,16 +114,25 @@ food_data_female_convert<-convert_df(food_data.female)
 ``` r
 male_fit<- survfit(Surv(dead, status) ~ treatment, data=food_data_male_convert)
 ggsurvplot(male_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = FALSE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
-          surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
+          #linetype = "strata", # Change line type by groups
+          # surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) + ylab("Survival Proportion") + xlab("Days Post Poke")# Change ggplot2 theme 
 ```
 
 ![](20220924-food-vial-innubila-test_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-\### make survivorship curves \### Female
+
+``` r
+ggsave("male_foodvial.png")
+```
+
+    ## Saving 7 x 5 in image
+
+### make survivorship curves
+
+### Female
 
 ``` r
 female_fit<- survfit(Surv(dead, status) ~ treatment, data=food_data_female_convert)

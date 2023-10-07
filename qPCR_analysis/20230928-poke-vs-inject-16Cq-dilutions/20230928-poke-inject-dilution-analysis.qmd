@@ -12,6 +12,11 @@ library(dplyr)
 library(tidyr)
 ```
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+
 Load in dataset
 
 ```{r}

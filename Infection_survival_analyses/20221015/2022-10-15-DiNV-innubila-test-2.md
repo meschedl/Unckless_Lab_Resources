@@ -154,12 +154,42 @@ DiNV_adjusted_CCMandDiNV_only_convert<-convert_df(DiNV_adjusted_CCMandDiNV_only)
 ``` r
 DiNV_adjusted_CCMandDiNV_only_convert_fit<- survfit(Surv(dead, status) ~ treatment, data=DiNV_adjusted_CCMandDiNV_only_convert)
 ggsurvplot(DiNV_adjusted_CCMandDiNV_only_convert_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
+          #linetype = "strata", # Change line type by groups
           # surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
+          ggtheme = theme_bw(), # Change ggplot2 theme
+          palette = c("lightcoral", "aquamarine")) + ylab("Survival Proporation") + xlab("Days post infection")
 ```
 
 ![](2022-10-15-DiNV-innubila-test-2_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+Get some model summary statistics
+
+``` r
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment, data=DiNV_andCCM_only_convert)
+# look at the statistics of the model
+summary(df_fit2)
+```
+
+    ## Call:
+    ## coxph(formula = Surv(dead, status) ~ treatment, data = DiNV_andCCM_only_convert)
+    ## 
+    ##   n= 90, number of events= 19 
+    ## 
+    ##                 coef exp(coef) se(coef)     z Pr(>|z|)  
+    ## treatmentDiNV 1.0546    2.8709   0.6294 1.676   0.0938 .
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ##               exp(coef) exp(-coef) lower .95 upper .95
+    ## treatmentDiNV     2.871     0.3483    0.8361     9.857
+    ## 
+    ## Concordance= 0.595  (se = 0.047 )
+    ## Likelihood ratio test= 3.5  on 1 df,   p=0.06
+    ## Wald test            = 2.81  on 1 df,   p=0.09
+    ## Score (logrank) test = 3.08  on 1 df,   p=0.08
+
+\`\`\`

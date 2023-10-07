@@ -9,6 +9,11 @@ library("survival")
 library("survminer")
 ```
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+
 ### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
 ```{r}
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
@@ -142,10 +147,22 @@ DiNV_adjusted_CCMandDiNV_only_convert<-convert_df(DiNV_adjusted_CCMandDiNV_only)
 ```{r}
 DiNV_adjusted_CCMandDiNV_only_convert_fit<- survfit(Surv(dead, status) ~ treatment, data=DiNV_adjusted_CCMandDiNV_only_convert)
 ggsurvplot(DiNV_adjusted_CCMandDiNV_only_convert_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = FALSE, conf.int = TRUE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
-          linetype = "strata", # Change line type by groups
+          #linetype = "strata", # Change line type by groups
           # surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
+          ggtheme = theme_bw(), # Change ggplot2 theme
+          palette = c("lightcoral", "aquamarine")) + ylab("Survival Proporation") + xlab("Days post infection")
 ```
+
+Get some model summary statistics 
+```{r}
+# new model using cox proportional hazard (which is basically what above is doing)
+df_fit2<- coxph(Surv(dead, status) ~ treatment, data=DiNV_andCCM_only_convert)
+# look at the statistics of the model
+summary(df_fit2)
+```
+```
+
+

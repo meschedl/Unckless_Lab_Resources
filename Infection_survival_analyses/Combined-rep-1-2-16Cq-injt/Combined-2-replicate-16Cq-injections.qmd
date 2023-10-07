@@ -162,7 +162,7 @@ extractAIC(df_fit_t)
 
 exp((559.9158 - 566.6194)/2)
 # 0.03502126 
-# So this would suggest that there is a singificant difference in the AIC between the two models, and with AIC the lower number is the best one, indicating that the model that uses block + treatment is the best model
+# So this would suggest that there is a significant difference in the AIC between the two models, and with AIC the lower number is the best one, indicating that the model that uses block + treatment is the best model
 ```
 
 
