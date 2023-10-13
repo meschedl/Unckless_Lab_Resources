@@ -1,0 +1,229 @@
+---
+title: "qPCR analysis training"
+format: gfm
+editor: visual
+---
+
+Load packages needed
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+Load in dataset
+
+Expectation is that your dataset looks something like this, notice here that there is a column that specifically says unique_name. This column will help out in the analysis downstream. The column should include something that will separate out your samples between the primers, in this example it shows sample 6-TPI, because this row contains only the data for sample 6 for TPI.
+
+| well | plate | tube number | treatment             | other_sample_information | unique_name | replicate | primer | Cq    |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| A01  | 1     | 6           | 16Cq DiNV needle poke |                          | 6-TPI       | 1         | TPI    | 23.42 |
+| A02  | 1     | 6           | 16Cq DiNV needle poke |                          | 6-TPI       | 2         | TPI    | 23.23 |
+| A03  | 1     | 6           | 16Cq DiNV needle poke |                          | 6-TPI       | 3         | TPI    | 23.15 |
+| A04  | 1     | 8           | 16Cq DiNV needle poke |                          | 8-TPI       | 1         | TPI    | 26.43 |
+| A05  | 1     | 8           | 16Cq DiNV needle poke |                          | 8-TPI       | 2         | TPI    | 26.47 |
+| A06  | 1     | 8           | 16Cq DiNV needle poke |                          | 8-TPI       | 3         | TPI    | 26.59 |
+| A07  | 1     | 9           | 16Cq DiNV needle poke |                          | 9-TPI       | 1         | TPI    | 29.66 |
+
+```{r}
+Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20230928-poke-vs-inject-16Cq-dilutions/poke-inject-dil-sheet_40s.csv")
+head(Cq_values)
+```
+
+First thing to do is look at raw Cq values in a histogram
+
+```{r}
+# plot raw Cqs, x is the Cq column, and the fill or color is by the primer type 
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge")  
+
+# if you want to also include another varaible to separate out the histogram by, you can include a facet 
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~treatment) 
+```
+
+With these you can look at general patterns in your data, and see if there are any samples that look obviously different than others.
+
+Because each sample gets 3 technical replicates for each primer, we want to average the Cq values between the replicates. However we first want to check to see how variable the values are between technical replicates. If you are doing the same PCR reaction on the same amount of sample 3 times, there really shouldn't be any difference in the Cq value. But often times there is a difference, and it is ok if it is small, but large variations can be an indication of an issue or unreliable data.
+
+Calculate the variances in Cq and the mean Cq between the qPCR replicates
+
+```{r}
+# for this example dataset we will only be going through the 1ng diluted samples
+Cq_values <- Cq_values[which(Cq_values$dilution == "1ng"),]
+# and because this removed some rows, we want to re-set the row numbers to be in order again
+rownames(Cq_values) = NULL
+
+# calculate variances in Cq value 
+# use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the variance by)
+Cq_values$Cq_var <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=var)
+# this adds a column with the variances, however because there are 3 replicates for each sample/dilution, 
+# there are all three columns retained. We want to keep those right now for calculating the mean Cq
+
+# calculate mean in Cq value
+# use the mean function, and calculates the mean of Cq values by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the mean by)
+Cq_values$Cq_mean <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=mean)
+
+# but retained are 3 rows for every sample, and if we already averaged over them, the other two rows per sample are not necessary
+# Keep all rows where the replicate is 1 (or you could do 2 or 3)
+# make into new Df so we keep the original with all the Cq values
+Cq_values_1rep <- Cq_values[which(Cq_values$replicate == "1"),]
+
+# histogram of all variances
+hist(Cq_values_1rep$Cq_var)
+# most are pretty low, and one sample is really high
+# we probably want to remove the sample with the really high variance, or remove one of the technical replicates 
+Cq_values[which(Cq_values$Cq_var >2),]
+
+# this prints a table where we can see in the Cq column, that one replicate out of the others is a lot different
+# we can remove that replicate and see if the variances go down 
+# we see that the row this sample is in is 22, and the total number of rows is 42
+# tell R to make Cq_values (original dataset) everything but row 22
+Cq_values <- Cq_values[c(1:21, 23:42),]
+
+# the you need to calculate the variances and means again 
+
+# calculate variances in Cq value 
+# use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the variance by)
+Cq_values$Cq_var <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=var)
+# this adds a column with the variances, however because there are 3 replicates for each sample/dilution, 
+# there are all three columns retained. We want to keep those right now for calculating the mean Cq
+
+# calculate mean in Cq value
+# use the mean function, and calculates the mean of Cq values by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the mean by)
+Cq_values$Cq_mean <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=mean)
+
+# but retained are 3 rows for every sample, and if we already averaged over them, the other two rows per sample are not necessary
+# Keep all rows where the replicate is# 2 (we can't do replicate 1 because I removed the replicate 1 for sample 6 PIF3)
+# make into new Df so we keep the original with all the Cq values
+Cq_values_1rep <- Cq_values[which(Cq_values$replicate == "2"),]
+
+# histogram of all variances
+hist(Cq_values_1rep$Cq_var)
+
+# again we can see there is an outlier 
+Cq_values[which(Cq_values$Cq_var >1),]
+# when we do this and look at the Cq values, we see that there isn't an obvious sample to remove, the Cq values 
+# for now we will keep this sample in the analysis
+# but a sample like this would be something you would bring up with Rob and see if you should remove it or not from the analysis
+
+```
+
+
+You can also separate out your treatments, to see if there is a treatment effect on the variance in Cq values 
+
+```{r}
+# is there a difference in variance between the two treatments?
+# just poke
+Cq_values_1rep_poke <- Cq_values_1rep[which(Cq_values_1rep$treatment == "16Cq DiNV needle poke"),]
+# just inject
+Cq_values_1rep_inject <- Cq_values_1rep[which(Cq_values_1rep$treatment == "16Cq DiNV injection"),]
+
+# histogram of poke variances
+hist(Cq_values_1rep_poke$Cq_var)
+
+# histogram of inject variances
+hist(Cq_values_1rep_inject$Cq_var)
+
+# in this example, there seems to be slightly more variance in Cq value in replicate in the poked samples, than the injected samples
+# but the difference is small 
+
+# You can also check between plates, in this example half my samples were run on 1 plate, the other half on another
+# separate out plate 1
+Cq_values_1rep_plate1 <- Cq_values_1rep[which(Cq_values_1rep$plate == "1"),]
+# separate out plate 2
+Cq_values_1rep_plate2 <- Cq_values_1rep[which(Cq_values_1rep$plate == "2"),]
+
+# histogram of plate1 variances
+hist(Cq_values_1rep_plate1$Cq_var)
+
+# histogram of plate 2 variances
+hist(Cq_values_1rep_plate2$Cq_var)
+
+#You can see here that there is a kind of large effect of which plate the samples were run on, the largest variance 
+# for plate 1 was 0.06, but the largest for plate 2 1.2, with others at 0.6
+
+```
+
+Another way to explore your data is to look at how the mean Cq value and the variance in the Cq values compare to each other
+```{r}
+
+ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
+  geom_point(size=2, shape=23)
+
+```
+
+In this polt you can really only see that one outlier sample, and all others have low variance at any Cq value. What we have seen in other experiments is that at the higher Cq values (close to 40) the variance increases, and we think that is because of the machine's ability to quantify the higher Cqs might not be as accurate. 
+
+Now that you have explored your data, we move on to analyze in it by calculating the delta Cq. This is the difference in Cq value between your control primer and your experimental primer. In this case, the control primer is TPI, and the experimental primer is PIF3. 
+```{r}
+# currently the samples are not ordered by the sample, but by the plate, so I need each sample one right after the other
+# alternating primers for this analysis to work 
+head(Cq_values_1rep)
+# I can order them by well code
+Cq_values_1rep <- Cq_values_1rep[order(Cq_values_1rep$well.code),]
+# check how it looks
+head(Cq_values_1rep)
+# here for each sample, there is the TPI Cq then the PIF3 Cq in order
+
+# In this example dataset I want to remove the control sample right now for this analysis
+Cq_values_1rep <- Cq_values_1rep[which(Cq_values_1rep$treatment != "none"),]
+
+# How to separate out the Cq mean values from the two primers?
+# how many rows are there in the dataframe?
+nrow(Cq_values_1rep)
+
+# Separate that dataframe, incriminating by 2, every number between 1-12 (number of rows in dataframe)
+Cq_values_1rep$Cq_mean[seq(1,12,2)] # these are the TPI Cq means 
+Cq_values_1rep$Cq_mean[seq(2,12,2)] # these are the PIF 3 primer Cq means 
+
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+delta_Cqs <- Cq_values_1rep$Cq_mean[seq(1,12,2)] - Cq_values_1rep$Cq_mean[seq(2,12,2)]
+
+delta_Cqs
+
+
+# You want to add the delta as a column to our df, but first need to remove one of the primer rows
+# Keep only rows that are PIF3
+Cq_values1rep_Delta <- Cq_values_1rep[which(Cq_values_1rep$primer == "PIF3"),]
+# And then add in the delta Cqs as a new column
+Cq_values1rep_Delta$delta_Cq <- delta_Cqs
+
+# An we usually look at delta Cq as 2^delta Cq as a way to transform the data 
+# The 2^deltaCq represents a relative copy number of virus genome to fly genome
+# It is easier to plot that way, and you won't get any negative values
+Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
+
+#Plot by treatment or whatever conditions you are comparing 
+
+ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=treatment, fill=treatment)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) + theme(legend.position = "none")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
