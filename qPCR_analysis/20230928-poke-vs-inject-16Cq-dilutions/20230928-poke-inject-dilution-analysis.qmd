@@ -16,14 +16,12 @@ library(tidyr)
 knitr::opts_chunk$set(dpi=300,fig.width=7)
 ```
 
-
 Load in dataset
 
 ```{r}
 Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20230928-poke-vs-inject-16Cq-dilutions/poke-inject-dil-sheet.csv")
 
 ```
-
 
 Histogram of all Cq vaules
 
@@ -59,10 +57,9 @@ Cq_values_inject <- Cq_values[which(Cq_values$treatment == "16Cq DiNV injection"
 ggplot(Cq_values_inject, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution.long)
 ```
 
-This looks to me as somewhat what we would expect. The poked flies have higher Cq values for virus than the injected flies, and they seem to have more variability. The very dilute condition is probably too dilute for either type of injection, but that is good to know. 
+This looks to me as somewhat what we would expect. The poked flies have higher Cq values for virus than the injected flies, and they seem to have more variability. The very dilute condition is probably too dilute for either type of injection, but that is good to know.
 
-
-Calculate the variances in Cq and the mean Cq between the qPCR replicates 
+Calculate the variances in Cq and the mean Cq between the qPCR replicates
 
 ```{r}
 
@@ -98,6 +95,7 @@ hist(Cq_values_1rep_inject$Cq_var)
 ```
 
 Check variance by dilution
+
 ```{r}
 # slightly more variance in the poke, but not really, what about the different dilutions?
 
@@ -126,7 +124,7 @@ hist(Cq_values_1rep_1_100$Cq_var)
 # nope, all over the place really 
 ```
 
-Which variances seem like they are too high? (over 1) I am not sure if that cutoff is too lenient 
+Which variances seem like they are too high? (over 1) I am not sure if that cutoff is too lenient
 
 ```{r}
 high_var <- subset(Cq_values, Cq_var > 1)
@@ -144,7 +142,6 @@ high_var
 # that is row 113
 Cq_values_rm <- Cq_values[c(1:112, 114:192),]
 ```
-
 
 How would things look if I changed all the NA Cq values to 40?
 
@@ -183,9 +180,9 @@ Cq_values_40_inject <- Cq_values_40[which(Cq_values_40$treatment == "16Cq DiNV i
 ggplot(Cq_values_40_inject, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution.long)
 ```
 
-You can see the differences between the types of pokes a little stronger here 
+You can see the differences between the types of pokes a little stronger here
 
-Calculate the variances in Cq and the mean Cq between the qPCR replicates 
+Calculate the variances in Cq and the mean Cq between the qPCR replicates
 
 ```{r}
 
@@ -220,8 +217,7 @@ hist(Cq_values_40_1rep_poke$Cq_var)
 hist(Cq_values_40_1rep_inject$Cq_var)
 ```
 
-Ok, understandably there is a lot more variance here now that I added in the 40s. I am not sure what to do with this. My hope is that there is not much variance in the 1ng samples because that is what I am thinking of moving forward with because the Cqs are pretty high across the board. These were probably the wrong samples to do a dilution series on because the amount of virus they have is so small compared to a fly who has a raging infection. 
-What are the variances for just 1ng samples?
+Ok, understandably there is a lot more variance here now that I added in the 40s. I am not sure what to do with this. My hope is that there is not much variance in the 1ng samples because that is what I am thinking of moving forward with because the Cqs are pretty high across the board. These were probably the wrong samples to do a dilution series on because the amount of virus they have is so small compared to a fly who has a raging infection. What are the variances for just 1ng samples?
 
 ```{r}
 Cq_values_40_1rep_1ng <- Cq_values_40_1rep[which(Cq_values_40_1rep$dilution == "1ng"),]
@@ -229,8 +225,7 @@ Cq_values_40_1rep_1ng <- Cq_values_40_1rep[which(Cq_values_40_1rep$dilution == "
 hist(Cq_values_40_1rep_1ng$Cq_var)
 ```
 
-Ok, this is good, there is one that is super big, but the others are ok. The super high variance sample is 6 1ng for pif 3. For that one, there is 1 Cq at 34, one at 35, and the other is 40. I think I will remove the row that has the 40 Cq and do this again. 
-
+Ok, this is good, there is one that is super big, but the others are ok. The super high variance sample is 6 1ng for pif 3. For that one, there is 1 Cq at 34, one at 35, and the other is 40. I think I will remove the row that has the 40 Cq and do this again.
 
 ```{r}
 # remove row 97
@@ -256,9 +251,9 @@ Cq_values_40_1rep_1ng <- Cq_values_40_1rep[which(Cq_values_40_1rep$dilution == "
 hist(Cq_values_40_1rep_1ng$Cq_var)
 ```
 
-Ok this is better, it's still not great but I think I will move forward with this 
+Ok this is better, it's still not great but I think I will move forward with this
 
-Plot the means vs the variances 
+Plot the means vs the variances
 
 ```{r}
 ggplot(Cq_values_40_1rep_1ng, aes(x=Cq_mean, y=Cq_var)) +
@@ -266,7 +261,7 @@ ggplot(Cq_values_40_1rep_1ng, aes(x=Cq_mean, y=Cq_var)) +
 
 ```
 
-Sort of a trend to see higher Cq and higher variance, which we've seen before. I do think the machine is not as good at picking up the higher Cqs. 
+Sort of a trend to see higher Cq and higher variance, which we've seen before. I do think the machine is not as good at picking up the higher Cqs.
 
 Plot Cqs as box plots for just 1ng
 
@@ -275,7 +270,7 @@ ggplot(Cq_values_40_1rep_1ng, aes(y= Cq_mean, x=primer, fill=treatment)) + geom_
 
 ```
 
-Ok this cool, the TPIs are all very similar, as they should be. And the PIF 3s are pretty different, but maybe by not that much. And the None is the stock sample, which still had amplification for PIF 3 which is interesting. I do not know what to make of it. The water sample did not have amplification for PIF3. My guess is that there is a small amount of contamination (although I don't know how it's not in the water then), or that there is something in the fly DNA that does amplify a tiny bit after so many rounds of amplification. 
+Ok this cool, the TPIs are all very similar, as they should be. And the PIF 3s are pretty different, but maybe by not that much. And the None is the stock sample, which still had amplification for PIF 3 which is interesting. I do not know what to make of it. The water sample did not have amplification for PIF3. My guess is that there is a small amount of contamination (although I don't know how it's not in the water then), or that there is something in the fly DNA that does amplify a tiny bit after so many rounds of amplification.
 
 Calculating delta Cqs from the TPI to the PIF 3 for the 1ng dilution
 
@@ -314,11 +309,12 @@ ggplot(Cq_values_40_1rep_1ng_Delta, aes(y= delta_Cq_2, x=treatment, fill=treatme
 
 ```
 
-I am not sure exactly what delta Cq means in this context, I think it is relative amount of virus genome to host genome? 
+I am not sure exactly what delta Cq means in this context, I think it is relative amount of virus genome to host genome?
 
-How to compare the delta Cqs ^2? 
+How to compare the delta 2^Cqs?
 
-Calculate mean of the delta Cqs ^2, the variance, and then the coeddicient of variation 
+Calculate mean of the delta ^2Cqs, the variance, and then the coefficient of variation
+
 ```{r}
 # calculate the mean of delta_Cq_2 for each treatment 
 tapply(Cq_values_40_1rep_1ng_Delta$delta_Cq_2, Cq_values_40_1rep_1ng_Delta$treatment, mean)
@@ -348,11 +344,6 @@ sqrt(tapply(Cq_values_40_1rep_1ng_Delta$delta_Cq_2, Cq_values_40_1rep_1ng_Delta$
 # 2.971875 so the needle is about 3 times more variable? 
 ```
 
-
-
-
-
-
 How does the 1:10 dilution look?
 
 ```{r}
@@ -363,7 +354,7 @@ hist(Cq_values_40_1rep_1_10$Cq_var)
 
 Ok these are basically variances I deemed were ok for the one above, so I should be ok with these as well?
 
-Plot the means vs the variances 
+Plot the means vs the variances
 
 ```{r}
 ggplot(Cq_values_40_1rep_1_10, aes(x=Cq_mean, y=Cq_var)) +
@@ -371,7 +362,7 @@ ggplot(Cq_values_40_1rep_1_10, aes(x=Cq_mean, y=Cq_var)) +
 
 ```
 
-This doesn't exactly follow that there are higher variances with higher Cq means, so there isn't really a trend here. 
+This doesn't exactly follow that there are higher variances with higher Cq means, so there isn't really a trend here.
 
 Plot Cqs as box plots for just 1:10 dilution
 
@@ -380,9 +371,9 @@ ggplot(Cq_values_40_1rep_1_10, aes(y= Cq_mean, x=primer, fill=treatment)) + geom
 
 ```
 
-This looks pretty similar to the one above, even cleaner/tighter actually which is pretty interesting, and promising for just using the 1:10 dilution. At least for the injection. It is more variable for the poke. 
+This looks pretty similar to the one above, even cleaner/tighter actually which is pretty interesting, and promising for just using the 1:10 dilution. At least for the injection. It is more variable for the poke.
 
-Calculating delta Cqs from the TPI to the PIF 3 for 1:10 dilution 
+Calculating delta Cqs from the TPI to the PIF 3 for 1:10 dilution
 
 ```{r}
 # currently the samples are not ordered by the sample, but by the plate, so I need each sample one right after the other 
@@ -417,9 +408,10 @@ ggplot(Cq_values_40_1rep_1_10_Delta, aes(y= delta_Cq_2, x=treatment, fill=treatm
 
 ```
 
-How to compare the delta Cqs ^2? 
+How to compare the delta Cqs \^2?
 
-Calculate mean of the delta Cqs ^2, the variance, and then the coeddicient of variation 
+Calculate mean of the delta Cqs \^2, the variance, and then the coeddicient of variation
+
 ```{r}
 # calculate the mean of delta_Cq_2 for each treatment 
 tapply(Cq_values_40_1rep_1_10_Delta$delta_Cq_2, Cq_values_40_1rep_1_10_Delta$treatment, mean)
@@ -448,10 +440,3 @@ sqrt(tapply(Cq_values_40_1rep_1_10_Delta$delta_Cq_2, Cq_values_40_1rep_1_10_Delt
 
 # 17.84341 so the needle is about 18 times more variable? 
 ```
-
-
-
-
-
-
-

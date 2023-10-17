@@ -1,0 +1,97 @@
+well,plate,well code,tube number,treatment,dilution,replicate,primer,unique.name,Cq
+A01,1,ex ctr 1,ex ctr 1,ex ctr,NA,1,TPI,ex-1-TPI,40.00
+A02,1,ex ctr 1,ex ctr 1,ex ctr,NA,2,TPI,ex-1-TPI,40.00
+A03,1,ex ctr 1,ex ctr 1,ex ctr,NA,3,TPI,ex-1-TPI,40.00
+A04,1,19 1ng,19,day0 DiNV,1ng,1,TPI,19-1-TPI,22.50
+A05,1,19 1ng,19,day0 DiNV,1ng,2,TPI,19-1-TPI,22.53
+A06,1,19 1ng,19,day0 DiNV,1ng,3,TPI,19-1-TPI,22.88
+A07,1,ex ctr 1,ex ctr 1,ex ctr,NA,1,PIF3,ex-1-PIF3,40.00
+A08,1,ex ctr 1,ex ctr 1,ex ctr,NA,2,PIF3,ex-1-PIF3,40.00
+A09,1,ex ctr 1,ex ctr 1,ex ctr,NA,3,PIF3,ex-1-PIF3,40.00
+A10,1,19 1ng,19,day0 DiNV,1ng,1,PIF3,19-1-PIF3,31.11
+A11,1,19 1ng,19,day0 DiNV,1ng,2,PIF3,19-1-PIF3,30.65
+A12,1,19 1ng,19,day0 DiNV,1ng,3,PIF3,19-1-PIF3,31.39
+B01,1,water,water,water,NA,1,TPI,water-TPI,40.00
+B02,1,water,water,water,NA,2,TPI,water-TPI,36.45
+B03,1,water,water,water,NA,3,TPI,water-TPI,39.29
+B04,1,19 0.5ng,19,day0 DiNV,0.5ng,1,TPI,19-5-TPI,23.57
+B05,1,19 0.5ng,19,day0 DiNV,0.5ng,2,TPI,19-5-TPI,23.66
+B06,1,19 0.5ng,19,day0 DiNV,0.5ng,3,TPI,19-5-TPI,23.81
+B07,1,water,water,water,NA,1,PIF3,water-PIF3,40.00
+B08,1,water,water,water,NA,2,PIF3,water-PIF3,40.00
+B09,1,water,water,water,NA,3,PIF3,water-PIF3,40.00
+B10,1,19 0.5ng,19,day0 DiNV,0.5ng,1,PIF3,19-5-PIF3,32.43
+B11,1,19 0.5ng,19,day0 DiNV,0.5ng,2,PIF3,19-5-PIF3,31.65
+B12,1,19 0.5ng,19,day0 DiNV,0.5ng,3,PIF3,19-5-PIF3,31.81
+C01,1,7 1ng,7,day0 CCM,1ng,1,TPI,7-1-TPI,22.22
+C02,1,7 1ng,7,day0 CCM,1ng,2,TPI,7-1-TPI,22.34
+C03,1,7 1ng,7,day0 CCM,1ng,3,TPI,7-1-TPI,22.44
+C04,1,29 1ng,29,dead DiNV,1ng,1,TPI,29-1-TPI,31.14
+C05,1,29 1ng,29,dead DiNV,1ng,2,TPI,29-1-TPI,31.50
+C06,1,29 1ng,29,dead DiNV,1ng,3,TPI,29-1-TPI,31.33
+C07,1,7 1ng,7,day0 CCM,1ng,1,PIF3,7-1-PIF3,40.00
+C08,1,7 1ng,7,day0 CCM,1ng,2,PIF3,7-1-PIF3,38.62
+C09,1,7 1ng,7,day0 CCM,1ng,3,PIF3,7-1-PIF3,40.00
+C10,1,29 1ng,29,dead DiNV,1ng,1,PIF3,29-1-PIF3,20.87
+C11,1,29 1ng,29,dead DiNV,1ng,2,PIF3,29-1-PIF3,21.15
+C12,1,29 1ng,29,dead DiNV,1ng,3,PIF3,29-1-PIF3,21.01
+D01,1,7 0.5ng,7,day0 CCM,0.5ng,1,TPI,7-5-TPI,23.91
+D02,1,7 0.5ng,7,day0 CCM,0.5ng,2,TPI,7-5-TPI,23.75
+D03,1,7 0.5ng,7,day0 CCM,0.5ng,3,TPI,7-5-TPI,23.78
+D04,1,29 0.5ng,29,dead DiNV,0.5ng,1,TPI,29-5-TPI,33.18
+D05,1,29 0.5ng,29,dead DiNV,0.5ng,2,TPI,29-5-TPI,32.72
+D06,1,29 0.5ng,29,dead DiNV,0.5ng,3,TPI,29-5-TPI,32.94
+D07,1,7 0.5ng,7,day0 CCM,0.5ng,1,PIF3,7-5-PIF3,34.46
+D08,1,7 0.5ng,7,day0 CCM,0.5ng,2,PIF3,7-5-PIF3,40.00
+D09,1,7 0.5ng,7,day0 CCM,0.5ng,3,PIF3,7-5-PIF3,40.00
+D10,1,29 0.5ng,29,dead DiNV,0.5ng,1,PIF3,29-5-PIF3,22.01
+D11,1,29 0.5ng,29,dead DiNV,0.5ng,2,PIF3,29-5-PIF3,21.97
+D12,1,29 0.5ng,29,dead DiNV,0.5ng,3,PIF3,29-5-PIF3,22.24
+E01,1,9 1ng ,9,day0 CCM,1ng,1,TPI,9-1-TPI,22.71
+E02,1,9 1ng ,9,day0 CCM,1ng,2,TPI,9-1-TPI,22.73
+E03,1,9 1ng ,9,day0 CCM,1ng,3,TPI,9-1-TPI,22.90
+E04,1,42 1ng,42,dead DiNV,1ng,1,TPI,42-1-TPI,23.46
+E05,1,42 1ng,42,dead DiNV,1ng,2,TPI,42-1-TPI,23.61
+E06,1,42 1ng,42,dead DiNV,1ng,3,TPI,42-1-TPI,23.53
+E07,1,9 1ng ,9,day0 CCM,1ng,1,PIF3,9-1-PIF3,40.00
+E08,1,9 1ng ,9,day0 CCM,1ng,2,PIF3,9-1-PIF3,40.00
+E09,1,9 1ng ,9,day0 CCM,1ng,3,PIF3,9-1-PIF3,40.00
+E10,1,42 1ng,42,dead DiNV,1ng,1,PIF3,42-1-PIF3,15.14
+E11,1,42 1ng,42,dead DiNV,1ng,2,PIF3,42-1-PIF3,15.25
+E12,1,42 1ng,42,dead DiNV,1ng,3,PIF3,42-1-PIF3,15.35
+F01,1,9 0.5ng,9,day0 CCM,0.5ng,1,TPI,9-5-TPI,23.81
+F02,1,9 0.5ng,9,day0 CCM,0.5ng,2,TPI,9-5-TPI,23.59
+F03,1,9 0.5ng,9,day0 CCM,0.5ng,3,TPI,9-5-TPI,23.75
+F04,1,42 0.5ng,42,dead DiNV,0.5ng,1,TPI,42-5-TPI,24.96
+F05,1,42 0.5ng,42,dead DiNV,0.5ng,2,TPI,42-5-TPI,25.10
+F06,1,42 0.5ng,42,dead DiNV,0.5ng,3,TPI,42-5-TPI,25.01
+F07,1,9 0.5ng,9,day0 CCM,0.5ng,1,PIF3,9-5-PIF3,40.00
+F08,1,9 0.5ng,9,day0 CCM,0.5ng,2,PIF3,9-5-PIF3,37.59
+F09,1,9 0.5ng,9,day0 CCM,0.5ng,3,PIF3,9-5-PIF3,40.00
+F10,1,42 0.5ng,42,dead DiNV,0.5ng,1,PIF3,42-5-PIF3,16.35
+F11,1,42 0.5ng,42,dead DiNV,0.5ng,2,PIF3,42-5-PIF3,16.47
+F12,1,42 0.5ng,42,dead DiNV,0.5ng,3,PIF3,42-5-PIF3,16.57
+G01,1,16 1ng,16,day0 DiNV,1ng,1,TPI,16-1-TPI,22.57
+G02,1,16 1ng,16,day0 DiNV,1ng,2,TPI,16-1-TPI,22.59
+G03,1,16 1ng,16,day0 DiNV,1ng,3,TPI,16-1-TPI,22.73
+G04,1,ex ctr 2,ex ctr 2,ex ctr,NA,1,TPI,ex-2-TPI,40.00
+G05,1,ex ctr 2,ex ctr 2,ex ctr,NA,2,TPI,ex-2-TPI,39.09
+G06,1,ex ctr 2,ex ctr 2,ex ctr,NA,3,TPI,ex-2-TPI,40.00
+G07,1,16 1ng,16,day0 DiNV,1ng,1,PIF3,16-1-PIF3,31.03
+G08,1,16 1ng,16,day0 DiNV,1ng,2,PIF3,16-1-PIF3,31.32
+G09,1,16 1ng,16,day0 DiNV,1ng,3,PIF3,16-1-PIF3,31.32
+G10,1,ex ctr 2,ex ctr 2,ex ctr,NA,1,PIF3,ex-2-PIF3,34.67
+G11,1,ex ctr 2,ex ctr 2,ex ctr,NA,2,PIF3,ex-2-PIF3,40.00
+G12,1,ex ctr 2,ex ctr 2,ex ctr,NA,3,PIF3,ex-2-PIF3,40.00
+H01,1,16 0.5ng,16,day0 DiNV,0.5ng,1,TPI,16-5-TPI,23.94
+H02,1,16 0.5ng,16,day0 DiNV,0.5ng,2,TPI,16-5-TPI,23.86
+H03,1,16 0.5ng,16,day0 DiNV,0.5ng,3,TPI,16-5-TPI,23.88
+H04,1,water,water,water,NA,1,TPI,water-TPI,36.86
+H05,1,water,water,water,NA,2,TPI,water-TPI,40.00
+H06,1,water,water,water,NA,3,TPI,water-TPI,34.40
+H07,1,16 0.5ng,16,day0 DiNV,0.5ng,1,PIF3,16-5-PIF3,32.42
+H08,1,16 0.5ng,16,day0 DiNV,0.5ng,2,PIF3,16-5-PIF3,32.06
+H09,1,16 0.5ng,16,day0 DiNV,0.5ng,3,PIF3,16-5-PIF3,32.75
+H10,1,water,water,water,NA,1,PIF3,water-PIF3,40.00
+H11,1,water,water,water,NA,2,PIF3,water-PIF3,40.00
+H12,1,water,water,water,NA,3,PIF3,water-PIF3,40.00

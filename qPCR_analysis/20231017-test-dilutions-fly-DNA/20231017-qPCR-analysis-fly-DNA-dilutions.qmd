@@ -1,0 +1,154 @@
+---
+title: "20231017 qPCR analysis fly DNA dilutions"
+format: gfm
+editor: visual
+---
+Load packages needed
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+```{r}
+Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20231017-test-dilutions-fly-DNA/20231017-qPCR-sheet.csv")
+
+```
+
+
+Look at raw Cq values by treatment and primer
+```{r}
+# if you want to also include another varaible to separate out the histogram by, you can include a facet 
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~treatment) 
+```
+
+Look at raw Cq values by dilution and primer
+```{r}
+# if you want to also include another varaible to separate out the histogram by, you can include a facet 
+ggplot(Cq_values, aes(x= Cq, fill = dilution)) + geom_histogram(position = "dodge") + facet_grid(~primer) 
+
+# this isn't very informative 
+```
+
+
+
+Calculate variances in Cq between tech replicates, as well as the means 
+
+```{r}
+# use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the variance by)
+Cq_values$Cq_var <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=var)
+
+# use the mean function, and calculates the mean of Cq values by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the mean by)
+Cq_values$Cq_mean <- ave(Cq_values$Cq, Cq_values$unique.name, FUN=mean)
+
+# Keep all rows where the replicate is 1 (or you could do 2 or 3)
+# make into new Df so we keep the original with all the Cq values
+Cq_values_1rep <- Cq_values[which(Cq_values$replicate == "1"),]
+
+# histogram of all variances
+hist(Cq_values_1rep$Cq_var)
+# some of these are super high that we don't want 
+
+# which are above 2?
+Cq_values[which(Cq_values$Cq_var >2),]
+# Ok so, for all of these are samples that should have no amplifcation for this primer, either water with TPI
+# or extraction controls or CCM treatment for PIF 3
+# and all of these seem to have 1 replicate out of the 3 that doesn't fit with the others in terms of the Cq value
+# the best thing to do is remove them?
+```
+
+Plot variance and means as a scatterplot 
+```{r}
+
+ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
+  geom_point(size=2, shape=23)
+
+```
+
+
+For now I am going to look at all the samples that aren't water or extraction controls 
+
+```{r}
+# separate out samples that aren't a control 
+# so anything that doesn't have an NA for dilution 
+Cq_values_1rep_samp <- Cq_values_1rep[which(Cq_values_1rep$dilution != "NA"),]
+
+# now with this, the samples are ordered with the TPI primer for every sample above the PIF3 primer for each sample
+# no need to reorder
+nrow(Cq_values_1rep_samp)
+
+# Separate that dataframe, incriminating by 2, every number between 1-12 (number of rows in dataframe)
+Cq_values_1rep_samp$Cq_mean[seq(1,24,2)] # these are the TPI Cq means 
+Cq_values_1rep_samp$Cq_mean[seq(2,24,2)] # these are the PIF 3 primer Cq means 
+
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+delta_Cqs <- Cq_values_1rep_samp$Cq_mean[seq(1,24,2)] - Cq_values_1rep_samp$Cq_mean[seq(2,24,2)]
+#vector
+delta_Cqs
+
+# Keep only rows that are PIF3
+Cq_values1rep_Delta <- Cq_values_1rep_samp[which(Cq_values_1rep_samp$primer == "PIF3"),]
+# And then add in the delta Cqs as a new column
+Cq_values1rep_Delta$delta_Cq <- delta_Cqs
+
+# do 2^ delta Cq
+Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
+
+#Plot by treatment or whatever conditions you are comparing 
+
+ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=treatment, fill=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) 
+
+```
+
+Lets look at the treatments separately
+
+```{r}
+# just day 0 CCM
+Cq_values1rep_Delta_CCM <- Cq_values1rep_Delta[which(Cq_values1rep_Delta$treatment == "day0 CCM"),]
+
+ggplot(Cq_values1rep_Delta_CCM, aes(y= delta_Cq_2, x=dilution, fill=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) + theme(legend.position = "none")
+
+```
+
+I'm not super sure what to make of this, the hope would be that the numbers would be the same between the two dilutions for the delta?
+
+```{r}
+# just day 0 DiNV
+Cq_values1rep_Delta_CCM <- Cq_values1rep_Delta[which(Cq_values1rep_Delta$treatment == "day0 DiNV"),]
+
+ggplot(Cq_values1rep_Delta_CCM, aes(y= delta_Cq_2, x=dilution, fill=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) + theme(legend.position = "none")
+
+```
+
+
+
+```{r}
+# just day dead DiNV
+Cq_values1rep_Delta_CCM <- Cq_values1rep_Delta[which(Cq_values1rep_Delta$treatment == "dead DiNV"),]
+
+ggplot(Cq_values1rep_Delta_CCM, aes(y= delta_Cq_2, x=dilution, fill=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) + theme(legend.position = "none")
+
+```
+
+
+What are the  Cq values for my control samples?
+
+```{r}
+Cq_values_ctr <- Cq_values[is.na(Cq_values$dilution),]
+
+ggplot(Cq_values_ctr, aes(y= Cq, x=treatment, fill=primer)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) 
+
+```
+
+
+
+
+
