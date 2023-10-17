@@ -1,5 +1,5 @@
 ---
-title: "20230908-16Cq-injt-2"
+title: "20230927 male and female innubila nanoject replicate 1"
 format: gfm
 editor: visual
 ---
@@ -77,11 +77,12 @@ Read in raw data
 
 ```{r}
 #read the file from csv
-df<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230908-inn-16Cq-injt-2/20230908-test-nanoject-2-sheet.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230927-rep-1-male-female-nanoject-16Cq/20230927-sheet.csv")
 
 # only want columns with vial, treatment, and daily mortality
 # remove columns not needed for each subset
-df<-df[,c(1,7,10:22)]
+# also remove the bottom row we don't need
+df<-df[,c(1,9,12:30)]
 ```
 
 ### Convert each of these dataframes to long and tidy format using function defined above
@@ -90,15 +91,30 @@ df<-df[,c(1,7,10:22)]
 df.convert<-convert_df(df)
 ```
 
+Plot the survival curve
 ```{r}
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = TRUE,
+          pval = TRUE, conf.int = FALSE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "blueviolet")) + ylab("Survival Proporation") + xlab("Days post injection")
+          palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
+
+```{r}
+df_fit_t<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
+summary(df_fit_t)
+```
+
+
+
+
+
+
+
+
+
