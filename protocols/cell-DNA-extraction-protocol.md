@@ -50,7 +50,7 @@ Note that filter tips are used for all pipetting!!
 8. Add 3ul of RNase A to each sample tube
 9. Invert tubes 25 times to mix 
 10. Inucbate sample tubes at 37C for 30 minutes (either in the heat block or in the oven)
-11. While this is incubating, you can prepare the final tubes. Make 1 new 1.5L tube for each sample and add 100ul of fresh 100% isopropanol to each tube. Then label the tubes: on the lid label with the sample number/ID and "DNA", on the side, repeat the sample number/ID, DNA, the date, and your initials
+11. While this is incubating, you can prepare the final tubes. Make 1 new 1.5L tube for each sample and add 300ul of fresh 100% isopropanol to each tube. Then label the tubes: on the lid label with the sample number/ID and "DNA", on the side, repeat the sample number/ID, DNA, the date, and your initials
 12. Additionally while the samples are incubating, make fresh 70% ethanol by mixing 35mL of 100% ethanol with 15mL molecular grade water for a 50mL conical, or 10.5mL of 100% ethanol with 4.5mL of molecular grade water for a 15mL conical
 13. Cool tubes to room temperature on the bench
 14. Add 100ul of protein precipitation solution to each tube
