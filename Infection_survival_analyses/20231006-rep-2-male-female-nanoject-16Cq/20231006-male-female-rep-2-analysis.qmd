@@ -1,8 +1,9 @@
 ---
-title: "20230927 male and female innubila nanoject replicate 1"
+title: "20231006-male-and-female-DiNV-injections-rep-2"
 format: gfm
 editor: visual
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi=300,fig.width=7)
@@ -77,12 +78,9 @@ Read in raw data
 
 ```{r}
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230927-rep-1-male-female-nanoject-16Cq/20230927-sheet.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231006-rep-2-male-female-nanoject-16Cq/20231006-counts.csv")
 
-# only want columns with vial, treatment, and daily mortality
-# remove columns not needed for each subset
-# also remove the bottom row we don't need
-df<-df[,c(1,9,12:30)]
+# no need to cut down on the file because I already separated out to to be the columns needed 
 ```
 
 ### Convert each of these dataframes to long and tidy format using function defined above
@@ -104,9 +102,74 @@ ggsurvplot(df_fit,
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+
 ```
 
 ```{r}
 df_fit_t<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
 summary(df_fit_t)
 ```
+
+### look at combined data from rep one and two of this infection experiment 
+
+Read in data and convert
+```{r}
+#read the file from csv
+df2<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231006-rep-2-male-female-nanoject-16Cq/male-female-rep-1-2-counts-combo.csv")
+
+# no need to cut down on the file because I already separated out to to be the columns needed 
+
+df2.convert<-convert_df(df2)
+# add in a column for block/replicate
+# repeate the letter A 69 times (number of rows for block 1), then after that repeate B 69 times (number of rows for block 2)
+df2.convert$Block <- rep(c("A","B"), c(69, 69))
+
+```
+
+
+Plot the survival curve without the blocks separated
+
+```{r}
+# change to not have confidence intervals in this one so you can see them 
+df2_fit<- survfit(Surv(dead, status) ~ treatment, data=df2.convert)
+ggsurvplot(df2_fit,
+          pval = TRUE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw(), # Change ggplot2 theme
+          palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+
+```
+
+
+Plot the survival curve with the blocks separated
+
+```{r}
+# change to not have confidence intervals in this one so you can see them 
+df3_fit<- survfit(Surv(dead, status) ~ treatment + Block, data=df2.convert)
+ggsurvplot(df3_fit,
+          pval = TRUE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw() # Change ggplot2 theme
+          ) + ylab("Survival Proporation") + xlab("Days post injection")
+```
+
+Model with block as a factor 
+
+```{r}
+df_fit4<- coxph(Surv(dead, status) ~ treatment + Block, data=df2.convert)
+summary(df_fit4)
+```
+
+Not sure what this is comparing here, maybe I need to separate out sex differently?
+
+
+
+
+
+
