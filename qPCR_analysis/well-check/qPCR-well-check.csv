@@ -1,0 +1,90 @@
+﻿well,treatment,primer,Cq,data from
+B02,water,TPI,36.45,me
+B03,water,TPI,39.29,me
+C08,day0 CCM,PIF3,38.62,me
+D07,day0 CCM,PIF3,34.46,me
+F08,day0 CCM,PIF3,37.59,me
+G05,ex ctr,TPI,39.09,me
+G10,ex ctr,PIF3,34.67,me
+H04,water,TPI,36.86,me
+H06,water,TPI,34.4,me
+H08,water,TPI,34.78,me
+H09,water,TPI,35.22,me
+H10,stock fly,PIF3,36.76,me
+H11,stock fly,PIF3,36.82,me
+H12,stock fly,PIF3,36.56,me
+A01,stock fly,115,33.19,me
+A02,stock fly,115,32.61,me
+A03,stock fly,115,32.07,me
+A04,stock fly,115,29.96,me
+A05,stock fly,115,29.83,me
+A06,stock fly,115,30.13,me
+A07,stock fly,115,31.67,me
+A08,stock fly,115,31.84,me
+A09,stock fly,115,31.15,me
+C07,stock fly,115,33.21,me
+C08,stock fly,115,32.39,me
+C09,stock fly,115,34.44,me
+C10,stock fly,115,30.65,me
+C11,stock fly,115,30.29,me
+C12,stock fly,115,31.48,me
+D01,stock fly,115,31.64,me
+D02,stock fly,115,31.58,me
+D03,stock fly,115,31.32,me
+F01,stock fly,115,33.81,me
+F02,stock fly,115,34.15,me
+F03,stock fly,115,33.65,me
+F04,stock fly,115,32.15,me
+F05,stock fly,115,32.45,me
+F06,stock fly,115,32.46,me
+F07,stock fly,115,33.17,me
+F08,stock fly,115,33.62,me
+F09,stock fly,115,33.85,me
+A10,not infected supernatant Myd88,115,39.16,me
+B07,not infected supernatant Dv1,115,34.81,me
+B08,not infected supernatant Dv1,115,36.07,me
+B09,not infected supernatant Dv1,115,37,me
+B10,not infected supernatant Myd88,115,38.03,me
+B12,not infected supernatant Myd88,115,39.51,me
+C07,not infected supernatant Dv1,115,36.09,me
+C08,not infected supernatant Dv1,115,37.61,me
+C09,not infected supernatant Dv1,115,37.6,me
+C10,not infected supernatant Myd88,115,38.58,me
+B10,Water,TPI,36,taiye
+B11,Water,PIF3,37.61,taiye
+B12,Water,lambda,39.08,taiye
+A4,Dinn_cells+M.E,PIF3,35.2,taiye
+A5,Dinn_cells+M.E,PIF3,35.57,taiye
+A6,Dinn_cells+M.E,PIF3,33.63,taiye
+A10,extraction ctl 1,TPI,35.02,taiye
+A11,extraction ctl 1,TPI,34.03,taiye
+A12,extraction ctl 1,TPI,34.54,taiye
+C4,Dinn_cells+M.E,PIF3,32.74,taiye
+C5,Dinn_cells+M.E,PIF3,33.99,taiye
+C6,Dinn_cells+M.E,PIF3,35.43,taiye
+C10,extraction ctl 1,PIF3,33.25,taiye
+C11,extraction ctl 1,PIF3,32.97,taiye
+C12,extraction ctl 1,PIF3,35.06,taiye
+E4,Dinn_cells+N.M.E,PIF3,34.66,taiye
+E5,Dinn_cells+N.M.E,PIF3,33.03,taiye
+E6,Dinn_cells+N.M.E,PIF3,33.74,taiye
+G4,Dinn_cells+N.M.E,PIF3,33.88,taiye
+G6,Dinn_cells+N.M.E,PIF3,33.45,taiye
+A5,Dinn_cells+M.E,PIF3,35.05,taiye
+A10,extraction ctl 2,TPI,31.58,taiye
+A11,extraction ctl 2,TPI,35.16,taiye
+A12,extraction ctl 2,TPI,33.87,taiye
+C4,Dinn_cells+N.M.E,PIF3,34.1,taiye
+C5,Dinn_cells+N.M.E,PIF3,33.4,taiye
+C6,Dinn_cells+N.M.E,PIF3,34.12,taiye
+C10,extraction ctl 2,PIF3,32.45,taiye
+C11,extraction ctl 2,PIF3,32.63,taiye
+C12,extraction ctl 2,PIF3,32.78,taiye
+D4,Dinn_cells+M.E,PIF3,34.51,taiye
+D6,Dinn_cells+M.E,PIF3,34.74,taiye
+E4,Dinn_cells+N.M.E,PIF3,34.81,taiye
+E5,Dinn_cells+N.M.E,PIF3,33.36,taiye
+E6,Dinn_cells+N.M.E,PIF3,34.78,taiye
+F10,Water,lambda,35.08,taiye
+F11,Water,lambda,35.38,taiye
+F12,Water,lambda,35.12,taiye

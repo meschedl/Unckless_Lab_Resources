@@ -24,7 +24,7 @@ Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources
 Look at raw Cq values by treatment and primer
 ```{r}
 # if you want to also include another varaible to separate out the histogram by, you can include a facet 
-ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~treatment) 
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(dilution~treatment) 
 ```
 
 Look at raw Cq values by dilution and primer
@@ -57,7 +57,9 @@ hist(Cq_values_1rep$Cq_var)
 # some of these are super high that we don't want 
 
 # which are above 2?
-Cq_values[which(Cq_values$Cq_var >2),]
+high_var <- Cq_values[which(Cq_values$Cq_var >.5),]
+
+high_var[,c(1,5,10)]
 # Ok so, for all of these are samples that should have no amplifcation for this primer, either water with TPI
 # or extraction controls or CCM treatment for PIF 3
 # and all of these seem to have 1 replicate out of the 3 that doesn't fit with the others in terms of the Cq value
