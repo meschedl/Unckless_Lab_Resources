@@ -31,6 +31,9 @@ commented so it is not seen as code.
 # there are other code options, but those aren't needed right now 
 # then you can put in the code you normally use for loading in a package in this space 
 # notice how all the text in this chunk has to be commented 
+# if these packages are not installed, install them first 
+# install.packages("survival")
+# install.packages("survminer")
 
 # load in survival and surminer packages 
 library("survival")
@@ -160,7 +163,20 @@ needed for the analysis only. Columns like replicate, species, and fly
 age are not needed, and will actually mess up the function above. The
 function only works on a dataset that has the vial in the first column,
 the treatment in the second column, and the day 0. day 1, day 2 etc
-after that.
+after that. See below as an example of the data needed:
+
+| unique_vial_name | treatment         | starting_n_number | day1 | day2 | day3 | day4 | day5 | day6 |
+|------------------|-------------------|-------------------|------|------|------|------|------|------|
+| 1                | D.mel_LB          | 10                | 10   | 10   | 9    | 9    | 9    | 9    |
+| 2                | D.mel_LB          | 9                 | 9    | 9    | 10   | 10   | 10   | 10   |
+| 3                | D.simulans_LB     | 10                | 10   | 9    | 9    | 9    | 9    | 9    |
+| 4                | D.simulans_LB     | 10                | 10   | 10   | 10   | 10   | 10   | 10   |
+| 5                | D.mel_P.rett      | 9                 | 10   | 10   | 9    | 8    | 7    | 6    |
+| 6                | D.mel_P.rett      | 10                | 10   | 8    | 8    | 7    | 7    | 7    |
+| 7                | D.simulans_P.rett | 10                | 10   | 7    | 6    | 6    | 4    | 3    |
+
+If you have extra columns in your data you can remove them in R, but you
+have to at least have these types of columns for the function to work.
 
 ### Read in the raw data and make subsets
 
@@ -234,14 +250,25 @@ reading on the actual nuts and bolts of these plots and statistics, see
 # then we use a ggplot specific for the survfit model to plot it. Again the only thing you need to add in is the name of your model
 ###
 ### ggsurvplot(file_name_subset_convert_fit,
-          ### pval = TRUE, conf.int = TRUE, # add the p-value into the graph
+          ### pval = FALSE, conf.int = TRUE, # you can change these to remove the confidence intervals from the lines  
           ### linetype = "strata", # Change line type by groups
-          ### ggtheme = theme_bw()) # Change ggplot2 theme
+          ### ggtheme = theme_bw()) + # Change ggplot2 theme
+          ### ylab("Survival Proportion") + xlab("Days post infection") # add in labels for your axis 
+          ### palette = c() # you can add colors if you would like for each line
 ###
+```
+
+If you want to know more about the model statsitics you should run a
+specific cox proportional hazard model on your data. You can look at
+individual p values and determine other ways to run the model if needed.
+
+``` r
+### df_fit_t<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
+### summary(df_fit_t)
 ```
 
 Once all of your code is running and it looks good, you can knit your R
 Markdown by pressing the knit icon on the top left of the code file
 window, and R will turn this file into a Markdown with with all your
 tables and plots printed as images. This can be pushed to Github to be
-viewed in your Notebook repository.
+viewed in your Notebook repository if you have one.
