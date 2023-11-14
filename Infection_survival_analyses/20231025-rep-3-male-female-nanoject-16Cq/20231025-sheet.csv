@@ -1,0 +1,8 @@
+vial,species,treatment-combo,sex,mated status,days_emerged,day_infected,age_infected,treatment,volume,time,time on CO2,original_N_number,adjusted_N_number,day 1 10/26,day 2 10/27,day 3 10/28,day 4 10/29,day 5 10/30,day 6 10/31,day 7 11/1,day 8 11/2,day 9 11/3,day 10 11/4,day 11 11/5,day 12 11/6,day 13 11/7,day 14 11/8,day 15 11/9,day 16 11/10,day 17 11/12,day 18 11/13,notes
+1,D. innubila,male-CCM,male,mated,20231018-20231025,20231025,5-7 days,CCM,27.6nl,1:32,6min,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
+2,D. innubila,female-CCM,female,mated,20231018-20231025,20231025,5-7 days,CCM,27.6nl,1:38,6min,10,9,9,9,9,9,9,8,8,8,8,8,8,8,8,8,8,8,8,8,lost one in transfer day 15
+3,D. innubila,male-DiNV,male,mated,20231018-20231025,20231025,5-7 days,16Cq DiNV,27.6nl,1:50,6min,10,10,10,10,10,10,10,9,9,8,2,2,1,0,0,0,0,0,0,0,
+4,D. innubila,female-DiNV,female,mated,20231018-20231025,20231025,5-7 days,16Cq DiNV,27.6nl,1:56,8min,10,10,10,10,10,10,10,10,8,5,2,1,1,1,1,0,0,0,0,0,
+5,D. innubila,male-DiNV,male,mated,20231018-20231025,20231025,5-7 days,16Cq DiNV,27.6nl,2:02,6min,10,10,10,10,10,10,10,9,9,7,5,3,0,0,0,0,0,0,0,0,
+6,D. innubila,female-DiNV,female,mated,20231018-20231025,20231025,5-7 days,16Cq DiNV,27.6nl,2:09,7min,10,10,10,10,9,9,9,6,5,0,0,0,0,0,0,0,0,0,0,0,
+7,D. innubila,female-DiNV,female,mated,20231018-20231025,20231025,5-7 days,16Cq DiNV,27.6nl,2:14,6min,10,10,10,9,9,9,9,6,4,0,0,0,0,0,0,0,0,0,0,0,
