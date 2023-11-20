@@ -267,3 +267,38 @@ summary(df_fit_combo_4)
     Likelihood ratio test= 166.7  on 4 df,   p=<2e-16
     Wald test            = 79.03  on 4 df,   p=3e-16
     Score (logrank) test = 130.6  on 4 df,   p=<2e-16
+
+Model looking at significance of block and treatment by sex interaction
+
+``` r
+# model including block 
+df_fit_combo_5<- coxph(Surv(dead, status) ~ Block + sex*injection, data=df2.convert_full)
+summary(df_fit_combo_5)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ Block + sex * injection, 
+        data = df2.convert_full)
+
+      n= 206, number of events= 151 
+
+                             coef exp(coef) se(coef)      z Pr(>|z|)    
+    BlockB                -0.3810    0.6832   0.2062 -1.848   0.0646 .  
+    BlockC                 0.3182    1.3747   0.2066  1.540   0.1235    
+    sexmale               -1.9583    0.1411   1.0801 -1.813   0.0698 .  
+    injectionDiNV          2.8561   17.3932   0.4376  6.527 6.73e-11 ***
+    sexmale:injectionDiNV  1.7020    5.4849   1.0947  1.555   0.1200    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                          exp(coef) exp(-coef) lower .95 upper .95
+    BlockB                   0.6832    1.46369   0.45610     1.023
+    BlockC                   1.3747    0.72743   0.91694     2.061
+    sexmale                  0.1411    7.08755   0.01699     1.172
+    injectionDiNV           17.3932    0.05749   7.37712    41.008
+    sexmale:injectionDiNV    5.4849    0.18232   0.64174    46.878
+
+    Concordance= 0.77  (se = 0.026 )
+    Likelihood ratio test= 170  on 5 df,   p=<2e-16
+    Wald test            = 67.91  on 5 df,   p=3e-13
+    Score (logrank) test = 131.3  on 5 df,   p=<2e-16
