@@ -3,6 +3,7 @@ title: "20231017 qPCR analysis fly DNA dilutions"
 format: gfm
 editor: visual
 ---
+
 Load packages needed
 
 ```{r}
@@ -20,14 +21,15 @@ Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources
 
 ```
 
-
 Look at raw Cq values by treatment and primer
+
 ```{r}
 # if you want to also include another varaible to separate out the histogram by, you can include a facet 
 ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(dilution~treatment) 
 ```
 
 Look at raw Cq values by dilution and primer
+
 ```{r}
 # if you want to also include another varaible to separate out the histogram by, you can include a facet 
 ggplot(Cq_values, aes(x= Cq, fill = dilution)) + geom_histogram(position = "dodge") + facet_grid(~primer) 
@@ -35,9 +37,7 @@ ggplot(Cq_values, aes(x= Cq, fill = dilution)) + geom_histogram(position = "dodg
 # this isn't very informative 
 ```
 
-
-
-Calculate variances in Cq between tech replicates, as well as the means 
+Calculate variances in Cq between tech replicates, as well as the means
 
 ```{r}
 # use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
@@ -66,7 +66,8 @@ high_var[,c(1,5,10)]
 # the best thing to do is remove them?
 ```
 
-Plot variance and means as a scatterplot 
+Plot variance and means as a scatterplot
+
 ```{r}
 
 ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
@@ -74,8 +75,7 @@ ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
 
 ```
 
-
-For now I am going to look at all the samples that aren't water or extraction controls 
+For now I am going to look at all the samples that aren't water or extraction controls
 
 ```{r}
 # separate out samples that aren't a control 
@@ -130,8 +130,6 @@ ggplot(Cq_values1rep_Delta_CCM, aes(y= delta_Cq_2, x=dilution, fill=dilution)) +
 
 ```
 
-
-
 ```{r}
 # just day dead DiNV
 Cq_values1rep_Delta_CCM <- Cq_values1rep_Delta[which(Cq_values1rep_Delta$treatment == "dead DiNV"),]
@@ -140,8 +138,7 @@ ggplot(Cq_values1rep_Delta_CCM, aes(y= delta_Cq_2, x=dilution, fill=dilution)) +
 
 ```
 
-
-What are the  Cq values for my control samples?
+What are the Cq values for my control samples?
 
 ```{r}
 Cq_values_ctr <- Cq_values[is.na(Cq_values$dilution),]
@@ -149,8 +146,3 @@ Cq_values_ctr <- Cq_values[is.na(Cq_values$dilution),]
 ggplot(Cq_values_ctr, aes(y= Cq, x=treatment, fill=primer)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) + scale_fill_manual(values = c('violet', 'cadetblue')) 
 
 ```
-
-
-
-
-
