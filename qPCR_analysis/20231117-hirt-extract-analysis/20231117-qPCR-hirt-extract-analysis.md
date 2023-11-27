@@ -138,7 +138,7 @@ Cq_values1rep_Delta$delta_Cq <- delta_Cqs
 Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
 
 
-ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=sample_specific, fill=extraction_sample)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=1) 
+ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=sample_specific, fill=extraction_sample)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(), size=1) 
 ```
 
 ![](20231117-qPCR-hirt-extract-analysis_files/figure-commonmark/unnamed-chunk-6-1.png)

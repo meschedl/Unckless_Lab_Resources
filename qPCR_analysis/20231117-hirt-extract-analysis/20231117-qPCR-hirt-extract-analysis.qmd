@@ -16,7 +16,8 @@ library(tidyr)
 knitr::opts_chunk$set(dpi=300,fig.width=7)
 ```
 
-Load in data 
+Load in data
+
 ```{r}
 Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20231117-hirt-extract-analysis/20231117-qPCR-sheet.csv")
 
@@ -26,7 +27,6 @@ Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources
 Cq_values_sub <- Cq_values[c(1:24, 46:72, 85:87),]
 ```
 
-
 Look at raw Cq values by sample type and primer
 
 ```{r}
@@ -34,9 +34,9 @@ Look at raw Cq values by sample type and primer
 ggplot(Cq_values_sub, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~sample_specific) 
 ```
 
-Ok looking at this there doesn't seem to be much of a difference between the extraction methods, but it is hard to tell without generating the delta Cq yet. 
+Ok looking at this there doesn't seem to be much of a difference between the extraction methods, but it is hard to tell without generating the delta Cq yet.
 
-Calculate the variance and the mean between the 3 technical replicates for each samples for each primer 
+Calculate the variance and the mean between the 3 technical replicates for each samples for each primer
 
 ```{r}
 # use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
@@ -60,7 +60,7 @@ ggplot(Cq_values_1rep, aes(x=Cq_var)) + geom_histogram(bins = 200)
 
 ```
 
-Remove water samples from dataset 
+Remove water samples from dataset
 
 ```{r}
 
@@ -72,9 +72,9 @@ ggplot(Cq_values_1rep_samp, aes(x=Cq_mean, y=Cq_var)) +
 
 ```
 
-No relationship between Cq value and variance it looks like 
+No relationship between Cq value and variance it looks like
 
-Generate Delta Cq values for all the samples 
+Generate Delta Cq values for all the samples
 
 ```{r}
 # first the samples need to be ordered where each samples with both primers is one after the other 
@@ -105,24 +105,6 @@ Cq_values1rep_Delta$delta_Cq <- delta_Cqs
 Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
 
 
-ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=sample_specific, fill=extraction_sample)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=1) 
+ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=sample_specific, fill=extraction_sample)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(), size=1) 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
