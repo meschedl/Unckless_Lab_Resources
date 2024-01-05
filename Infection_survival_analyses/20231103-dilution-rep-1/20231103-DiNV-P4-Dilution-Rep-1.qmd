@@ -78,6 +78,8 @@ return(results)
 
 Read in raw data
 
+**Note that for these datasets, the adjusted N number is the number of flies alive on day 2 because there seemed to be more early death in these experiments than usual** 
+
 ```{r}
 #read the file from csv
 df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231103-dilution-rep-1/20231103-sheet.csv")
