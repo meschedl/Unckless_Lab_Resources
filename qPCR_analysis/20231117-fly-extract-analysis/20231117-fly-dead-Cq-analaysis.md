@@ -121,6 +121,8 @@ ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
 No pattern except for those few samples where the higher PIF3 has the
 higher variance
 
+Calculating Delta Cqs
+
 ``` r
 # first the samples need to be ordered where each samples with both primers is one after the other 
 # ordering by sample ID 
@@ -170,3 +172,5 @@ ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=day_dead, color=sex)) + geom_bo
 ```
 
 ![](20231117-fly-dead-Cq-analaysis_files/figure-commonmark/unnamed-chunk-5-1.png)
+
+Delta Delta Cq analysis, comparing the day0 to day dead flies

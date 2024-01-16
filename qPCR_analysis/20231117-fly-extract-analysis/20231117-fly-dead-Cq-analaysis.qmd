@@ -72,6 +72,9 @@ ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
 
 No pattern except for those few samples where the higher PIF3 has the higher variance
 
+
+Calculating Delta Cqs 
+
 ```{r}
 # first the samples need to be ordered where each samples with both primers is one after the other 
 # ordering by sample ID 
@@ -103,3 +106,5 @@ Cq_values1rep_Delta$day_dead <- factor(Cq_values1rep_Delta$day_dead, levels=c("d
 ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=day_dead, color=sex)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) 
 
 ```
+
+Delta Delta Cq analysis, comparing the day0 to day dead flies

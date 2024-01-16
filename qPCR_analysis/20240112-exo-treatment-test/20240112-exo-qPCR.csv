@@ -1,0 +1,193 @@
+well,sample,replicate,primer,type,sample_type,cleanup_type,unique_name,Cq
+A01,16,1,TPI,hirt extract only,cell pellet,NA,16 cell TPI,21.46
+A02,16,2,TPI,hirt extract only,cell pellet,NA,16 cell TPI,21.49
+A03,16,3,TPI,hirt extract only,cell pellet,NA,16 cell TPI,21.33
+A04,17,1,TPI,hirt extract only,cell pellet,NA,17 cell TPI,21.25
+A05,17,2,TPI,hirt extract only,cell pellet,NA,17 cell TPI,21.45
+A06,17,3,TPI,hirt extract only,cell pellet,NA,17 cell TPI,21.32
+A07,18,1,TPI,hirt extract only,clarification pellet,NA,18 clarification TPI,21.98
+A08,18,2,TPI,hirt extract only,clarification pellet,NA,18 clarification TPI,22.22
+A09,18,3,TPI,hirt extract only,clarification pellet,NA,18 clarification TPI,21.81
+A10,19,1,TPI,hirt extract only,clarification pellet,NA,19 clarification TPI,21.75
+A11,19,2,TPI,hirt extract only,clarification pellet,NA,19 clarification TPI,21.77
+A12,19,3,TPI,hirt extract only,clarification pellet,NA,19 clarification TPI,21.97
+B01,19-exo,1,TPI,exonuclease treated,clarification pellet,phenol-chloroform,19 clarification exo TPI,27.02
+B02,19-exo,2,TPI,exonuclease treated,clarification pellet,phenol-chloroform,19 clarification exo TPI,27.05
+B03,19-exo,3,TPI,exonuclease treated,clarification pellet,phenol-chloroform,19 clarification exo TPI,26.96
+B04,18-exo,1,TPI,exonuclease treated,clarification pellet,monarch,18 clarification exo TPI,26.24
+B05,18-exo,2,TPI,exonuclease treated,clarification pellet,monarch,18 clarification exo TPI,26.31
+B06,18-exo,3,TPI,exonuclease treated,clarification pellet,monarch,18 clarification exo TPI,26.17
+B07,17-exo,1,TPI,exonuclease treated,cell pellet,phenol-chloroform,17 cell exo TPI,30.55
+B08,17-exo,2,TPI,exonuclease treated,cell pellet,phenol-chloroform,17 cell exo TPI,30.64
+B09,17-exo,3,TPI,exonuclease treated,cell pellet,phenol-chloroform,17 cell exo TPI,31.22
+B10,16-exo,1,TPI,exonuclease treated,cell pellet,monarch,16 cell exo TPI,28.71
+B11,16-exo,2,TPI,exonuclease treated,cell pellet,monarch,16 cell exo TPI,28.91
+B12,16-exo,3,TPI,exonuclease treated,cell pellet,monarch,16 cell exo TPI,29.41
+C01,16,1,PIF3,hirt extract only,cell pellet,NA,16 cell PIF3,14.24
+C02,16,2,PIF3,hirt extract only,cell pellet,NA,16 cell PIF3,14.15
+C03,16,3,PIF3,hirt extract only,cell pellet,NA,16 cell PIF3,14.42
+C04,17,1,PIF3,hirt extract only,cell pellet,NA,17 cell PIF3,14.55
+C05,17,2,PIF3,hirt extract only,cell pellet,NA,17 cell PIF3,14.66
+C06,17,3,PIF3,hirt extract only,cell pellet,NA,17 cell PIF3,14.56
+C07,18,1,PIF3,hirt extract only,clarification pellet,NA,18 clarification PIF3,13.1
+C08,18,2,PIF3,hirt extract only,clarification pellet,NA,18 clarification PIF3,13.02
+C09,18,3,PIF3,hirt extract only,clarification pellet,NA,18 clarification PIF3,12.7
+C10,19,1,PIF3,hirt extract only,clarification pellet,NA,19 clarification PIF3,12.67
+C11,19,2,PIF3,hirt extract only,clarification pellet,NA,19 clarification PIF3,13.13
+C12,19,3,PIF3,hirt extract only,clarification pellet,NA,19 clarification PIF3,13.22
+D01,19-exo,1,PIF3,exonuclease treated,clarification pellet,phenol-chloroform,19 clarification exo PIF3,17.07
+D02,19-exo,2,PIF3,exonuclease treated,clarification pellet,phenol-chloroform,19 clarification exo PIF3,17.39
+D03,19-exo,3,PIF3,exonuclease treated,clarification pellet,phenol-chloroform,19 clarification exo PIF3,17.47
+D04,18-exo,1,PIF3,exonuclease treated,clarification pellet,monarch,18 clarification exo PIF3,15.12
+D05,18-exo,2,PIF3,exonuclease treated,clarification pellet,monarch,18 clarification exo PIF3,15.05
+D06,18-exo,3,PIF3,exonuclease treated,clarification pellet,monarch,18 clarification exo PIF3,15
+D07,17-exo,1,PIF3,exonuclease treated,cell pellet,phenol-chloroform,17 cell exo PIF3,16.69
+D08,17-exo,2,PIF3,exonuclease treated,cell pellet,phenol-chloroform,17 cell exo PIF3,16.88
+D09,17-exo,3,PIF3,exonuclease treated,cell pellet,phenol-chloroform,17 cell exo PIF3,17.01
+D10,16-exo,1,PIF3,exonuclease treated,cell pellet,monarch,16 cell exo PIF3,15.11
+D11,16-exo,2,PIF3,exonuclease treated,cell pellet,monarch,16 cell exo PIF3,15
+D12,16-exo,3,PIF3,exonuclease treated,cell pellet,monarch,16 cell exo PIF3,15.12
+E01,,,,,,,,
+E02,,,,,,,,
+E03,,,,,,,,
+E04,,,,,,,,
+E05,,,,,,,,
+E06,,,,,,,,
+E07,,,,,,,,
+E08,,,,,,,,
+E09,,,,,,,,
+E10,,,,,,,,
+E11,,,,,,,,
+E12,,,,,,,,
+F01,,,,,,,,
+F02,,,,,,,,
+F03,,,,,,,,
+F04,,,,,,,,
+F05,,,,,,,,
+F06,,,,,,,,
+F07,,,,,,,,
+F08,,,,,,,,
+F09,,,,,,,,
+F10,,,,,,,,
+F11,,,,,,,,
+F12,,,,,,,,
+G01,,,,,,,,
+G02,,,,,,,,
+G03,,,,,,,,
+G04,,,,,,,,
+G05,,,,,,,,
+G06,,,,,,,,
+G07,,,,,,,,
+G08,,,,,,,,
+G09,,,,,,,,
+G10,,,,,,,,
+G11,,,,,,,,
+G12,,,,,,,,
+H01,,,,,,,,
+H02,,,,,,,,
+H03,,,,,,,,
+H04,,,,,,,,
+H05,,,,,,,,
+H06,,,,,,,,
+H07,,,,,,,,
+H08,,,,,,,,
+H09,,,,,,,,
+H10,,,,,,,,
+H11,,,,,,,,
+H12,,,,,,,,
+A01,,,,,,,,
+A02,,,,,,,,
+A03,,,,,,,,
+A04,,,,,,,,
+A05,,,,,,,,
+A06,,,,,,,,
+A07,,,,,,,,
+A08,,,,,,,,
+A09,,,,,,,,
+A10,,,,,,,,
+A11,,,,,,,,
+A12,,,,,,,,
+B01,,,,,,,,
+B02,,,,,,,,
+B03,,,,,,,,
+B04,,,,,,,,
+B05,,,,,,,,
+B06,,,,,,,,
+B07,,,,,,,,
+B08,,,,,,,,
+B09,,,,,,,,
+B10,,,,,,,,
+B11,,,,,,,,
+B12,,,,,,,,
+C01,,,,,,,,
+C02,,,,,,,,
+C03,,,,,,,,
+C04,,,,,,,,
+C05,,,,,,,,
+C06,,,,,,,,
+C07,,,,,,,,
+C08,,,,,,,,
+C09,,,,,,,,
+C10,,,,,,,,
+C11,,,,,,,,
+C12,,,,,,,,
+D01,,,,,,,,
+D02,,,,,,,,
+D03,,,,,,,,
+D04,,,,,,,,
+D05,,,,,,,,
+D06,,,,,,,,
+D07,,,,,,,,
+D08,,,,,,,,
+D09,,,,,,,,
+D10,,,,,,,,
+D11,,,,,,,,
+D12,,,,,,,,
+E01,,,,,,,,
+E02,,,,,,,,
+E03,,,,,,,,
+E04,,,,,,,,
+E05,,,,,,,,
+E06,,,,,,,,
+E07,,,,,,,,
+E08,,,,,,,,
+E09,,,,,,,,
+E10,,,,,,,,
+E11,,,,,,,,
+E12,,,,,,,,
+F01,,,,,,,,
+F02,,,,,,,,
+F03,,,,,,,,
+F04,,,,,,,,
+F05,,,,,,,,
+F06,,,,,,,,
+F07,,,,,,,,
+F08,,,,,,,,
+F09,,,,,,,,
+F10,,,,,,,,
+F11,,,,,,,,
+F12,,,,,,,,
+G01,,,,,,,,
+G02,,,,,,,,
+G03,,,,,,,,
+G04,,,,,,,,
+G05,,,,,,,,
+G06,,,,,,,,
+G07,,,,,,,,
+G08,,,,,,,,
+G09,,,,,,,,
+G10,,,,,,,,
+G11,,,,,,,,
+G12,,,,,,,,
+H01,,,,,,,,
+H02,,,,,,,,
+H03,,,,,,,,
+H04,,,,,,,,
+H05,,,,,,,,
+H06,,,,,,,,
+H07,,,,,,,,
+H08,,,,,,,,
+H09,,,,,,,,
+H10,,,,,,,,
+H11,,,,,,,,
+H12,,,,,,,,
