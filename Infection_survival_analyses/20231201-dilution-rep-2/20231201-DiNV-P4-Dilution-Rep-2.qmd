@@ -4,8 +4,6 @@ format: gfm
 editor: visual
 ---
 
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dpi=300,fig.width=7)
 ```
@@ -80,7 +78,7 @@ return(results)
 
 Read in raw data
 
-**Note that for these datasets, the adjusted N number is the number of flies alive on day 2 because there seemed to be more early death in these experiments than usual** 
+**Note that for these datasets, the adjusted N number is the number of flies alive on day 2 because there seemed to be more early death in these experiments than usual**
 
 ```{r}
 #read the file from csv
@@ -146,7 +144,6 @@ ggsurvplot(df2_fit,
 
 ```
 
-
 Plot survival curve with only females
 
 ```{r}
@@ -184,12 +181,3 @@ ggsurvplot(df4_fit,
           # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 
 ```
-
-
-
-
-
-
-
-
-
