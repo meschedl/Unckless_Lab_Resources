@@ -20,6 +20,31 @@ library(dplyr)
 
 ``` r
 library(tidyr)
+library(Rmisc)
+```
+
+    Loading required package: lattice
+
+    Loading required package: plyr
+
+    ------------------------------------------------------------------------------
+
+    You have loaded plyr after dplyr - this is likely to cause problems.
+    If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+    library(plyr); library(dplyr)
+
+    ------------------------------------------------------------------------------
+
+
+    Attaching package: 'plyr'
+
+    The following objects are masked from 'package:dplyr':
+
+        arrange, count, desc, failwith, id, mutate, rename, summarise,
+        summarize
+
+``` r
+library(scales)
 ```
 
 Load in dataset
@@ -488,10 +513,10 @@ ggplot(Cq_values_40_1rep_1ng_Delta, aes(y= delta_Cq_2, x=treatment, fill=treatme
 I am not sure exactly what delta Cq means in this context, I think it is
 relative amount of virus genome to host genome?
 
-How to compare the delta Cqs ^2?
+How to compare the delta 2^Cqs?
 
-Calculate mean of the delta Cqs ^2, the variance, and then the
-coeddicient of variation
+Calculate mean of the delta ^2Cqs, the variance, and then the
+coefficient of variation
 
 ``` r
 # calculate the mean of delta_Cq_2 for each treatment 
@@ -685,3 +710,39 @@ sqrt(tapply(Cq_values_40_1rep_1_10_Delta$delta_Cq_2, Cq_values_40_1rep_1_10_Delt
 ``` r
 # 17.84341 so the needle is about 18 times more variable? 
 ```
+
+Combine the 1:10 and 1ng into one plot and color by the dilution?
+
+``` r
+# add datasets with the 2^detla Cq together
+Combo_delta <- rbind(Cq_values_40_1rep_1_10_Delta, Cq_values_40_1rep_1ng_Delta)
+
+# want to do some stats/error bars to this plot 
+# I think this will do it by both treatment and dilution 
+stats <- summarySE(Combo_delta, measurevar="delta_Cq_2", groupvars=c("treatment", "dilution"))
+stats
+```
+
+                  treatment dilution N   delta_Cq_2           sd           se
+    1   16Cq DiNV injection     1:10 3 0.0056649179 0.0004362141 0.0002518483
+    2   16Cq DiNV injection      1ng 3 0.0060693612 0.0014898800 0.0008601826
+    3 16Cq DiNV needle poke     1:10 3 0.0005539033 0.0007610579 0.0004393970
+    4 16Cq DiNV needle poke      1ng 3 0.0007248124 0.0005287672 0.0003052839
+               ci
+    1 0.001083616
+    2 0.003701067
+    3 0.001890573
+    4 0.001313531
+
+``` r
+# ggplot(Combo_delta, aes(y= delta_Cq_2, x=treatment))  + theme_linedraw() + geom_point(position = position_dodge(width = .9), stat = "identity", size=3, aes(color=dilution)) + ylab("2^delta Cq") + xlab("Injection Treatment") + geom_errorbar( aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se), data = stats, position = position_dodge(width = .9), width = 0.3)
+
+# used https://www.datanovia.com/en/lessons/ggplot-error-bars/
+
+ggplot(Combo_delta, aes(y= delta_Cq_2, x=treatment)) +
+  geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = dilution),data = stats, position = position_dodge(0.3), width = 0.2)+
+  geom_point(aes(color = dilution), position = position_dodge(0.3)) +
+  scale_color_manual(values = c("#00AFBB", "#E7B800")) +  ylab("2^delta Cq") + xlab("Injection Treatment") + theme_light()
+```
+
+![](20230928-poke-inject-dilution-analysis_files/figure-commonmark/unnamed-chunk-22-1.png)
