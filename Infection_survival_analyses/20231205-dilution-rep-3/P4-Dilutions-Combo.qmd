@@ -224,3 +224,29 @@ summary(df_fit_combo_b_m)
 df_fit_combo_b_f<- coxph(Surv(dead, status) ~ treatment + Block, data=df.convert_fem)
 summary(df_fit_combo_b_f)
 ```
+
+
+Changing how to name the dilutions 
+```{r}
+df.convert_full$dilution2 <- df.convert_full$dilution
+df.convert_full$dilution2[which(df.convert_full$dilution2 == "CCM")] = 0
+df.convert_full$dilution2 = as.numeric(df.convert_full$dilution2)
+
+hist(df.convert_full$dilution2)
+
+```
+
+```{r}
+# model considering sex by dilution 
+df_fit_combo_robs_model <- coxph(Surv(dead, status) ~ sex * dilution2 + Block, data=df.convert_full)
+summary(df_fit_combo_robs_model)
+```
+
+Run model without control flies 
+
+```{r}
+df.convert_full2 <- df.convert_full[which(df.convert_full$dilution2 != 0),]
+# model considering sex by dilution 
+df_fit_combo_robs_model_2 <- coxph(Surv(dead, status) ~ sex * dilution2 + Block, data=df.convert_full2)
+summary(df_fit_combo_robs_model_2)
+```
