@@ -443,7 +443,7 @@ sqrt(tapply(Cq_values_40_1rep_1_10_Delta$delta_Cq_2, Cq_values_40_1rep_1_10_Delt
 # 17.84341 so the needle is about 18 times more variable? 
 ```
 
-Combine the 1:10 and 1ng into one plot and color by the dilution? 
+Combine the 1:10 and 1ng into one plot and color by the dilution?
 
 ```{r}
 # add datasets with the 2^detla Cq together
@@ -462,7 +462,6 @@ stats
 ggplot(Combo_delta, aes(y= delta_Cq_2, x=treatment)) +
   geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = dilution),data = stats, position = position_dodge(0.3), width = 0.2)+
   geom_point(aes(color = dilution), position = position_dodge(0.3)) +
-  scale_color_manual(values = c("#00AFBB", "#E7B800")) +  ylab("2^delta Cq") + xlab("Injection Treatment") + theme_light()
+  scale_color_manual(values = c("#6699CC",  "#332288")) +  ylab("2^delta Cq") + xlab("Injection Treatment") + theme_light()
 
 ```
-

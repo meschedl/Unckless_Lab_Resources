@@ -20,6 +20,11 @@ library("survminer")
     ## 
     ##     myeloma
 
+``` r
+library(tidyr)
+library(stringr)
+```
+
 ### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
 
 ``` r
@@ -111,7 +116,7 @@ ggsurvplot(df_fit,
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("aquamarine", "lightcoral")) + ylab("Survival Proporation") + xlab("Days post infection")
+          palette = c ("aquamarine", "lightcoral")) + ylab("Survival Proporation") + xlab("Days post infection")
 ```
 
 ![](20230509-16Cq-DiNV-infections-Analysis_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -142,3 +147,162 @@ summary(df_fit2)
     ## Likelihood ratio test= 25.24  on 1 df,   p=5e-07
     ## Wald test            = 18.9  on 1 df,   p=1e-05
     ## Score (logrank) test = 23.8  on 1 df,   p=1e-06
+
+Combine replicates 1 and 2
+
+``` r
+#read the file from csv
+df2<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230509-inn-16Cq/combined-poked-16Cq-infections.csv")
+
+# only want columns with vial, treatment, and daily mortality
+# remove columns not needed for each subset
+df2<-df2[,c(1,6,14:34)]
+```
+
+### Convert each of these dataframes to long and tidy format using function defined above
+
+``` r
+df2.convert<-convert_df(df2)
+
+# split the column 
+df2.convert_S <- str_split_fixed(df2.convert$treatment, "-", 2)
+
+# change column names
+colnames(df2.convert_S) <- c("Treatment", "block")
+
+# add columns to df 
+df.convert_full <- cbind(df2.convert,df2.convert_S)
+```
+
+# plot the survival curve not including confidence intervals
+
+``` r
+# change to not have confidence intervals in this one so you can see them 
+df2_fit<- survfit(Surv(dead, status) ~ Treatment, data=df.convert_full)
+ggsurvplot(df2_fit,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_light(), # Change ggplot2 theme
+          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post infection")
+```
+
+![](20230509-16Cq-DiNV-infections-Analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Model with treatment and block considered
+
+``` r
+# model with just treatment
+df_fit_t<- coxph(Surv(dead, status) ~ Treatment, data=df.convert_full)
+summary(df_fit_t)
+```
+
+    ## Call:
+    ## coxph(formula = Surv(dead, status) ~ Treatment, data = df.convert_full)
+    ## 
+    ##   n= 193, number of events= 58 
+    ## 
+    ##                coef exp(coef) se(coef)      z Pr(>|z|)    
+    ## TreatmentSP -1.5026    0.2225   0.3482 -4.316 1.59e-05 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ##             exp(coef) exp(-coef) lower .95 upper .95
+    ## TreatmentSP    0.2225      4.493    0.1125    0.4403
+    ## 
+    ## Concordance= 0.666  (se = 0.024 )
+    ## Likelihood ratio test= 24.51  on 1 df,   p=7e-07
+    ## Wald test            = 18.63  on 1 df,   p=2e-05
+    ## Score (logrank) test = 22.36  on 1 df,   p=2e-06
+
+``` r
+# model with treatment and block 
+df_fit_tb<- coxph(Surv(dead, status) ~ Treatment + block, data=df.convert_full)
+# look at the statistics of the model
+summary(df_fit_tb)
+```
+
+    ## Call:
+    ## coxph(formula = Surv(dead, status) ~ Treatment + block, data = df.convert_full)
+    ## 
+    ##   n= 193, number of events= 58 
+    ## 
+    ##                coef exp(coef) se(coef)      z Pr(>|z|)    
+    ## TreatmentSP -1.5492    0.2124   0.3501 -4.425 9.64e-06 ***
+    ## blockB      -0.3489    0.7055   0.2954 -1.181    0.238    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ##             exp(coef) exp(-coef) lower .95 upper .95
+    ## TreatmentSP    0.2124      4.708    0.1070    0.4219
+    ## blockB         0.7055      1.418    0.3954    1.2587
+    ## 
+    ## Concordance= 0.687  (se = 0.029 )
+    ## Likelihood ratio test= 25.97  on 2 df,   p=2e-06
+    ## Wald test            = 20.11  on 2 df,   p=4e-05
+    ## Score (logrank) test = 23.87  on 2 df,   p=7e-06
+
+``` r
+# model with interaction term 
+df_fit_tbin<- coxph(Surv(dead, status) ~ Treatment + block + Treatment * block, data=df.convert_full)
+# look at the statistics of the model
+summary(df_fit_tbin)
+```
+
+    ## Call:
+    ## coxph(formula = Surv(dead, status) ~ Treatment + block + Treatment * 
+    ##     block, data = df.convert_full)
+    ## 
+    ##   n= 193, number of events= 58 
+    ## 
+    ##                       coef exp(coef) se(coef)      z Pr(>|z|)    
+    ## TreatmentSP        -1.7495    0.1739   0.4147 -4.219 2.46e-05 ***
+    ## blockB             -0.4768    0.6208   0.3249 -1.467    0.142    
+    ## TreatmentSP:blockB  0.8282    2.2892   0.7628  1.086    0.278    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ##                    exp(coef) exp(-coef) lower .95 upper .95
+    ## TreatmentSP           0.1739     5.7517   0.07713    0.3919
+    ## blockB                0.6208     1.6108   0.32839    1.1735
+    ## TreatmentSP:blockB    2.2892     0.4368   0.51335   10.2084
+    ## 
+    ## Concordance= 0.694  (se = 0.028 )
+    ## Likelihood ratio test= 27.06  on 3 df,   p=6e-06
+    ## Wald test            = 21.33  on 3 df,   p=9e-05
+    ## Score (logrank) test = 25.94  on 3 df,   p=1e-05
+
+``` r
+# block is not significant, but I will test if I should keep the block in there 
+
+# no block
+extractAIC(df_fit_t)
+```
+
+    ## [1]   1.0000 568.8226
+
+``` r
+# 568.8226
+
+# with block 
+extractAIC(df_fit_tb)
+```
+
+    ## [1]   2.0000 569.3603
+
+``` r
+# 569.3603 
+
+# Compare AICs
+
+exp((569.3603 - 568.8226)/2)
+```
+
+    ## [1] 1.308459
+
+``` r
+# 1.308459
+# this would be a p value comparing the block and non-block models. There is no significant difference between the two AICs, so either one is a good fit 
+```

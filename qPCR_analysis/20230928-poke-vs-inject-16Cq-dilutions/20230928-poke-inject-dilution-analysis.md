@@ -742,7 +742,7 @@ stats
 ggplot(Combo_delta, aes(y= delta_Cq_2, x=treatment)) +
   geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = dilution),data = stats, position = position_dodge(0.3), width = 0.2)+
   geom_point(aes(color = dilution), position = position_dodge(0.3)) +
-  scale_color_manual(values = c("#00AFBB", "#E7B800")) +  ylab("2^delta Cq") + xlab("Injection Treatment") + theme_light()
+  scale_color_manual(values = c("#6699CC",  "#332288")) +  ylab("2^delta Cq") + xlab("Injection Treatment") + theme_light()
 ```
 
 ![](20230928-poke-inject-dilution-analysis_files/figure-commonmark/unnamed-chunk-22-1.png)

@@ -13,6 +13,8 @@ Load in packages needed for the analysis
 ```{r}
 library("survival")
 library("survminer")
+library(tidyr)
+library(stringr)
 ```
 
 
@@ -116,6 +118,85 @@ df_fit2<- coxph(Surv(dead, status) ~ treatment, data=df.convert)
 # look at the statistics of the model
 summary(df_fit2)
 ```
+
+Combine replicates 1 and 2 
+
+```{r}
+#read the file from csv
+df2<-read.csv("~/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20230509-inn-16Cq/combined-poked-16Cq-infections.csv")
+
+# only want columns with vial, treatment, and daily mortality
+# remove columns not needed for each subset
+df2<-df2[,c(1,6,14:34)]
+
+```
+
+### Convert each of these dataframes to long and tidy format using function defined above
+```{r}
+df2.convert<-convert_df(df2)
+
+# split the column 
+df2.convert_S <- str_split_fixed(df2.convert$treatment, "-", 2)
+
+# change column names
+colnames(df2.convert_S) <- c("Treatment", "block")
+
+# add columns to df 
+df.convert_full <- cbind(df2.convert,df2.convert_S)
+
+
+```
+
+# plot the survival curve not including confidence intervals
+
+```{r}
+# change to not have confidence intervals in this one so you can see them 
+df2_fit<- survfit(Surv(dead, status) ~ Treatment, data=df.convert_full)
+ggsurvplot(df2_fit,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_light(), # Change ggplot2 theme
+          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post infection")
+```
+
+Model with treatment and block considered 
+
+```{r}
+# model with just treatment
+df_fit_t<- coxph(Surv(dead, status) ~ Treatment, data=df.convert_full)
+summary(df_fit_t)
+
+# model with treatment and block 
+df_fit_tb<- coxph(Surv(dead, status) ~ Treatment + block, data=df.convert_full)
+# look at the statistics of the model
+summary(df_fit_tb)
+
+# model with interaction term 
+df_fit_tbin<- coxph(Surv(dead, status) ~ Treatment + block + Treatment * block, data=df.convert_full)
+# look at the statistics of the model
+summary(df_fit_tbin)
+
+# block is not significant, but I will test if I should keep the block in there 
+
+# no block
+extractAIC(df_fit_t)
+# 568.8226
+
+# with block 
+extractAIC(df_fit_tb)
+# 569.3603 
+
+# Compare AICs
+
+exp((569.3603 - 568.8226)/2)
+# 1.308459
+# this would be a p value comparing the block and non-block models. There is no significant difference between the two AICs, so either one is a good fit 
+```
+
+
 
 
 

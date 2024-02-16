@@ -95,8 +95,8 @@ df.convert$block[which(df.convert$vial %in% 1:7)] = "A"
 
 ```
 
+### Make the survival curve separated by block 
 
-### Make the survival curve
 ```{r}
 # add in treatment and block in the model 
 df_fit<- survfit(Surv(dead, status) ~ treatment + block, data=df.convert)
@@ -111,15 +111,31 @@ ggsurvplot(df_fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("aquamarine", "lightgreen", "lightcoral", "hotpink")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
+Make survival curve with blocks combined 
+
+```{r}
+df_fit2<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
+
+
+ggsurvplot(df_fit2,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_light(), # Change ggplot2 theme
+          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection")
+```
+
 
 
 ### Comparing Models and Looking at Stats
 
-Try to look at the models with Block as a factor, as well as block * treatment as an interaction effect, then see which model fits best using AIC. 
+Try to look at the models with Block as a factor, as well as block \* treatment as an interaction effect, then see which model fits best using AIC.
 
-extractAIC gives two vlues:  
-edf	the ``equivalent degrees of freedom'' of the fitted model fit.  
-AIC	the (generalized) Akaike Information Criterion for fit.
+extractAIC gives two vlues:\
+edf the \`\`equivalent degrees of freedom'' of the fitted model fit.\
+AIC the (generalized) Akaike Information Criterion for fit.
 
 ```{r}
 # reoder treatment order so that the statistics make sense
@@ -164,10 +180,3 @@ exp((559.9158 - 566.6194)/2)
 # 0.03502126 
 # So this would suggest that there is a significant difference in the AIC between the two models, and with AIC the lower number is the best one, indicating that the model that uses block + treatment is the best model
 ```
-
-
-
-
-
-
-

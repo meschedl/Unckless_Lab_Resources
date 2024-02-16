@@ -97,7 +97,7 @@ df.convert$block <- "B"
 df.convert$block[which(df.convert$vial %in% 1:7)] = "A"
 ```
 
-### Make the survival curve
+### Make the survival curve separated by block
 
 ``` r
 # add in treatment and block in the model 
@@ -115,6 +115,24 @@ ggsurvplot(df_fit,
 ```
 
 ![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-5-1.png)
+
+Make survival curve with blocks combined
+
+``` r
+df_fit2<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
+
+
+ggsurvplot(df_fit2,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_light(), # Change ggplot2 theme
+          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection")
+```
+
+![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-6-1.png)
 
 ### Comparing Models and Looking at Stats
 
@@ -260,5 +278,5 @@ exp((559.9158 - 566.6194)/2)
 
 ``` r
 # 0.03502126 
-# So this would suggest that there is a singificant difference in the AIC between the two models, and with AIC the lower number is the best one, indicating that the model that uses block + treatment is the best model
+# So this would suggest that there is a significant difference in the AIC between the two models, and with AIC the lower number is the best one, indicating that the model that uses block + treatment is the best model
 ```
