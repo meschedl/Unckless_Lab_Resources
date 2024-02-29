@@ -739,10 +739,13 @@ stats
 
 # used https://www.datanovia.com/en/lessons/ggplot-error-bars/
 
+legend_title <- "DNA Dilution"
+
 ggplot(Combo_delta, aes(y= delta_Cq_2, x=treatment)) +
   geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = dilution),data = stats, position = position_dodge(0.3), width = 0.2)+
-  geom_point(aes(color = dilution), position = position_dodge(0.3)) +
-  scale_color_manual(values = c("#6699CC",  "#332288")) +  ylab("2^delta Cq") + xlab("Injection Treatment") + theme_light()
+  geom_point(aes(color = dilution), position = position_dodge(0.3), size = 3) +
+  scale_color_manual(legend_title,values = c("#44AA99",  "#332288")) + theme_light() + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) + labs(title = "Comparing Ammount and Variation of \nDiNV Dose Between Poke and Injection",y = "2^delta Cq", x = "Injection Treatment")
 ```
 
 ![](20230928-poke-inject-dilution-analysis_files/figure-commonmark/unnamed-chunk-22-1.png)

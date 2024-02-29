@@ -15,13 +15,13 @@ knitr::opts_chunk$set(dpi=300,fig.width=7)
 ```
 
 Load in dataset
+
 ```{r}
 Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240112-exo-treatment-test/20240112-exo-qPCR.csv")
 # I only need rows 1 - 48 
 Cq_values <- Cq_values[c(1:48),]
 
 ```
-
 
 Look at raw Cq values by primer and sample type
 
@@ -30,7 +30,7 @@ Look at raw Cq values by primer and sample type
 ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~type) 
 ```
 
-Based off of this, it looks like the exonuclease treatment may have done something, the TPI Cqs are higher... but also the PIF3 
+Based off of this, it looks like the exonuclease treatment may have done something, the TPI Cqs are higher... but also the PIF3
 
 Calculate variance and mean of Cq value between the technical replicates
 
@@ -60,7 +60,7 @@ ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
 
 ```
 
-The only slightly higher variance samples have the highest Cq, which is what we have seen before. 
+The only slightly higher variance samples have the highest Cq, which is what we have seen before.
 
 Calculating Delta Cqs between TPI and PIF3
 
@@ -95,28 +95,4 @@ ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=type, color=sample_type)) + geo
 
 ```
 
-It looks from this that the exonuclease treatment does make a difference, and the largest difference is with the cell pellet samples. Although the clarification pellet ones still have a better ratio of virus to cell than the non-treated ones. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+It looks from this that the exonuclease treatment does make a difference, and the largest difference is with the cell pellet samples. Although the clarification pellet ones still have a better ratio of virus to cell than the non-treated ones.

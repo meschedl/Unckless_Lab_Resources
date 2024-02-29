@@ -1,0 +1,135 @@
+---
+title: "p4-dilutions-time"
+format: gfm
+editor: visual
+---
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7)
+```
+
+Load in dataset
+
+```{r}
+Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240228-viral-load-dilutions/viral-dil-time-sheet.csv")
+```
+
+Separate male and female for now
+
+```{r}
+# males
+Cq_values_M <- Cq_values[which(Cq_values$sex == "male"),]
+# females
+Cq_values_F <- Cq_values[which(Cq_values$sex == "female"),]
+```
+
+
+**Female Analysis First**
+
+Look at raw Cq values
+```{r}
+ggplot(Cq_values_F, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution) 
+```
+
+TPI looks remarkably consistant, PIF3 is all over the place but this isn't separated out by day which would make differences. 
+
+Look at raw Cq values and also separate by day
+```{r}
+ggplot(Cq_values_F, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(dilution ~ day) 
+```
+
+This is showing more patterns that we sort of expect, but we have to do the delta Cq comparison to the TPI primer to be sure
+
+
+Calculating female delta Cq and Plotting
+
+```{r}
+# need to organize by name of the sample I think
+Cq_values_F <- Cq_values_F[order(Cq_values_F$sample_ID),]
+# this worked to order by the sample number 
+# and the PIF3 value is first in the order and TPI second
+
+# Separate that dataframe, incriminating by 2, every number between 1-192 (number of rows in dataframe)
+Cq_values_F$Cq[seq(1,192,2)] # these are the PIF 3 Cq #s
+Cq_values_F$Cq[seq(2,192,2)] # these are the TPI primer Cq #s 
+
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+delta_Cqs_F <- Cq_values_F$Cq[seq(2,192,2)] - Cq_values_F$Cq[seq(1,192,2)]
+#vector
+delta_Cqs_F
+
+# Make a new dataframe that only has one row per sample by getting rid of the rows with the TPI primer
+Cq_values_F_Delta <- Cq_values_F[which(Cq_values_F$primer == "PIF3"),]
+
+# And then add in the delta Cqs as a new column
+Cq_values_F_Delta$delta_Cq <- delta_Cqs_F
+
+# add a column with 2^ delta Cq
+Cq_values_F_Delta$delta_Cq_2 <- 2^(delta_Cqs_F)
+
+
+# plot and use a log 10 scale for the y axis 
+ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + coord_trans(y = "log10")
+
+```
+
+**Male Analysis Second**
+
+Look at raw Cq values and also separate by day
+```{r}
+ggplot(Cq_values_M, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(dilution ~ day) 
+```
+
+Looks pretty similar to the female results 
+
+Calculating male delta Cq and Plotting
+
+```{r}
+# need to organize by name of the sample I think
+Cq_values_M <- Cq_values_M[order(Cq_values_M$sample_ID),]
+# this worked to order by the sample number 
+# and the PIF3 value is first in the order and TPI second
+
+# notice that there is one NA in the data that I forgot to set as 40 for the Cq 
+
+Cq_values_M[is.na(Cq_values_M)] <- 40
+
+# Separate that dataframe, incriminating by 2, every number between 1-192 (number of rows in dataframe)
+Cq_values_M$Cq[seq(1,192,2)] # these are the PIF 3 Cq #s
+Cq_values_M$Cq[seq(2,192,2)] # these are the TPI primer Cq #s 
+
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+delta_Cqs_M <- Cq_values_M$Cq[seq(2,192,2)] - Cq_values_M$Cq[seq(1,192,2)]
+#vector
+delta_Cqs_M
+
+# Make a new dataframe that only has one row per sample by getting rid of the rows with the TPI primer
+Cq_values_M_Delta <- Cq_values_M[which(Cq_values_F$primer == "PIF3"),]
+
+# And then add in the delta Cqs as a new column
+Cq_values_M_Delta$delta_Cq <- delta_Cqs_M
+
+# add a column with 2^ delta Cq
+Cq_values_M_Delta$delta_Cq_2 <- 2^(delta_Cqs_M)
+
+
+# plot and use a log 10 scale for the y axis 
+ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + coord_trans(y = "log10")
+
+```
+
+
+
+
+
+
+
