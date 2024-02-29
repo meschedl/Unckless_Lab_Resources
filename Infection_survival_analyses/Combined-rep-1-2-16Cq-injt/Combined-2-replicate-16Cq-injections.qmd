@@ -5,7 +5,7 @@ editor: visual
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7)
+knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 8)
 ```
 
 Load in packages needed for the analysis
@@ -95,7 +95,7 @@ df.convert$block[which(df.convert$vial %in% 1:7)] = "A"
 
 ```
 
-### Make the survival curve separated by block 
+### Make the survival curve separated by block
 
 ```{r}
 # add in treatment and block in the model 
@@ -111,23 +111,28 @@ ggsurvplot(df_fit,
           ggtheme = theme_bw(), # Change ggplot2 theme
           palette = c("aquamarine", "lightgreen", "lightcoral", "hotpink")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
-Make survival curve with blocks combined 
+
+Make survival curve with blocks combined
 
 ```{r}
 df_fit2<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 
 
-ggsurvplot(df_fit2,
+ggsurvplot(df_fit2, size = 3,
           pval = FALSE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_light(), # Change ggplot2 theme
-          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection")
+          font.tickslab = c(12),
+          font.x = c(14),
+          font.y = c(14),
+          title = "Male D. innubila Injected with 16Cq DiNV",
+          legend.title="Treatment",
+          legend.labs=c("Cell culture medium", "16Cq DiNV"),
+          font.legend = c(12),
+          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection") 
+
+# not sure why this plot is not rendering in the markdown with the same colors so save here
+ggsave("16Cq-inject-male.jpeg")
 ```
-
-
 
 ### Comparing Models and Looking at Stats
 

@@ -1,5 +1,5 @@
 ---
-title: "20240131-low-dilutions-rep-1"
+title: "20240209-p4-DiNV-dilutions-rep-4"
 format: gfm
 editor: visual
 ---
@@ -82,14 +82,15 @@ Read in raw data
 
 ```{r}
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240131-low-dilutions-rep-1/20240131-infection.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240209-dilution-rep-4/20240209-infections.csv")
 
-# remove roww 9, shouldn't be on there  
-df <- df[1:8,]
+# no need to remove any rows
+
 # separate out columns needed
-df <- df[,c(1,8,13:27)]
+df <- df[,c(1,8,15:29)]
 
 ```
+
 
 Convert dataframe
 
@@ -97,13 +98,32 @@ Convert dataframe
 df.convert<-convert_df(df)
 ```
 
-Plot survivial curve with every line separate
+Add in columns for sex and dilution separately
+
 
 ```{r}
+# add in sex information and DiNV information as separate columns by splitting the treatment column 
+# split the columns 
+df.convert_S <- str_split_fixed(df.convert$treatment, "-", 2)
+
+# change column names
+colnames(df.convert_S) <- c("sex", "dilution")
+
+# add columns to df 
+df.convert_full <- cbind(df.convert,df.convert_S)
+
+```
+
+Plot survival curve with only females
+
+```{r}
+
+df.convert_fem <- df.convert_full[which(df.convert_full$sex != "male"),]
+
 # change to not have confidence intervals in this one so you can see them 
-df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
-ggsurvplot(df_fit,
-          pval = FALSE, conf.int = TRUE,
+df_fit_fem<- survfit(Surv(dead, status) ~ dilution, data=df.convert_fem)
+ggsurvplot(df_fit_fem,
+          pval = FALSE, conf.int = FALSE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
@@ -112,3 +132,26 @@ ggsurvplot(df_fit,
           # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 
 ```
+
+Plot survival curve with only males
+
+```{r}
+
+df.convert_m <- df.convert_full[which(df.convert_full$sex != "female"),]
+
+# change to not have confidence intervals in this one so you can see them 
+df_fit_m<- survfit(Surv(dead, status) ~ dilution, data=df.convert_m)
+ggsurvplot(df_fit_m,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
+          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+
+```
+
+
+
+

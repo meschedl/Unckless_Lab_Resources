@@ -179,14 +179,17 @@ df.convert_full <- cbind(df2.convert,df2.convert_S)
 ``` r
 # change to not have confidence intervals in this one so you can see them 
 df2_fit<- survfit(Surv(dead, status) ~ Treatment, data=df.convert_full)
-ggsurvplot(df2_fit,
+ggsurvplot(df2_fit, size = 3,
           pval = FALSE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_light(), # Change ggplot2 theme
-          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post infection")
+          font.tickslab = c(12),
+          font.x = c(14),
+          font.y = c(14),
+          title = "Male D. innubila Poked with 16Cq DiNV",
+          legend.title="Treatment",
+          legend.labs=c( "16Cq DiNV", "Sterile Poke"),
+          font.legend = c(12),
+          palette = c("#AA4499", "#88CCEE")) + ylab("Survival Proporation") + xlab("Days post infection") 
 ```
 
 ![](20230509-16Cq-DiNV-infections-Analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->

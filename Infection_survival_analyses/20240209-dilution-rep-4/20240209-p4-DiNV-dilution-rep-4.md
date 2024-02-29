@@ -1,26 +1,46 @@
----
-title: "20240131-low-dilutions-rep-1"
-format: gfm
-editor: visual
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7)
-```
+# 20240209-p4-DiNV-dilutions-rep-4
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
+```
+
+    Loading required package: ggplot2
+
+    Loading required package: ggpubr
+
+
+    Attaching package: 'survminer'
+
+    The following object is masked from 'package:survival':
+
+        myeloma
+
+``` r
 library(dplyr)
+```
+
+
+    Attaching package: 'dplyr'
+
+    The following objects are masked from 'package:stats':
+
+        filter, lag
+
+    The following objects are masked from 'package:base':
+
+        intersect, setdiff, setequal, union
+
+``` r
 library(tidyr)
 library(stringr)
 ```
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
 
-```{r}
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -78,37 +98,80 @@ return(results)
 
 Read in raw data
 
-**Note that for these datasets, the adjusted N number is the number of flies alive on day 2 because there seemed to be more early death in these experiments than usual**
+**Note that for these datasets, the adjusted N number is the number of
+flies alive on day 2 because there seemed to be more early death in
+these experiments than usual**
 
-```{r}
+``` r
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240131-low-dilutions-rep-1/20240131-infection.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240209-dilution-rep-4/20240209-infections.csv")
 
-# remove roww 9, shouldn't be on there  
-df <- df[1:8,]
+# no need to remove any rows
+
 # separate out columns needed
-df <- df[,c(1,8,13:27)]
-
+df <- df[,c(1,8,15:29)]
 ```
 
 Convert dataframe
 
-```{r}
+``` r
 df.convert<-convert_df(df)
 ```
 
-Plot survivial curve with every line separate
+Add in columns for sex and dilution separately
 
-```{r}
+``` r
+# add in sex information and DiNV information as separate columns by splitting the treatment column 
+# split the columns 
+df.convert_S <- str_split_fixed(df.convert$treatment, "-", 2)
+
+# change column names
+colnames(df.convert_S) <- c("sex", "dilution")
+
+# add columns to df 
+df.convert_full <- cbind(df.convert,df.convert_S)
+```
+
+Plot survival curve with only females
+
+``` r
+df.convert_fem <- df.convert_full[which(df.convert_full$sex != "male"),]
+
 # change to not have confidence intervals in this one so you can see them 
-df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
-ggsurvplot(df_fit,
-          pval = FALSE, conf.int = TRUE,
+df_fit_fem<- survfit(Surv(dead, status) ~ dilution, data=df.convert_fem)
+ggsurvplot(df_fit_fem,
+          pval = FALSE, conf.int = FALSE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw()) # Change ggplot2 theme
-          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+```
 
+![](20240209-p4-DiNV-dilution-rep-4_files/figure-commonmark/unnamed-chunk-6-1.png)
+
+``` r
+          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+```
+
+Plot survival curve with only males
+
+``` r
+df.convert_m <- df.convert_full[which(df.convert_full$sex != "female"),]
+
+# change to not have confidence intervals in this one so you can see them 
+df_fit_m<- survfit(Surv(dead, status) ~ dilution, data=df.convert_m)
+ggsurvplot(df_fit_m,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
+```
+
+![](20240209-p4-DiNV-dilution-rep-4_files/figure-commonmark/unnamed-chunk-7-1.png)
+
+``` r
+          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```

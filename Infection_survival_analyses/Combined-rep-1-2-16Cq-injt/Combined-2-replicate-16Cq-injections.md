@@ -122,14 +122,17 @@ Make survival curve with blocks combined
 df_fit2<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 
 
-ggsurvplot(df_fit2,
+ggsurvplot(df_fit2, size = 3,
           pval = FALSE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_light(), # Change ggplot2 theme
-          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection")
+          font.tickslab = c(12),
+          font.x = c(14),
+          font.y = c(14),
+          title = "Male D. innubila Injected with 16Cq DiNV",
+          legend.title="Treatment",
+          legend.labs=c("Cell culture medium", "16Cq DiNV"),
+          font.legend = c(12),
+          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection") 
 ```
 
 ![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-6-1.png)
