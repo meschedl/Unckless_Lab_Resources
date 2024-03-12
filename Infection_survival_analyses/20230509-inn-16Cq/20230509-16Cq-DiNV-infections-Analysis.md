@@ -189,7 +189,7 @@ ggsurvplot(df2_fit, size = 3,
           legend.title="Treatment",
           legend.labs=c( "16Cq DiNV", "Sterile Poke"),
           font.legend = c(12),
-          palette = c("#AA4499", "#88CCEE")) + ylab("Survival Proporation") + xlab("Days post infection") 
+          palette = c("#DF65B0", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post infection") 
 ```
 
 ![](20230509-16Cq-DiNV-infections-Analysis_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->

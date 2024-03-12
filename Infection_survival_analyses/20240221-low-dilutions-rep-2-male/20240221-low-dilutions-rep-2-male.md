@@ -1,26 +1,46 @@
----
-title: "20231025-male-female-rep3-16Cq-nanoject"
-format: gfm
-editor: visual
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7)
-```
+# 20240221-low-dilutions-rep-2-male
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
+```
+
+    Loading required package: ggplot2
+
+    Loading required package: ggpubr
+
+
+    Attaching package: 'survminer'
+
+    The following object is masked from 'package:survival':
+
+        myeloma
+
+``` r
 library(dplyr)
+```
+
+
+    Attaching package: 'dplyr'
+
+    The following objects are masked from 'package:stats':
+
+        filter, lag
+
+    The following objects are masked from 'package:base':
+
+        intersect, setdiff, setequal, union
+
+``` r
 library(tidyr)
 library(stringr)
 ```
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
 
-```{r}
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -78,111 +98,78 @@ return(results)
 
 Read in raw data
 
-```{r}
+**Note that for these datasets, the adjusted N number is the number of
+flies alive on day 2 because there seemed to be more early death in
+these experiments than usual**
+
+``` r
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231025-rep-3-male-female-nanoject-16Cq/20231025-sheet.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240221-low-dilutions-rep-2-male/20240221-male-low-dil-rep2.csv")
 
+# now extra rows, I already separated the females out 
 # separate out columns needed
-df<-df[,c(1,3,14:32)]
-
+df <- df[,c(1,9,14:28)]
 ```
 
 Convert dataframe
 
-```{r}
+``` r
 df.convert<-convert_df(df)
 ```
 
-Plot survivial curve
+Plot survivial curve with every line separate
 
-```{r}
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
-
-```
-
-Combined replicates 1, 2, and 3
-
-```{r}
-#read the file from csv
-df2<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231025-rep-3-male-female-nanoject-16Cq/male-female-rep-1-2-3-counts-combo.csv")
-
-# convert dataframe
-
-df2.convert <- convert_df(df2)
-
-# add in block information 
-# first 69 rows are block A, second 69 rows are block B, and last 68 rows are block C
-df2.convert$Block <- rep(c("A","B", "C"), c(69, 69,68))
-
-# add in sex information and DiNV information as separate columns by splitting the treatment column 
-# split the columns 
-df2.convert_S <- str_split_fixed(df2.convert$treatment, "-", 2)
-# change column names
-colnames(df2.convert_S) <- c("sex", "injection")
-
-# add columns to df 
-df2.convert_full <- cbind(df2.convert,df2.convert_S )
-
-```
-
-Plot all replicates as one
-
-```{r}
-df_fit_combo_1 <- survfit(Surv(dead, status) ~ treatment, data=df2.convert_full)
-ggsurvplot(df_fit_combo_1,
           pval = FALSE, conf.int = FALSE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("#ffb6c1", "#E7298A", "#CE1256", "#67001F")) + ylab("Survival Proporation") + xlab("Days post injection")
-
+          ggtheme = theme_bw()) # Change ggplot2 theme
 ```
 
-Start looking at models
+![](20240221-low-dilutions-rep-2-male_files/figure-commonmark/unnamed-chunk-5-1.png)
 
-Model just looking at significance of block and treatment
-
-```{r}
-# model including block 
-df_fit_combo_2<- coxph(Surv(dead, status) ~ treatment + Block, data=df2.convert_full)
-summary(df_fit_combo_2)
-
+``` r
+          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
-Model just looking at significance of block and treatment without sex
+**Combine Replicates 1 and 2**
 
-```{r}
-# model including block 
-df_fit_combo_3<- coxph(Surv(dead, status) ~ injection + Block, data=df2.convert_full)
-summary(df_fit_combo_3)
+``` r
+#read the file from csv
+df2<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240221-low-dilutions-rep-2-male/low-dil-male-combo.csv")
 
+# now extra rows, I already separated the females out 
+# separate out columns needed
+df2 <- df2[,c(1,8,13:27)]
 ```
 
-Model looking at significance of block and treatment with sex
+Convert dataframe
 
-```{r}
-# model including block 
-df_fit_combo_4<- coxph(Surv(dead, status) ~ injection + Block + sex, data=df2.convert_full)
-summary(df_fit_combo_4)
-
+``` r
+df2.convert<-convert_df(df2)
 ```
 
-Model looking at significance of block and treatment by sex interaction
+Plot survivial curve with every line separate
 
-```{r}
-# model including block 
-df_fit_combo_5<- coxph(Surv(dead, status) ~ Block + sex*injection, data=df2.convert_full)
-summary(df_fit_combo_5)
+``` r
+# change to not have confidence intervals in this one so you can see them 
+df2_fit<- survfit(Surv(dead, status) ~ treatment, data=df2.convert)
+ggsurvplot(df2_fit,
+          pval = FALSE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
+```
 
+![](20240221-low-dilutions-rep-2-male_files/figure-commonmark/unnamed-chunk-8-1.png)
+
+``` r
+          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```

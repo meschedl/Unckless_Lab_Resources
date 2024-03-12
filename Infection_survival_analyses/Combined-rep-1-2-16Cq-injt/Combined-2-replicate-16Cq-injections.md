@@ -132,10 +132,17 @@ ggsurvplot(df_fit2, size = 3,
           legend.title="Treatment",
           legend.labs=c("Cell culture medium", "16Cq DiNV"),
           font.legend = c(12),
-          palette = c("#88CCEE", "#AA4499")) + ylab("Survival Proporation") + xlab("Days post injection") 
+          palette = c("#DF65B0", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post injection") 
 ```
 
 ![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-6-1.png)
+
+``` r
+# not sure why this plot is not rendering in the markdown with the same colors so save here
+ggsave("16Cq-inject-male.jpeg")
+```
+
+    Saving 7 x 8 in image
 
 ### Comparing Models and Looking at Stats
 
