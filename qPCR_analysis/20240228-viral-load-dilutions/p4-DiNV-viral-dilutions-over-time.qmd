@@ -4,11 +4,12 @@ format: gfm
 editor: visual
 ---
 
-
 ```{r}
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(scales)
+library(Rmisc)
 ```
 
 ```{r setup, include=FALSE}
@@ -30,23 +31,23 @@ Cq_values_M <- Cq_values[which(Cq_values$sex == "male"),]
 Cq_values_F <- Cq_values[which(Cq_values$sex == "female"),]
 ```
 
-
 **Female Analysis First**
 
 Look at raw Cq values
+
 ```{r}
 ggplot(Cq_values_F, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~dilution) 
 ```
 
-TPI looks remarkably consistant, PIF3 is all over the place but this isn't separated out by day which would make differences. 
+TPI looks remarkably consistant, PIF3 is all over the place but this isn't separated out by day which would make differences.
 
 Look at raw Cq values and also separate by day
+
 ```{r}
 ggplot(Cq_values_F, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(dilution ~ day) 
 ```
 
 This is showing more patterns that we sort of expect, but we have to do the delta Cq comparison to the TPI primer to be sure
-
 
 Calculating female delta Cq and Plotting
 
@@ -84,11 +85,12 @@ ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxp
 **Male Analysis Second**
 
 Look at raw Cq values and also separate by day
+
 ```{r}
 ggplot(Cq_values_M, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(dilution ~ day) 
 ```
 
-Looks pretty similar to the female results 
+Looks pretty similar to the female results
 
 Calculating male delta Cq and Plotting
 
@@ -127,9 +129,236 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxp
 
 ```
 
+**Delta Delta Analysis**
+
+Females
+
+```{r}
+# this might be a little mess to do 
+# separate out the day 0 samples to start with 
+F_0 <- Cq_values_F_Delta[which(Cq_values_F_Delta$day == "day0"),]
+# separate out dilutions?
+F_0_3 <- F_0[which(F_0$dilution == "3 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(F_0_3$delta_Cq)
+# -9.25875
+F_0_01 <- F_0[which(F_0$dilution == "0.1 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(F_0_01$delta_Cq)
+# -13.38625
+F_0_001 <- F_0[which(F_0$dilution == "0.01 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(F_0_001$delta_Cq)
+# -15.4525
+
+# main data sheet without day 0 
+F <- Cq_values_F_Delta[which(Cq_values_F_Delta$day != "day0"),]
+# separate out just dilution 3 
+F_3 <- F[which(F$dilution == "3 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_3 <- F_3$delta_Cq - -9.25875
+delta_delta_3
+
+# add as column 
+F_3$delta_delta_Cq <- delta_delta_3
+
+# do 2^ delta delta 
+F_3$delta_delta_Cq_2 <- 2^(delta_delta_3)
+
+# separate out just dilution 0.1 
+F_01 <- F[which(F$dilution == "0.1 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_01 <- F_01$delta_Cq - -13.38625
+delta_delta_01
+
+# add as column 
+F_01$delta_delta_Cq <- delta_delta_01
+
+# do 2^ delta delta 
+F_01$delta_delta_Cq_2 <- 2^(delta_delta_01)
+
+# separate out just dilution 0.01 
+F_001 <- F[which(F$dilution == "0.01 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_001 <- F_001$delta_Cq - -15.4525
+delta_delta_001
+
+# add as column 
+F_001$delta_delta_Cq <- delta_delta_001
+
+# do 2^ delta delta 
+F_001$delta_delta_Cq_2 <- 2^(delta_delta_001)
+
+# add all of the days back together 
+Female_delta_delta <- rbind(F_001, F_01, F_3)
+
+#Plot 
+legend_title <- "Virus Delivery"
+
+ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Female Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+
+# error bars?
+# stats_fem <- summarySE(Female_delta_delta, measurevar="delta_delta_Cq_2", groupvars=c("dilution", "day"))
+# stats_fem
+
+# Plot without box plots and with error bars 
+#ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) +  scale_fill_manual(values=c("#E7E1EF", "#C994C7", "#CE1256")) + theme_light() +geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + geom_errorbar( aes(ymin = delta_delta_Cq_2-se, ymax = delta_delta_Cq_2+se), data = stats_fem, position = position_dodge(0.8), width = 0.2) 
+```
+
+Males
+
+```{r}
+# this might be a little mess to do 
+# separate out the day 0 samples to start with 
+M_0 <- Cq_values_M_Delta[which(Cq_values_M_Delta$day == "day0"),]
+# separate out dilutions?
+M_0_3 <- M_0[which(M_0$dilution == "3 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(M_0_3$delta_Cq)
+# -9.4875
+M_0_01 <- M_0[which(M_0$dilution == "0.1 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(M_0_01$delta_Cq)
+# -12.63125
+M_0_001 <- M_0[which(M_0$dilution == "0.01 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(M_0_001$delta_Cq)
+# -13.40625
+
+# main data sheet without day 0 
+M <- Cq_values_M_Delta[which(Cq_values_M_Delta$day != "day0"),]
+# separate out just dilution 3 
+M_3 <- M[which(M$dilution == "3 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_3_M <- M_3$delta_Cq - -9.4875
+delta_delta_3_M
+
+# add as column 
+M_3$delta_delta_Cq <- delta_delta_3_M
+
+# do 2^ delta delta 
+M_3$delta_delta_Cq_2 <- 2^(delta_delta_3_M)
+
+# separate out just dilution 0.1 
+M_01 <- M[which(M$dilution == "0.1 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_01_M <- M_01$delta_Cq - -12.63125
+delta_delta_01_M
+
+# add as column 
+M_01$delta_delta_Cq <- delta_delta_01_M
+
+# do 2^ delta delta 
+M_01$delta_delta_Cq_2 <- 2^(delta_delta_01_M)
+
+# separate out just dilution 0.01 
+M_001 <- M[which(M$dilution == "0.01 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_001_M <- M_001$delta_Cq - -13.40625
+delta_delta_001_M
+
+# add as column 
+M_001$delta_delta_Cq <- delta_delta_001_M
+
+# do 2^ delta delta 
+M_001$delta_delta_Cq_2 <- 2^(delta_delta_001_M)
+
+# add all of the days back together 
+Male_delta_delta <- rbind(M_001, M_01, M_3)
+
+# plot
+legend_title <- "Virus Delivery"
+
+ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+Look at male and female for each dilution by day
+
+3 FFU dilution
+
+```{r}
+# male
+M_3_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "3 FFU"),]
+# female
+F_3_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "3 FFU"),]
+
+FFU_3_dil <- rbind(M_3_dil, F_3_dil)
+
+legend_title = "Sex"
+#Plot 
+ggplot(FFU_3_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
+  geom_boxplot()  + 
+  scale_fill_manual(legend_title, values=c("#E7298A" ,  "#67001F")) +
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 3 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+
+```
+
+0.1 FFU dilution
+
+```{r}
+# male
+M_01_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "0.1 FFU"),]
+# female
+F_01_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.1 FFU"),]
+
+FFU_01_dil <- rbind(M_01_dil, F_01_dil)
+
+legend_title = "Sex"
+#Plot 
+ggplot(FFU_01_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
+  geom_boxplot()  + 
+  scale_fill_manual(legend_title, values=c("#E7298A" ,  "#67001F")) +
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.1 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 
 
+```
 
+0.01 FFU dilution
 
+```{r}
+# male
+M_001_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "0.01 FFU"),]
+# female
+F_001_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.01 FFU"),]
 
+FFU_001_dil <- rbind(M_001_dil, F_001_dil)
 
+legend_title = "Sex"
+#Plot 
+ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
+  geom_boxplot()  + 
+  scale_fill_manual(legend_title, values=c("#E7298A" ,  "#67001F")) +
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```

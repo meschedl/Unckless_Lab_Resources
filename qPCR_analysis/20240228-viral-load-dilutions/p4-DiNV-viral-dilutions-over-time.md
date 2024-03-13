@@ -18,7 +18,29 @@ library(dplyr)
 
 ``` r
 library(tidyr)
+library(scales)
+library(Rmisc)
 ```
+
+    Loading required package: lattice
+
+    Loading required package: plyr
+
+    ------------------------------------------------------------------------------
+
+    You have loaded plyr after dplyr - this is likely to cause problems.
+    If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+    library(plyr); library(dplyr)
+
+    ------------------------------------------------------------------------------
+
+
+    Attaching package: 'plyr'
+
+    The following objects are masked from 'package:dplyr':
+
+        arrange, count, desc, failwith, id, mutate, rename, summarise,
+        summarize
 
 Load in dataset
 
@@ -222,3 +244,327 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxp
 ```
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-8-1.png)
+
+**Delta Delta Analysis**
+
+Females
+
+``` r
+# this might be a little mess to do 
+# separate out the day 0 samples to start with 
+F_0 <- Cq_values_F_Delta[which(Cq_values_F_Delta$day == "day0"),]
+# separate out dilutions?
+F_0_3 <- F_0[which(F_0$dilution == "3 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(F_0_3$delta_Cq)
+```
+
+    [1] -9.25875
+
+``` r
+# -9.25875
+F_0_01 <- F_0[which(F_0$dilution == "0.1 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(F_0_01$delta_Cq)
+```
+
+    [1] -13.38625
+
+``` r
+# -13.38625
+F_0_001 <- F_0[which(F_0$dilution == "0.01 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(F_0_001$delta_Cq)
+```
+
+    [1] -15.4525
+
+``` r
+# -15.4525
+
+# main data sheet without day 0 
+F <- Cq_values_F_Delta[which(Cq_values_F_Delta$day != "day0"),]
+# separate out just dilution 3 
+F_3 <- F[which(F$dilution == "3 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_3 <- F_3$delta_Cq - -9.25875
+delta_delta_3
+```
+
+     [1]  7.62875  8.06875  7.82875  5.98875  7.78875  5.75875  6.07875  7.89875
+     [9] 15.11875 14.90875 15.20875 14.89875 14.85875 14.17875 15.13875 14.31875
+    [17] 18.52875 17.48875 18.27875 17.94875 17.79875 17.85875 17.37875 18.03875
+
+``` r
+# add as column 
+F_3$delta_delta_Cq <- delta_delta_3
+
+# do 2^ delta delta 
+F_3$delta_delta_Cq_2 <- 2^(delta_delta_3)
+
+# separate out just dilution 0.1 
+F_01 <- F[which(F$dilution == "0.1 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_01 <- F_01$delta_Cq - -13.38625
+delta_delta_01
+```
+
+     [1]  6.90625  1.44625  7.29625  1.75625  6.88625  4.87625  6.29625  8.38625
+     [9] 19.48625 18.83625 18.77625 18.74625 18.57625 18.18625 18.25625  2.89625
+    [17] 19.29625 20.10625 22.76625 20.82625 24.14625 21.84625 21.44625 20.60625
+
+``` r
+# add as column 
+F_01$delta_delta_Cq <- delta_delta_01
+
+# do 2^ delta delta 
+F_01$delta_delta_Cq_2 <- 2^(delta_delta_01)
+
+# separate out just dilution 0.01 
+F_001 <- F[which(F$dilution == "0.01 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_001 <- F_001$delta_Cq - -15.4525
+delta_delta_001
+```
+
+     [1] -1.2675 -0.7475 -1.8675  4.7125  2.9925 -3.2475  4.6025  5.9525 -0.6675
+    [10] -1.8775 20.3025 20.7325 -1.0475 -2.3475 -1.4075  3.5525 22.3125  6.0925
+    [19]  6.8225  6.2925  3.6225  4.9425  3.1625 -2.3475
+
+``` r
+# add as column 
+F_001$delta_delta_Cq <- delta_delta_001
+
+# do 2^ delta delta 
+F_001$delta_delta_Cq_2 <- 2^(delta_delta_001)
+
+# add all of the days back together 
+Female_delta_delta <- rbind(F_001, F_01, F_3)
+
+#Plot 
+legend_title <- "Virus Delivery"
+
+ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Female Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-9-1.png)
+
+``` r
+# error bars?
+# stats_fem <- summarySE(Female_delta_delta, measurevar="delta_delta_Cq_2", groupvars=c("dilution", "day"))
+# stats_fem
+
+# Plot without box plots and with error bars 
+#ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) +  scale_fill_manual(values=c("#E7E1EF", "#C994C7", "#CE1256")) + theme_light() +geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + geom_errorbar( aes(ymin = delta_delta_Cq_2-se, ymax = delta_delta_Cq_2+se), data = stats_fem, position = position_dodge(0.8), width = 0.2) 
+```
+
+Males
+
+``` r
+# this might be a little mess to do 
+# separate out the day 0 samples to start with 
+M_0 <- Cq_values_M_Delta[which(Cq_values_M_Delta$day == "day0"),]
+# separate out dilutions?
+M_0_3 <- M_0[which(M_0$dilution == "3 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(M_0_3$delta_Cq)
+```
+
+    [1] -9.4875
+
+``` r
+# -9.4875
+M_0_01 <- M_0[which(M_0$dilution == "0.1 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(M_0_01$delta_Cq)
+```
+
+    [1] -12.63125
+
+``` r
+# -12.63125
+M_0_001 <- M_0[which(M_0$dilution == "0.01 FFU"),]
+# find mean of Delta Cq (not 2^delta)
+mean(M_0_001$delta_Cq)
+```
+
+    [1] -13.40625
+
+``` r
+# -13.40625
+
+# main data sheet without day 0 
+M <- Cq_values_M_Delta[which(Cq_values_M_Delta$day != "day0"),]
+# separate out just dilution 3 
+M_3 <- M[which(M$dilution == "3 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_3_M <- M_3$delta_Cq - -9.4875
+delta_delta_3_M
+```
+
+     [1]  7.2875  8.0175  8.4775  8.0975  7.5975  7.8575  7.1775  5.9575 15.5575
+    [10] 15.4475 14.8675 15.7275 15.7175 15.4475 17.7275 15.6475 18.1475 17.7875
+    [19] 18.6575 18.5175 18.5275 17.4275 18.6575 18.6175
+
+``` r
+# add as column 
+M_3$delta_delta_Cq <- delta_delta_3_M
+
+# do 2^ delta delta 
+M_3$delta_delta_Cq_2 <- 2^(delta_delta_3_M)
+
+# separate out just dilution 0.1 
+M_01 <- M[which(M$dilution == "0.1 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_01_M <- M_01$delta_Cq - -12.63125
+delta_delta_01_M
+```
+
+     [1]  7.13125  6.95125  8.55125  7.05125 -0.60875  6.25125  6.46125  7.28125
+     [9] 17.74125 17.68125 17.53125 18.01125 17.94125 18.22125 17.92125 18.47125
+    [17] 19.68125 20.01125 20.33125 20.89125 21.26125 21.36125 21.14125 20.82125
+
+``` r
+# add as column 
+M_01$delta_delta_Cq <- delta_delta_01_M
+
+# do 2^ delta delta 
+M_01$delta_delta_Cq_2 <- 2^(delta_delta_01_M)
+
+# separate out just dilution 0.01 
+M_001 <- M[which(M$dilution == "0.01 FFU"),]
+
+# subtract average day 0 delta Cq for 3 FFU from the delta Cq of all others 
+delta_delta_001_M <- M_001$delta_Cq - -13.40625
+delta_delta_001_M
+```
+
+     [1]  5.45625  2.17625  2.33625 -1.58375  6.40625 -1.31375  1.10625 -0.35375
+     [9] -1.80375 -3.30375 -3.70375 18.04625 17.61625 -3.95375 18.57625  1.71625
+    [17]  4.41625  0.44625  4.92625  4.17625 22.09625 -3.79375 -3.77375  2.25625
+
+``` r
+# add as column 
+M_001$delta_delta_Cq <- delta_delta_001_M
+
+# do 2^ delta delta 
+M_001$delta_delta_Cq_2 <- 2^(delta_delta_001_M)
+
+# add all of the days back together 
+Male_delta_delta <- rbind(M_001, M_01, M_3)
+
+# plot
+legend_title <- "Virus Delivery"
+
+ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-10-1.png)
+
+Look at male and female for each dilution by day
+
+3 FFU dilution
+
+``` r
+# male
+M_3_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "3 FFU"),]
+# female
+F_3_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "3 FFU"),]
+
+FFU_3_dil <- rbind(M_3_dil, F_3_dil)
+
+legend_title = "Sex"
+#Plot 
+ggplot(FFU_3_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
+  geom_boxplot()  + 
+  scale_fill_manual(legend_title, values=c("#E7298A" ,  "#67001F")) +
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 3 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-11-1.png)
+
+0.1 FFU dilution
+
+``` r
+# male
+M_01_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "0.1 FFU"),]
+# female
+F_01_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.1 FFU"),]
+
+FFU_01_dil <- rbind(M_01_dil, F_01_dil)
+
+legend_title = "Sex"
+#Plot 
+ggplot(FFU_01_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
+  geom_boxplot()  + 
+  scale_fill_manual(legend_title, values=c("#E7298A" ,  "#67001F")) +
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.1 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-12-1.png)
+
+0.01 FFU dilution
+
+``` r
+# male
+M_001_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "0.01 FFU"),]
+# female
+F_001_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.01 FFU"),]
+
+FFU_001_dil <- rbind(M_001_dil, F_001_dil)
+
+legend_title = "Sex"
+#Plot 
+ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
+  geom_boxplot()  + 
+  scale_fill_manual(legend_title, values=c("#E7298A" ,  "#67001F")) +
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-13-1.png)
