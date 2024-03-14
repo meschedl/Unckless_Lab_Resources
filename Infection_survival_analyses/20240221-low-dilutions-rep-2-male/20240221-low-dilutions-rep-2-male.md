@@ -122,20 +122,20 @@ Plot survivial curve with every line separate
 ``` r
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
-ggsurvplot(df_fit,
+ggsurvplot(df_fit, size = 5,
           pval = FALSE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
+          font.tickslab = c(14),
+          font.x = c(16),
+          font.y = c(16),
+          ggtheme = theme_light(),
+          title = "Male D. innubila Injected with Dilutions of Passage 4 DiNV",
+          legend.title="Treatment",
+          legend.labs=c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU"),
+          font.legend = c(14),
+          palette = c("#DF65B0", "#E7E1EF", "#67001F", "#F7F4F9")) + ylab("Survival Proporation") + xlab("Days post injection") 
 ```
 
 ![](20240221-low-dilutions-rep-2-male_files/figure-commonmark/unnamed-chunk-5-1.png)
-
-``` r
-          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
-```
 
 **Combine Replicates 1 and 2**
 
@@ -157,19 +157,24 @@ df2.convert<-convert_df(df2)
 Plot survivial curve with every line separate
 
 ``` r
+# level the treatments so they go in an order 
+df2.convert <- df2.convert %>% 
+  mutate(treatment = factor(treatment, levels = c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU")))
+
 # change to not have confidence intervals in this one so you can see them 
 df2_fit<- survfit(Surv(dead, status) ~ treatment, data=df2.convert)
-ggsurvplot(df2_fit,
+ggsurvplot(df_fit, size = 5,
           pval = FALSE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw()) # Change ggplot2 theme
+          legend = "right",
+          font.tickslab = c(14),
+          font.x = c(16),
+          font.y = c(16),
+          ggtheme = theme_light(),
+          title = "Male D. innubila Injected with Dilutions of Passage 4 DiNV",
+          legend.title="Treatment",
+          legend.labs=c("0.01 FFU", "0.005 FFU", "0.05 FFU", "CCM"),
+          font.legend = c(14),
+          palette = c("#E7298A",  "#C994C7", "#980043", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
 ![](20240221-low-dilutions-rep-2-male_files/figure-commonmark/unnamed-chunk-8-1.png)
-
-``` r
-          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
-```
