@@ -150,7 +150,7 @@ Cq_values_F_Delta$delta_Cq_2 <- 2^(delta_Cqs_F)
 
 
 # plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + coord_trans(y = "log10")
+ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
 ```
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-6-1.png)
@@ -230,7 +230,7 @@ delta_Cqs_M
 
 ``` r
 # Make a new dataframe that only has one row per sample by getting rid of the rows with the TPI primer
-Cq_values_M_Delta <- Cq_values_M[which(Cq_values_F$primer == "PIF3"),]
+Cq_values_M_Delta <- Cq_values_M[which(Cq_values_M$primer == "PIF3"),]
 
 # And then add in the delta Cqs as a new column
 Cq_values_M_Delta$delta_Cq <- delta_Cqs_M
@@ -240,7 +240,7 @@ Cq_values_M_Delta$delta_Cq_2 <- 2^(delta_Cqs_M)
 
 
 # plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + coord_trans(y = "log10")
+ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
 ```
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-8-1.png)
@@ -568,3 +568,172 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
     `binwidth`.
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-13-1.png)
+
+**Adding in days 6, 7, and 9 for males**
+
+Load in dataset
+
+``` r
+Cq_values_extra <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240228-viral-load-dilutions/20240313-extra-0.01.csv")
+```
+
+Look at raw Cq values
+
+``` r
+ggplot(Cq_values_extra, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~day) 
+```
+
+    `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-15-1.png)
+
+These look pretty similar to above, I wonder if all the flies aren’t
+getting infected…
+
+Calculating extra delta Cq and Plotting
+
+``` r
+# need to organize by name of the sample I think
+Cq_values_extra <- Cq_values_extra[order(Cq_values_extra$sample_ID),]
+# this worked to order by the sample number 
+# and the TPI value is first in the order and PIF 3 second
+
+# Separate that dataframe, incriminating by 2, every number between 1-48 (number of rows in dataframe)
+Cq_values_extra$Cq[seq(1,48,2)] # these are the TPI Cq #s
+```
+
+     [1] 22.10 22.02 23.62 22.13 22.04 24.20 22.07 24.21 22.14 22.21 22.47 23.17
+    [13] 21.71 22.29 22.22 22.23 22.58 22.03 22.18 22.27 23.79 22.15 22.10 23.50
+
+``` r
+Cq_values_extra$Cq[seq(2,48,2)] # these are the PIF 3 primer Cq #s 
+```
+
+     [1] 32.69 31.79 33.40 32.07 33.33 15.48 26.23 14.82 24.12 12.44 21.48 26.14
+    [13] 27.00 29.15 23.20 22.89 12.24 25.87 25.61 25.62 25.44 28.13 24.47 14.96
+
+``` r
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+delta_Cqs_extra <- Cq_values_extra$Cq[seq(1,48,2)] - Cq_values_extra$Cq[seq(2,48,2)]
+#vector
+delta_Cqs_extra
+```
+
+     [1] -10.59  -9.77  -9.78  -9.94 -11.29   8.72  -4.16   9.39  -1.98   9.77
+    [11]   0.99  -2.97  -5.29  -6.86  -0.98  -0.66  10.34  -3.84  -3.43  -3.35
+    [21]  -1.65  -5.98  -2.37   8.54
+
+``` r
+# Make a new dataframe that only has one row per sample by getting rid of the rows with the TPI primer
+Cq_values_extra_Delta <- Cq_values_extra[which(Cq_values_extra$primer == "PIF 3"),]
+
+# And then add in the delta Cqs as a new column
+Cq_values_extra_Delta$delta_Cq <- delta_Cqs_extra
+
+# add a column with 2^ delta Cq
+Cq_values_extra_Delta$delta_Cq_2 <- 2^(delta_Cqs_extra)
+
+
+# plot and use a log 10 scale for the y axis 
+ggplot(Cq_values_extra_Delta, aes(y= delta_Cq_2, x=day)) + geom_boxplot()  + theme_linedraw() + geom_point() + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
+```
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-16-1.png)
+
+Delta delta analysis
+
+``` r
+# this might be a little mess to do 
+# separate out the day 0 samples to start with 
+E_0 <- Cq_values_extra_Delta[which(Cq_values_extra_Delta$day == "day0"),]
+
+# mean of day 0 delta Cq
+mean(E_0$delta_Cq)
+```
+
+    [1] -10.274
+
+``` r
+# -10.274
+
+# main data sheet without day 0 
+E <- Cq_values_extra_Delta[which(Cq_values_extra_Delta$day != "day0"),]
+
+# subtract average day 0 delta Cq from the delta Cq of all others 
+delta_delta_extra <- E$delta_Cq - -10.274
+delta_delta_extra
+```
+
+     [1] 18.994  6.114 19.664  8.294 20.044 11.264  7.304  4.984  3.414  9.294
+    [11]  9.614 20.614  6.434  6.844  6.924  8.624  4.294  7.904 18.814
+
+``` r
+# add as column 
+E$delta_delta_Cq <- delta_delta_extra
+
+# do 2^ delta delta 
+E$delta_delta_Cq_2 <- 2^(delta_delta_extra)
+
+
+# plot
+legend_title <- "Virus Delivery"
+
+ggplot(E, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot() +  
+  theme_light() + geom_point() +
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  scale_x_discrete(labels=c("day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
+  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-17-1.png)
+
+Combine this data with the male data from the other experiment
+
+``` r
+# male data
+head(M_001_dil)
+```
+
+        Well         Plate sample_ID primer  sex dilution  day unique_name    Cq
+    8    A08  plate 1 PIF3        53   PIF3 male 0.01 FFU day1     53_PIF3 31.76
+    200  A08 plate 2 PIF 3        54   PIF3 male 0.01 FFU day1     54_PIF3 35.16
+    32   C08  plate 1 PIF3        55   PIF3 male 0.01 FFU day1     55_PIF3 34.20
+    224  C08 plate 2 PIF 3        56   PIF3 male 0.01 FFU day1     56_PIF3 38.38
+    56   E08  plate 1 PIF3        57   PIF3 male 0.01 FFU day1     57_PIF3 29.97
+    248  E08 plate 2 PIF 3        58   PIF3 male 0.01 FFU day1     58_PIF3 37.50
+        delta_Cq   delta_Cq_2 delta_delta_Cq delta_delta_Cq_2
+    8      -7.95 4.044004e-03        5.45625       43.9030724
+    200   -11.23 4.163256e-04        2.17625        4.5197720
+    32    -11.07 4.651553e-04        2.33625        5.0498831
+    224   -14.99 3.072984e-05       -1.58375        0.3336136
+    56     -7.00 7.812500e-03        6.40625       84.8151452
+    248   -14.72 3.705429e-05       -1.31375        0.4022739
+
+``` r
+# to combine datasets I'll need all the same columns 
+# don't need plate column, sex column 
+M_001_dil_s <- M_001_dil[,c(1,3:4,6:13)]
+
+# combine extra and original data 
+# add all of the days back together 
+All_Male_delta_delta <- rbind(M_001_dil_s, E)
+
+# plot
+legend_title <- "Virus Delivery"
+
+ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  scale_fill_manual(legend_title, values=c( "#67001F")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days", "day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
+  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-18-1.png)
