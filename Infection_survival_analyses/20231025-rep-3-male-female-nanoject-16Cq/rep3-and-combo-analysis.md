@@ -156,15 +156,22 @@ df2.convert_full <- cbind(df2.convert,df2.convert_S )
 Plot all replicates as one
 
 ``` r
+df2.convert_full <- df2.convert_full %>% 
+  mutate(treatment = factor(treatment, levels = c("male-CCM", "female-CCM", "male-DiNV", "female-DiNV")))
+
 df_fit_combo_1 <- survfit(Surv(dead, status) ~ treatment, data=df2.convert_full)
-ggsurvplot(df_fit_combo_1,
+ggsurvplot(df_fit_combo_1, size = 5,
           pval = FALSE, conf.int = FALSE,
-          #risk.table = TRUE, # Add risk table
-          #risk.table.col = "strata", # Change risk table color by groups
-          #linetype = "strata", # Change line type by groups
-          #surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+          legend = "bottom",
+          font.tickslab = c(14),
+          font.x = c(16),
+          font.y = c(16),
+          ggtheme = theme_light(),
+          title = "Comparing Male and Female D. innubila injected with 16Cq DiNV",
+          legend.title="Treatment",
+          legend.labs=c("male CCM", "female CCM", "male 16Cq DiNV", "female 16Cq DiNV"),
+          font.legend = c(14),
+          palette = c("#ccf9ff", "#62CFF4" ,"#2C67F2", "#0080bf")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
 ![](rep3-and-combo-analysis_files/figure-commonmark/unnamed-chunk-7-1.png)
@@ -184,21 +191,21 @@ summary(df_fit_combo_2)
 
       n= 206, number of events= 151 
 
-                            coef exp(coef) se(coef)      z Pr(>|z|)    
-    treatmentfemale-DiNV  2.8561   17.3932   0.4376  6.527 6.73e-11 ***
-    treatmentmale-CCM    -1.9583    0.1411   1.0801 -1.813   0.0698 .  
-    treatmentmale-DiNV    2.5997   13.4601   0.4463  5.825 5.70e-09 ***
-    BlockB               -0.3810    0.6832   0.2062 -1.848   0.0646 .  
-    BlockC                0.3182    1.3747   0.2066  1.540   0.1235    
+                             coef exp(coef) se(coef)      z Pr(>|z|)    
+    treatmentfemale-CCM    1.9583    7.0876   1.0801  1.813   0.0698 .  
+    treatmentmale-DiNV     4.5581   95.3991   1.0161  4.486 7.26e-06 ***
+    treatmentfemale-DiNV   4.8144  123.2749   1.0122  4.757 1.97e-06 ***
+    BlockB                -0.3810    0.6832   0.2062 -1.848   0.0646 .  
+    BlockC                 0.3182    1.3747   0.2066  1.540   0.1235    
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                          exp(coef) exp(-coef) lower .95 upper .95
-    treatmentfemale-DiNV   17.3932    0.05749   7.37712    41.008
-    treatmentmale-CCM       0.1411    7.08755   0.01699     1.172
-    treatmentmale-DiNV     13.4601    0.07429   5.61280    32.279
-    BlockB                  0.6832    1.46369   0.45610     1.023
-    BlockC                  1.3747    0.72743   0.91694     2.061
+    treatmentfemale-CCM     7.0876   0.141092    0.8533    58.872
+    treatmentmale-DiNV     95.3991   0.010482   13.0211   698.942
+    treatmentfemale-DiNV  123.2749   0.008112   16.9563   896.230
+    BlockB                  0.6832   1.463691    0.4561     1.023
+    BlockC                  1.3747   0.727434    0.9169     2.061
 
     Concordance= 0.77  (se = 0.026 )
     Likelihood ratio test= 170  on 5 df,   p=<2e-16

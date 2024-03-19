@@ -177,18 +177,23 @@ df.convert_full <- cbind(df2.convert,df2.convert_S)
 # plot the survival curve not including confidence intervals
 
 ``` r
+# order treatments 
+df.convert_full <- df.convert_full%>% 
+  mutate(treatment = factor(treatment, levels = c("SP", "16DiNV")))
+
 # change to not have confidence intervals in this one so you can see them 
 df2_fit<- survfit(Surv(dead, status) ~ Treatment, data=df.convert_full)
-ggsurvplot(df2_fit, size = 3,
+ggsurvplot(df2_fit, size = 5,
           pval = FALSE, conf.int = FALSE,
           ggtheme = theme_light(), # Change ggplot2 theme
-          font.tickslab = c(12),
-          font.x = c(14),
-          font.y = c(14),
+          font.tickslab = c(14),
+          #legend = "right",
+          font.x = c(16),
+          font.y = c(16),
           title = "Male D. innubila Poked with 16Cq DiNV",
           legend.title="Treatment",
           legend.labs=c( "16Cq DiNV", "Sterile Poke"),
-          font.legend = c(12),
+          font.legend = c(14),
           palette = c("#DF65B0", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post infection") 
 ```
 

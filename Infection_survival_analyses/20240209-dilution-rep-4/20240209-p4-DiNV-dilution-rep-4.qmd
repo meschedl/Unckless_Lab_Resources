@@ -91,7 +91,6 @@ df <- df[,c(1,8,15:29)]
 
 ```
 
-
 Convert dataframe
 
 ```{r}
@@ -99,7 +98,6 @@ df.convert<-convert_df(df)
 ```
 
 Add in columns for sex and dilution separately
-
 
 ```{r}
 # add in sex information and DiNV information as separate columns by splitting the treatment column 
@@ -151,7 +149,3 @@ ggsurvplot(df_fit_m,
           # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
 
 ```
-
-
-
-

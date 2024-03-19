@@ -1,26 +1,46 @@
----
-title: "20231025-male-female-rep3-16Cq-nanoject"
-format: gfm
-editor: visual
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=12, fig.height = 7)
-```
+# p4-Dilutions-4-rep-combo
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
+```
+
+    Loading required package: ggplot2
+
+    Loading required package: ggpubr
+
+
+    Attaching package: 'survminer'
+
+    The following object is masked from 'package:survival':
+
+        myeloma
+
+``` r
 library(dplyr)
+```
+
+
+    Attaching package: 'dplyr'
+
+    The following objects are masked from 'package:stats':
+
+        filter, lag
+
+    The following objects are masked from 'package:base':
+
+        intersect, setdiff, setequal, union
+
+``` r
 library(tidyr)
 library(stringr)
 ```
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
 
-```{r}
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -78,120 +98,115 @@ return(results)
 
 Read in raw data
 
-```{r}
+**Note that for these datasets, the adjusted N number is the number of
+flies alive on day 2 because there seemed to be more early death in
+these experiments than usual**
+
+``` r
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231025-rep-3-male-female-nanoject-16Cq/20231025-sheet.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240209-dilution-rep-4/dilution-infection-combo-sheet.csv")
 
+# Remove the rows of the undiluted samples because I did not do those for the other replicates
+df <- df[c(1:12, 15:56),]
 # separate out columns needed
-df<-df[,c(1,3,14:32)]
-
+df <- df[,c(1,3,15:29)]
 ```
 
 Convert dataframe
 
-```{r}
+``` r
 df.convert<-convert_df(df)
 ```
 
-Plot survivial curve
+Plot survivial curve with every line separate, yes this is a mess
 
-```{r}
+``` r
 # change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit,
-          pval = TRUE, conf.int = FALSE,
+          pval = FALSE, conf.int = FALSE,
           #risk.table = TRUE, # Add risk table
           #risk.table.col = "strata", # Change risk table color by groups
           #linetype = "strata", # Change line type by groups
           #surv.median.line = "hv", # Specify median survival
-          ggtheme = theme_bw(), # Change ggplot2 theme
-          palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
-
+          ggtheme = theme_bw()) # Change ggplot2 theme
 ```
 
-Combined replicates 1, 2, and 3
+![](p4-dilutions-4-rep-combo_files/figure-commonmark/unnamed-chunk-5-1.png)
 
-```{r}
-#read the file from csv
-df2<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20231025-rep-3-male-female-nanoject-16Cq/male-female-rep-1-2-3-counts-combo.csv")
+``` r
+          # palette = c("orchid", "aquamarine", "blueviolet", "darkslategray3")) + ylab("Survival Proporation") + xlab("Days post injection")
+```
 
-# convert dataframe
+Add in columns for sex and dilution separately
 
-df2.convert <- convert_df(df2)
-
-# add in block information 
-# first 69 rows are block A, second 69 rows are block B, and last 68 rows are block C
-df2.convert$Block <- rep(c("A","B", "C"), c(69, 69,68))
-
+``` r
 # add in sex information and DiNV information as separate columns by splitting the treatment column 
 # split the columns 
-df2.convert_S <- str_split_fixed(df2.convert$treatment, "-", 2)
+df.convert_S <- str_split_fixed(df.convert$treatment, "-", 2)
+
 # change column names
-colnames(df2.convert_S) <- c("sex", "injection")
+colnames(df.convert_S) <- c("sex", "dilution")
 
 # add columns to df 
-df2.convert_full <- cbind(df2.convert,df2.convert_S )
+df.convert_full <- cbind(df.convert,df.convert_S)
 
+# add in block information 
+# this was not reproducable to count but I don't know how else to do it
+# first 118 rows are block A, second 127 rows are block B, the third 138 rows are block C, and the last 133 rows are block D
+df.convert_full$Block <- rep(c("A","B", "C", "D"), c(118, 127, 138, 129))
 ```
 
-Plot all replicates as one
+Plot survival curve with only females
 
-```{r}
+``` r
+df.convert_fem <- df.convert_full[which(df.convert_full$sex != "male"),]
 
-df2.convert_full <- df2.convert_full %>% 
-  mutate(treatment = factor(treatment, levels = c("male-CCM", "female-CCM", "male-DiNV", "female-DiNV")))
+# order treatments 
+df.convert_fem <- df.convert_fem %>% 
+  mutate(dilution = factor(dilution, levels = c("CCM", "0.01", "0.1", "1", "3", "6")))
 
-df_fit_combo_1 <- survfit(Surv(dead, status) ~ treatment, data=df2.convert_full)
-ggsurvplot(df_fit_combo_1, size = 5,
+# change to not have confidence intervals in this one so you can see them 
+df_fit_fem<- survfit(Surv(dead, status) ~ dilution, data=df.convert_fem)
+ggsurvplot(df_fit_fem, size = 5,
           pval = FALSE, conf.int = FALSE,
           legend = "bottom",
           font.tickslab = c(14),
           font.x = c(16),
           font.y = c(16),
           ggtheme = theme_light(),
-          title = "Comparing Male and Female D. innubila injected with 16Cq DiNV",
+          title = "Female D. innubila Injected with Dilutions of Passage 4 DiNV",
           legend.title="Treatment",
-          legend.labs=c("male CCM", "female CCM", "male 16Cq DiNV", "female 16Cq DiNV"),
+          legend.labs=c("CCM", "0.01 FFU", "0.1 FFU", "1 FFU", "3 FFU", "6 FFU"),
           font.legend = c(14),
-          palette = c("#ccf9ff", "#62CFF4" ,"#2C67F2", "#0080bf")) + ylab("Survival Proporation") + xlab("Days post injection")
-        
-          
+          palette = c("#E7E1EF", "#C994C7","#DF65B0","#E7298A" ,"#980043", "#67001F")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
-Start looking at models
+![](p4-dilutions-4-rep-combo_files/figure-commonmark/unnamed-chunk-7-1.png)
 
-Model just looking at significance of block and treatment
+Plot survival curve with only males
 
-```{r}
-# model including block 
-df_fit_combo_2<- coxph(Surv(dead, status) ~ treatment + Block, data=df2.convert_full)
-summary(df_fit_combo_2)
+``` r
+df.convert_m <- df.convert_full[which(df.convert_full$sex != "female"),]
 
+# order treatments 
+df.convert_m <- df.convert_m %>% 
+  mutate(dilution = factor(dilution, levels = c("CCM", "0.01", "0.1", "1", "3", "6")))
+
+# change to not have confidence intervals in this one so you can see them 
+df_fit_m<- survfit(Surv(dead, status) ~ dilution, data=df.convert_m)
+ggsurvplot(df_fit_m, size = 5,
+          pval = FALSE, conf.int = FALSE,
+          legend = "bottom",
+          font.tickslab = c(14),
+          font.x = c(16),
+          font.y = c(16),
+          ggtheme = theme_light(),
+          title = "Male D. innubila Injected with Dilutions of Passage 4 DiNV",
+          legend.title="Treatment",
+          legend.labs=c("CCM", "0.01 FFU", "0.1 FFU", "1 FFU", "3 FFU", "6 FFU"),
+          font.legend = c(14),
+          palette = c("#E7E1EF", "#C994C7","#DF65B0","#E7298A" ,"#980043", "#67001F")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
-Model just looking at significance of block and treatment without sex
-
-```{r}
-# model including block 
-df_fit_combo_3<- coxph(Surv(dead, status) ~ injection + Block, data=df2.convert_full)
-summary(df_fit_combo_3)
-
-```
-
-Model looking at significance of block and treatment with sex
-
-```{r}
-# model including block 
-df_fit_combo_4<- coxph(Surv(dead, status) ~ injection + Block + sex, data=df2.convert_full)
-summary(df_fit_combo_4)
-
-```
-
-Model looking at significance of block and treatment by sex interaction
-
-```{r}
-# model including block 
-df_fit_combo_5<- coxph(Surv(dead, status) ~ Block + sex*injection, data=df2.convert_full)
-summary(df_fit_combo_5)
-
-```
+![](p4-dilutions-4-rep-combo_files/figure-commonmark/unnamed-chunk-8-1.png)

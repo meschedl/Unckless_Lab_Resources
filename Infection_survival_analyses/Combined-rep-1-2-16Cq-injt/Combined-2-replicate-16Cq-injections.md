@@ -119,20 +119,25 @@ ggsurvplot(df_fit,
 Make survival curve with blocks combined
 
 ``` r
+# order treatments 
+df.convert <- df.convert %>% 
+  mutate(treatment = factor(treatment, levels = c("cell culture medium", "16Cq DiNV")))
+
 df_fit2<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 
 
-ggsurvplot(df_fit2, size = 3,
+ggsurvplot(df_fit2, size = 5,
           pval = FALSE, conf.int = FALSE,
           ggtheme = theme_light(), # Change ggplot2 theme
-          font.tickslab = c(12),
-          font.x = c(14),
-          font.y = c(14),
+          font.tickslab = c(14),
+          #legend = "right",
+          font.x = c(16),
+          font.y = c(16),
           title = "Male D. innubila Injected with 16Cq DiNV",
           legend.title="Treatment",
           legend.labs=c("Cell culture medium", "16Cq DiNV"),
-          font.legend = c(12),
-          palette = c("#DF65B0", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post injection") 
+          font.legend = c(14),
+          palette = c("#E7E1EF", "#DF65B0")) + ylab("Survival Proporation") + xlab("Days post injection") 
 ```
 
 ![](Combined-2-replicate-16Cq-injections_files/figure-commonmark/unnamed-chunk-6-1.png)
@@ -142,7 +147,7 @@ ggsurvplot(df_fit2, size = 3,
 ggsave("16Cq-inject-male.jpeg")
 ```
 
-    Saving 7 x 8 in image
+    Saving 9 x 7 in image
 
 ### Comparing Models and Looking at Stats
 
