@@ -8,6 +8,7 @@ editor: visual
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(Rmisc)
 ```
 
 ```{r setup, include=FALSE}
@@ -89,6 +90,9 @@ Cq_values1rep_Delta$delta_Cq <- delta_Cqs
 
 # do 2^ delta Cq
 Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
+
+# save data as csv 
+write.csv(Cq_values1rep_Delta, "/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240112-exo-treatment-test/20240112-exo-qPCR-delta.csv")
 
 # plot 
 ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=type, color=sample_type)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) 

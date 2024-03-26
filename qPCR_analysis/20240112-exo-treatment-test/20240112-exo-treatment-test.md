@@ -18,7 +18,28 @@ library(dplyr)
 
 ``` r
 library(tidyr)
+library(Rmisc)
 ```
+
+    Loading required package: lattice
+
+    Loading required package: plyr
+
+    ------------------------------------------------------------------------------
+
+    You have loaded plyr after dplyr - this is likely to cause problems.
+    If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+    library(plyr); library(dplyr)
+
+    ------------------------------------------------------------------------------
+
+
+    Attaching package: 'plyr'
+
+    The following objects are masked from 'package:dplyr':
+
+        arrange, count, desc, failwith, id, mutate, rename, summarise,
+        summarize
 
 Load in dataset
 
@@ -160,6 +181,9 @@ Cq_values1rep_Delta$delta_Cq <- delta_Cqs
 
 # do 2^ delta Cq
 Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
+
+# save data as csv 
+write.csv(Cq_values1rep_Delta, "/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240112-exo-treatment-test/20240112-exo-qPCR-delta.csv")
 
 # plot 
 ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=type, color=sample_type)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) 

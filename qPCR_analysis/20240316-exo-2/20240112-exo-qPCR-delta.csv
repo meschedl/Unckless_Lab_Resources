@@ -1,0 +1,9 @@
+"","well","sample","replicate","primer","type","sample_type","cleanup_type","unique_name","Cq","Cq_var","Cq_mean","delta_Cq","delta_Cq_2"
+"25","C01","16",1,"PIF3","hirt extract only","cell pellet",NA,"16 cell PIF3",14.24,0.0188999999999999,14.27,7.15666666666667,142.682705483382
+"46","D10","16-exo",1,"PIF3","exonuclease treated","cell pellet","monarch","16 cell exo PIF3",15.11,0.00443333333333328,15.0766666666667,13.9333333333333,15644.1248384683
+"28","C04","17",1,"PIF3","hirt extract only","cell pellet",NA,"17 cell PIF3",14.55,0.00369999999999997,14.59,6.75,107.634741152475
+"43","D07","17-exo",1,"PIF3","exonuclease treated","cell pellet","phenol-chloroform","17 cell exo PIF3",16.69,0.0259,16.86,13.9433333333333,15752.9383318758
+"31","C07","18",1,"PIF3","hirt extract only","clarification pellet",NA,"18 clarification PIF3",13.1,0.0448000000000001,12.94,9.06333333333333,534.977102264766
+"40","D04","18-exo",1,"PIF3","exonuclease treated","clarification pellet","monarch","18 clarification exo PIF3",15.12,0.00363333333333328,15.0566666666667,11.1833333333333,2325.51307073715
+"34","C10","19",1,"PIF3","hirt extract only","clarification pellet",NA,"19 clarification PIF3",12.67,0.0870333333333336,13.0066666666667,8.82333333333333,452.989353563978
+"37","D01","19-exo",1,"PIF3","exonuclease treated","clarification pellet","phenol-chloroform","19 clarification exo PIF3",17.07,0.0447999999999998,17.31,9.7,831.746453868787

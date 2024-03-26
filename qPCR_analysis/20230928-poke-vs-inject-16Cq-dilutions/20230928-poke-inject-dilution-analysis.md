@@ -739,13 +739,17 @@ stats
 
 # used https://www.datanovia.com/en/lessons/ggplot-error-bars/
 
+# order x axis 
+Combo_delta <- Combo_delta %>% 
+  mutate(treatment = factor(treatment, levels = c("16Cq DiNV needle poke", "16Cq DiNV injection")))
+
 legend_title <- "DNA Dilution"
 
 ggplot(Combo_delta, aes(y= delta_Cq_2, x=treatment)) +
   geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = dilution),data = stats, position = position_dodge(0.3), width = 0.2)+
-  geom_point(aes(color = dilution), position = position_dodge(0.3), size = 3) +
-  scale_color_manual(legend_title,values = c( "#DF65B0"  ,  "#980043")) + theme_light() + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) + labs(title = "Comparing Ammount and Variation of \nDiNV Dose Between Poke and Injection",y = "2^delta Cq", x = "Injection Treatment")
+  geom_point(aes(color = dilution), position = position_dodge(0.3), size = 4.5) +
+  scale_color_manual(legend_title,values = c("#62CFF4",  "#2C67F2")) + theme_light() + 
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=16), legend.text=element_text(size=14), legend.title=element_text(size=16)) + labs(title = "Comparing Ammount and Variation of DiNV Dose Between Poke and Injection",y = "2^delta Cq", x = "Injection Treatment")
 ```
 
 ![](20230928-poke-inject-dilution-analysis_files/figure-commonmark/unnamed-chunk-22-1.png)

@@ -341,8 +341,6 @@ ggplot(FFU_01_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
 
 ```
 
-
-
 0.01 FFU dilution
 
 ```{r}
@@ -365,10 +363,6 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
   labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```
 
-
-
-
-
 **Adding in days 6, 7, and 9 for males**
 
 Load in dataset
@@ -377,14 +371,13 @@ Load in dataset
 Cq_values_extra <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240228-viral-load-dilutions/20240313-extra-0.01.csv")
 ```
 
-
 Look at raw Cq values
 
 ```{r}
 ggplot(Cq_values_extra, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~day) 
 ```
 
-These look pretty similar to above, I wonder if all the flies aren't getting infected... 
+These look pretty similar to above, I wonder if all the flies aren't getting infected...
 
 Calculating extra delta Cq and Plotting
 
@@ -455,8 +448,7 @@ ggplot(E, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot() +
   labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```
 
-
-Combine this data with the male data from the other experiment 
+Combine this data with the male data from the other experiment
 
 ```{r}
 # male data
@@ -481,7 +473,3 @@ ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + g
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days", "day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
   labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```
-
-
-
-
