@@ -1,26 +1,46 @@
----
-title: "20230305-combo-middle-band-dilution-males"
-format: gfm
-editor: visual
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 9)
-```
+# 20230305-combo-middle-band-dilution-males
 
 Load in packages needed for the analysis
 
-```{r}
+``` r
 library("survival")
 library("survminer")
+```
+
+    Loading required package: ggplot2
+
+    Loading required package: ggpubr
+
+
+    Attaching package: 'survminer'
+
+    The following object is masked from 'package:survival':
+
+        myeloma
+
+``` r
 library(dplyr)
+```
+
+
+    Attaching package: 'dplyr'
+
+    The following objects are masked from 'package:stats':
+
+        filter, lag
+
+    The following objects are masked from 'package:base':
+
+        intersect, setdiff, setequal, union
+
+``` r
 library(tidyr)
 library(stringr)
 ```
 
-### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
+### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
 
-```{r}
+``` r
 #write a function to transform a data.frame that has the column format 'vial | treatment | D0 | D1 | D2...', with one row for each vial
 #into a long version in tidy format that can be input to make a survivorship curve
 convert_df<-function(df){
@@ -78,26 +98,27 @@ return(results)
 
 Read in raw data
 
-**Note that for these datasets, the adjusted N number is the number of flies alive on day 2 because there seemed to be more early death in these experiments than usual**
+**Note that for these datasets, the adjusted N number is the number of
+flies alive on day 2 because there seemed to be more early death in
+these experiments than usual**
 
-```{r}
+``` r
 #read the file from csv
 df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240305-middle-band-dilution-male-combo/middle-band-dilution-male-combo.csv")
 
 # separate out columns needed
 df <- df[,c(1,9,15:29)]
-
 ```
 
 Convert dataframe
 
-```{r}
+``` r
 df.convert<-convert_df(df)
 ```
 
 Plot survivial curve with every line separate, yes this is a mess
 
-```{r}
+``` r
 # order treatments 
 df.convert <- df.convert %>% 
   mutate(treatment = factor(treatment, levels = c("CCM", "0.01 FFU", "0.05 FFU", "1 FFU", "3 FFU")))
@@ -116,5 +137,6 @@ ggsurvplot(df_fit, size = 5,
           legend.labs=c("CCM", "0.01 FFU", "0.05 FFU", "1 FFU", "3 FFU"),
           font.legend = c(14),
           palette = c("#E7E1EF", "#C994C7","#DF65B0","#E7298A","#980043")) + ylab("Survival Proporation") + xlab("Days post injection")
-
 ```
+
+![](middle-band-dilution-male-combo_files/figure-commonmark/unnamed-chunk-5-1.png)
