@@ -1,0 +1,13 @@
+sample,type,notes,day sampled,day extracted,extracted with,resuspention volume,qubit,total DNA
+A,raw supernatant,,20240124,20240323,Puregene,20ul ,0,0
+B,raw supernatant,,20240124,20240323,Puregene,20ul ,0,0
+C,raw supernatant,,20240124,20240323,Puregene,20ul ,0.096,1.92
+D,amicon centrifuged,,20240125,20240323,Puregene,20ul ,0.775,15.5
+E,amicon centrifuged,,20240125,20240323,Puregene,20ul ,0.082,1.64
+F,amicon centrifuged,,20240125,20240323,Puregene,20ul ,0,0
+G,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,3.57,71.4
+H,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,3.7,74
+I,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,4.32,86.4
+J,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,4.19,83.8
+K,millipore small centrifuged,combo of G and H (left over),20240125,20240323,Puregene,20ul ,3.87,77.4
+L,millipore small centrifuged,combo of I and J (left over),20240125,20240323,Puregene,20ul ,2.75,55

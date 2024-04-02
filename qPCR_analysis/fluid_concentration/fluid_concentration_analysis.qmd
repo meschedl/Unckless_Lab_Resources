@@ -1,0 +1,46 @@
+---
+title: "Fluid-concentration-analysis"
+format: gfm
+editor: visual
+---
+
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(Rmisc)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7, fig.length = 9)
+```
+
+Load in dataset
+
+```{r}
+DNA <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/fluid_concentration/fluid_concentration.csv")
+```
+
+Plot total DNA yield 
+```{r}
+
+# make order of type of sample treatment 
+DNA$type <- factor(DNA$type, levels=c("raw supernatant", "amicon centrifuged", "millipore small centrifuged"))
+
+# get statistics on this for standard error bars 
+stats <- summarySE(DNA, measurevar="total.DNA", groupvars=c("type"))
+stats
+
+
+# plot 
+ggplot(DNA, aes(y=total.DNA, x=type, fill=type)) + 
+  geom_errorbar(aes(ymin = total.DNA-se, ymax = total.DNA+se, color = type),data = stats, position = position_dodge(0.3), width = 0.2)+
+  geom_point(aes(color = type), position = position_dodge(0.3), size = 4.5) +
+  scale_color_manual(values = c("#55d0ff","#77aaff", "#2C67F2")) + theme_light() + 
+  theme(axis.text=element_text(size=16),axis.title=element_text(size=16)) + labs(title = "Comparing Yield of DNA from Concentrated Cell Cuture Supernatant",y = "Total DNA (ng)", x = "Sample Treatment")  + theme(legend.position = "none") + scale_y_continuous(
+    trans = pseudo_log_trans(base = 10), breaks = c(0,10, 50, 100)) + scale_x_discrete(labels=c("raw supernatant" = "Unconcentrated \nSupernatant", "amicon centrifuged" = "Amicon \nCentrifuged", "millipore small centrifuged" = "Amicon and \nMillipore \nCentrifuged"))
+```
+
