@@ -1,0 +1,157 @@
+tube,replicate,treatment,day frozen,dead?,p47 result,TPI result,CO1 result
+ex ctrl 1,A,NA,NA,NA,no,no,NA
+2,A,0.05 FFU,day3,yes,yes,no,yes
+3,A,0.05 FFU,day3,yes,yes,yes,yes
+4,A,0.005 FFU,day6,yes,NA,no,yes
+5,A,0.005 FFU,day6,yes,no,yes,yes
+6,A,0.01 FFU,day6,yes,no,yes,yes
+7,A,0.05 FFU,day6,yes,yes,yes,yes
+8,A,0.05 FFU,day6,yes,yes,yes,yes
+9,A,0.005 FFU,day9,yes,no,yes,yes
+10,A,0.005 FFU,day9,yes,no,yes,yes
+11,A,0.01 FFU,day9,yes,yes,yes,yes
+12,A,0.05 FFU,day9,yes,yes,yes,yes
+13,A,0.05 FFU,day9,yes,yes,yes,yes
+14,A,0.05 FFU,day9,yes,yes,yes,yes
+15,A,0.05 FFU,day9,yes,yes,yes,yes
+16,A,0.05 FFU,day9,yes,yes,yes,yes
+17,A,0.05 FFU,day9,yes,yes,yes,no
+18,A,0.05 FFU,day9,yes,yes,no,yes
+19,A,0.01 FFU,day9,yes,yes,yes,yes
+20,A,0.01 FFU,day9,yes,yes,yes,yes
+21,A,0.01 FFU,day9,yes,yes,yes,yes
+23,A,0.005 FFU,day12,yes,no,yes,yes
+24,A,0.005 FFU,day12,yes,yes,yes,yes
+25,A,0.01 FFU,day12,yes,yes,yes,yes
+26,A,0.01 FFU,day12,yes,yes,yes,yes
+27,A,0.05 FFU,day12,yes,yes,yes,yes
+28,A,0.05 FFU,day12,yes,yes,yes,yes
+29,A,0.05 FFU,day12,yes,yes,yes,yes
+30,A,0.05 FFU,day12,yes,yes,no,yes
+31,A,0.01 FFU,day12,yes,yes,yes,yes
+32,A,0.01 FFU,day12,yes,yes,yes,yes
+33,A,0.01 FFU,day12,yes,yes,yes,yes
+59,A,0.005 FFU,day14,no,yes,yes,yes
+60,A,0.005 FFU,day14,no,NA,yes,yes
+61,A,0.005 FFU,day14,no,yes,yes,yes
+62,A,0.005 FFU,day14,no,yes,yes,yes
+66,A,0.005 FFU,day14,yes,yes,yes,yes
+67,A,0.01 FFU,day14,no,yes,yes,yes
+68,A,0.01 FFU,day14,no,yes,yes,yes
+69,A,0.01 FFU,day14,no,yes,yes,yes
+70,A,0.01 FFU,day14,no,yes,yes,yes
+71,A,0.01 FFU,day14,no,yes,yes,yes
+72,A,0.01 FFU,day14,no,no,yes,yes
+73,A,0.05 FFU,day14,no,yes,yes,no
+74,A,0.05 FFU,day14,no,yes,yes,yes
+75,A,0.05 FFU,day14,no,yes,yes,yes
+76,A,0.05 FFU,day14,no,yes,yes,no
+ex ctrl 2,A,NA,NA,NA,no,no,NA
+ex ctrl 3,A,NA,NA,NA,no,no,no
+22,A,CCM,day12,yes,no,yes,yes
+38,A,CCM,day14,no,no,yes,yes
+39,A,CCM,day14,no,no,yes,yes
+40,A,CCM,day14,no,no,yes,yes
+41,A,CCM,day14,no,no,yes,yes
+42,A,CCM,day14,no,no,yes,yes
+43,A,CCM,day14,no,no,yes,yes
+44,A,CCM,day14,no,no,yes,yes
+45,A,CCM,day14,no,no,yes,yes
+46,A,CCM,day14,no,no,yes,no
+1,A,0.005 FFU,day3,yes,no,yes,yes
+34,A,0.01 FFU,day12,yes,no,yes,yes
+35,A,0.01 FFU,day12,yes,no,yes,yes
+36,A,0.01 FFU,day12,yes,no,yes,yes
+37,A,0.01 FFU,day12,yes,no,yes,yes
+47,A,0.005 FFU,day14,no,no,yes,yes
+48,A,0.005 FFU,day14,no,no,yes,yes
+49,A,0.005 FFU,day14,no,no,yes,yes
+50,A,0.005 FFU,day14,no,no,yes,yes
+51,A,0.005 FFU,day14,no,no,yes,yes
+52,A,0.005 FFU,day14,no,no,yes,yes
+53,A,0.005 FFU,day14,no,no,yes,yes
+54,A,0.005 FFU,day14,no,yes,yes,yes
+55,A,0.005 FFU,day14,no,no,yes,yes
+56,A,0.005 FFU,day14,no,no,yes,yes
+57,A,0.005 FFU,day14,no,no,yes,yes
+58,A,0.005 FFU,day14,no,no,yes,yes
+63,A,0.005 FFU,day14,no,no,yes,yes
+64,A,0.005 FFU,day14,no,no,yes,yes
+65,A,0.005 FFU,day14,no,no,yes,yes
+77,A,0.01 FFU,day14,no,yes,yes,yes
+34,A,0.01 FFU,day12,yes,yes,yes,yes
+35,A,0.01 FFU,day12,yes,yes,yes,yes
+36,A,0.01 FFU,day12,yes,yes,yes,no
+37,A,0.01 FFU,day12,yes,yes,yes,yes
+ex ctrl 1,B,NA,NA,NA,no,no,NA
+6,B,CCM,day6,yes,no,yes,yes
+8,B,CCM,day6,yes,no,yes,yes
+25,B,CCM,day9,yes,no,yes,yes
+54,B,CCM,day12,yes,no,no,yes
+1,B,0.005 FFU,day3,yes,no,yes,no
+2,B,0.005 FFU,day3,yes,no,yes,yes
+5,B,0.05 FFU,day3,yes,yes,yes,yes
+10,B,0.005 FFU,day6,yes,yes,no,yes
+12,B,0.005 FFU,day6,yes,yes,yes,yes
+13,B,0.01 FFU,day6,yes,yes,yes,yes
+14,B,0.01 FFU,day6,yes,yes,no,yes
+17,B,0.01 FFU,day6,yes,yes,no,yes
+20,B,0.05 FFU,day6,yes,yes,no,yes
+23,B,0.05 FFU,day6,yes,yes,yes,yes
+31,B,0.005 FFU,day9,yes,yes,yes,yes
+32,B,0.005 FFU,day9,yes,yes,yes,yes
+33,B,0.005 FFU,day9,yes,yes,yes,yes
+37,B,0.01 FFU,day9,yes,yes,yes,yes
+38,B,0.01 FFU,day9,yes,yes,no,yes
+40,B,0.05 FFU,day9,yes,yes,yes,yes
+98,B,0.005 FFU,day14,no,yes,yes,yes
+46,B,0.05 FFU,day9,yes,yes,yes,yes
+47,B,0.05 FFU,day9,yes,yes,yes,yes
+48,B,0.05 FFU,day9,yes,yes,yes,yes
+55,B,0.005 FFU,day12,yes,yes,yes,yes
+63,B,0.05 FFU,day12,yes,yes,yes,yes
+64,B,0.05 FFU,day12,yes,yes,yes,yes
+65,B,0.05 FFU,day12,yes,yes,yes,yes
+118,B,0.01 FFU,day14,no,yes,yes,yes
+119,B,0.01 FFU,day14,no,no,yes,yes
+120,B,0.01 FFU,day14,no,yes,yes,yes
+125,B,0.01 FFU,day14,no,yes,yes,yes
+126,B,0.01 FFU,day14,no,yes,yes,yes
+127,B,0.01 FFU,day14,no,no,yes,yes
+128,B,0.01 FFU,day14,no,yes,yes,yes
+129,B,0.01 FFU,day14,no,no,yes,yes
+130,B,0.01 FFU,day14,no,no,yes,yes
+131,B,0.01 FFU,day14,no,no,yes,yes
+132,B,0.01 FFU,day14,no,yes,yes,yes
+136,B,0.05 FFU,day14,no,yes,yes,yes
+137,B,0.05 FFU,day14,no,yes,yes,yes
+138,B,0.05 FFU,day14,no,yes,yes,yes
+140,B,0.05 FFU,day14,no,no,yes,no
+144,B,0.005 FFU,day14,yes,yes,yes,yes
+146,B,0.005 FFU,day14,yes,no,yes,yes
+148,B,0.05 FFU,day14,yes,yes,yes,yes
+ex ctrl 2,B,NA,NA,NA,no,no,NA
+ex ctrl 3,B,NA,NA,NA,no,yes,no
+67,B,CCM,day14,no,no,yes,yes
+68,B,CCM,day14,no,no,yes,yes
+69,B,CCM,day14,no,no,yes,yes
+70,B,CCM,day14,no,no,yes,yes
+71,B,CCM,day14,no,no,yes,yes
+72,B,CCM,day14,no,no,yes,yes
+73,B,CCM,day14,no,no,yes,yes
+82,B,CCM,day14,no,no,yes,yes
+83,B,CCM,day14,no,no,yes,yes
+84,B,CCM,day14,no,no,yes,yes
+85,B,CCM,day14,no,no,yes,yes
+86,B,CCM,day14,no,no,yes,yes
+87,B,CCM,day14,no,no,yes,yes
+88,B,CCM,day14,no,no,yes,yes
+89,B,CCM,day14,no,no,yes,yes
+99,B,0.005 FFU,day14,no,no,yes,yes
+100,B,0.005 FFU,day14,no,yes,yes,yes
+101,B,0.005 FFU,day14,no,no,yes,yes
+102,B,0.005 FFU,day14,no,yes,yes,yes
+103,B,0.005 FFU,day14,no,no,yes,yes
+104,B,0.005 FFU,day14,no,yes,yes,yes
+111,B,0.005 FFU,day14,no,no,yes,yes
+112,B,0.005 FFU,day14,no,no,yes,yes

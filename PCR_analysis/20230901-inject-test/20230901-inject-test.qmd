@@ -1,7 +1,7 @@
 ---
 title: "20230901-inject-test"
 format: gfm
-editor: visual
+editor: source
 ---
 
 Load packages needed
@@ -34,8 +34,7 @@ nrow(PCR_results_D)
 
 # how many yes, no, and maybe PCR results are there for the p47 PCR for the DiNV poked flies?
 # make this into a table 
-D_p47_results <- PCR_results_D %>% 
-                    count(p47.result)
+D_p47_results <- PCR_results_D %>% count(p47.result)
 
 # add a column to that table that is the count (column name is n) divided by the number of rows to get a proportion
 
@@ -168,8 +167,7 @@ ggplot(percent_table_TPI, aes(x =factor(Treatment, level=c("Cell culture medium"
 
 ```
 
-
-Now combine these two plots into one to show all your data 
+Now combine these two plots into one to show all your data
 
 ```{r}
 # first, change the PCR result column name in each percent table to be non-specific 
@@ -189,7 +187,3 @@ ggplot(total_percent_table, aes(x =factor(Treatment, level=c("Cell culture mediu
     ylab("Percent PCR Result") +  geom_text(size = 3, position = position_stack(vjust = 0.5)) + facet_grid(~Primer)
 
 ```
-
-
-
-
