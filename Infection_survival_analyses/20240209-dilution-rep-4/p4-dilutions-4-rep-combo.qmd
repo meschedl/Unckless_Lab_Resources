@@ -190,3 +190,167 @@ ggsurvplot(df_fit_m, size = 5,
         
           
 ```
+
+Look at median survival time 
+
+```{r}
+# females 
+surv_median(df_fit_fem, combine = FALSE)
+# males 
+surv_median(df_fit_m, combine = FALSE)
+```
+
+Look at model for males comparing dilutions 
+
+```{r}
+male_1 <- coxph(Surv(dead, status) ~ dilution + Block, data=df.convert_m)
+summary(male_1)
+```
+
+Look at model for females comparing dilutions 
+
+```{r}
+female_1 <- coxph(Surv(dead, status) ~ dilution + Block, data=df.convert_fem)
+summary(female_1)
+```
+
+Models to compare differences between sexes by each dilution 
+
+6 FFU 
+```{r}
+# I want to keep both 6 and CCM 
+df.convert_6 <- df.convert_full[which(df.convert_full$dilution == "6"),]
+df.convert_ccm <-  df.convert_full[which(df.convert_full$dilution == "CCM"),]
+# combine back together 
+df.convert_6 <- rbind(df.convert_ccm, df.convert_6)
+
+# model no interaction 
+six_1 <- coxph(Surv(dead, status) ~ dilution + Block + sex , data=df.convert_6)
+summary(six_1)
+
+# model with interaction
+six_2 <- coxph(Surv(dead, status) ~ dilution + Block + sex + sex * dilution, data=df.convert_6)
+summary(six_2)
+
+# compare AICs of models 
+extractAIC(six_1)
+# 1283.805
+extractAIC(six_2)
+# 1285.713
+# compare models 
+exp((1283.805 - 1285.713)/2)
+# 0.3851971 no sig difference between models 
+
+```
+
+3 FFU 
+```{r}
+# I want to keep both 3 and CCM 
+df.convert_3 <- df.convert_full[which(df.convert_full$dilution == "3"),]
+# combine back together 
+df.convert_3 <- rbind(df.convert_ccm, df.convert_3)
+
+# model no interaction 
+three_1 <- coxph(Surv(dead, status) ~ dilution + Block + sex , data=df.convert_3)
+summary(three_1)
+
+# model with interaction
+three_2 <- coxph(Surv(dead, status) ~ dilution + Block + sex + sex * dilution, data=df.convert_3)
+summary(three_2)
+
+# compare AICs of models 
+extractAIC(three_1)
+# 863.3738
+extractAIC(three_2)
+# 865.2409
+# compare models 
+exp((863.3738 - 865.2409)/2)
+# 0.3931555 no sig difference between models 
+
+```
+
+1 FFU 
+```{r}
+# I want to keep both 1 and CCM 
+df.convert_1 <- df.convert_full[which(df.convert_full$dilution == "1"),]
+# combine back together 
+df.convert_1 <- rbind(df.convert_ccm, df.convert_1)
+
+# model no interaction 
+one_1 <- coxph(Surv(dead, status) ~ dilution + Block + sex , data=df.convert_1)
+summary(one_1)
+
+# model with interaction
+one_2 <- coxph(Surv(dead, status) ~ dilution + Block + sex + sex * dilution, data=df.convert_1)
+summary(one_2)
+
+# compare AICs of models 
+extractAIC(one_1)
+# 872.5189
+extractAIC(one_2)
+# 874.354
+# compare models 
+exp((872.5189 - 874.354)/2)
+# 0.3994966 no sig difference between models 
+
+```
+
+0.1 FFU 
+```{r}
+# I want to keep both 0.1 and CCM 
+df.convert_01 <- df.convert_full[which(df.convert_full$dilution == "0.1"),]
+# combine back together 
+df.convert_01 <- rbind(df.convert_ccm, df.convert_01)
+
+# model no interaction 
+one0_1 <- coxph(Surv(dead, status) ~ dilution + Block + sex , data=df.convert_01)
+summary(one0_1)
+
+# model with interaction
+one0_2 <- coxph(Surv(dead, status) ~ dilution + Block + sex + sex * dilution, data=df.convert_01)
+summary(one0_2)
+
+# compare AICs of models 
+extractAIC(one0_1)
+# 845.7176
+extractAIC(one0_2)
+# 847.6887
+# compare models 
+exp((845.7176 - 847.6887)/2)
+# 0.3732339 no sig difference between models 
+
+```
+
+
+0.01 FFU 
+```{r}
+# I want to keep both 0.01 and CCM 
+df.convert_001 <- df.convert_full[which(df.convert_full$dilution == "0.01"),]
+# combine back together 
+df.convert_001 <- rbind(df.convert_ccm, df.convert_001)
+
+# model no interaction 
+one00_1 <- coxph(Surv(dead, status) ~ dilution + Block + sex , data=df.convert_001)
+summary(one00_1)
+
+# model with interaction
+one00_2 <- coxph(Surv(dead, status) ~ dilution + Block + sex + sex * dilution, data=df.convert_001)
+summary(one00_2)
+
+# compare AICs of models 
+extractAIC(one00_1)
+# 527.0507
+extractAIC(one00_2)
+# 528.9747
+# compare models 
+exp((527.0507 - 528.9747)/2)
+# 0.3821279 no sig difference between models 
+
+```
+
+
+
+
+
+
+

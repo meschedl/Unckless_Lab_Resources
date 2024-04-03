@@ -141,7 +141,7 @@ df2.convert <- convert_df(df2)
 
 # add in block information 
 # first 69 rows are block A, second 69 rows are block B, and last 68 rows are block C
-df2.convert$Block <- rep(c("A","B", "C"), c(69, 69,68))
+df2.convert$Block <- rep(c("A","B", "C"), c(69, 68,68))
 
 # add in sex information and DiNV information as separate columns by splitting the treatment column 
 # split the columns 
@@ -171,7 +171,7 @@ ggsurvplot(df_fit_combo_1, size = 5,
           legend.title="Treatment",
           legend.labs=c("male CCM", "female CCM", "male 16Cq DiNV", "female 16Cq DiNV"),
           font.legend = c(14),
-          palette = c("#ccf9ff", "#62CFF4" ,"#2C67F2", "#0080bf")) + ylab("Survival Proporation") + xlab("Days post injection")
+          palette = c("#ccf9ff", "#62CFF4" ,"#2C67F2",  "#191970")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
 ![](rep3-and-combo-analysis_files/figure-commonmark/unnamed-chunk-7-1.png)
@@ -189,27 +189,27 @@ summary(df_fit_combo_2)
     Call:
     coxph(formula = Surv(dead, status) ~ treatment + Block, data = df2.convert_full)
 
-      n= 206, number of events= 151 
+      n= 205, number of events= 150 
 
                              coef exp(coef) se(coef)      z Pr(>|z|)    
-    treatmentfemale-CCM    1.9583    7.0876   1.0801  1.813   0.0698 .  
-    treatmentmale-DiNV     4.5581   95.3991   1.0161  4.486 7.26e-06 ***
-    treatmentfemale-DiNV   4.8144  123.2749   1.0122  4.757 1.97e-06 ***
-    BlockB                -0.3810    0.6832   0.2062 -1.848   0.0646 .  
-    BlockC                 0.3182    1.3747   0.2066  1.540   0.1235    
+    treatmentfemale-CCM    1.9585    7.0888   1.0801  1.813   0.0698 .  
+    treatmentmale-DiNV     4.5685   96.3993   1.0162  4.496 6.94e-06 ***
+    treatmentfemale-DiNV   4.8149  123.3306   1.0123  4.756 1.97e-06 ***
+    BlockB                -0.4061    0.6662   0.2073 -1.959   0.0501 .  
+    BlockC                 0.3178    1.3741   0.2068  1.537   0.1244    
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                          exp(coef) exp(-coef) lower .95 upper .95
-    treatmentfemale-CCM     7.0876   0.141092    0.8533    58.872
-    treatmentmale-DiNV     95.3991   0.010482   13.0211   698.942
-    treatmentfemale-DiNV  123.2749   0.008112   16.9563   896.230
-    BlockB                  0.6832   1.463691    0.4561     1.023
-    BlockC                  1.3747   0.727434    0.9169     2.061
+    treatmentfemale-CCM     7.0888   0.141069    0.8534    58.882
+    treatmentmale-DiNV     96.3993   0.010374   13.1543   706.448
+    treatmentfemale-DiNV  123.3306   0.008108   16.9590   896.894
+    BlockB                  0.6662   1.500951    0.4438     1.000
+    BlockC                  1.3741   0.727771    0.9162     2.061
 
-    Concordance= 0.77  (se = 0.026 )
+    Concordance= 0.774  (se = 0.025 )
     Likelihood ratio test= 170  on 5 df,   p=<2e-16
-    Wald test            = 67.91  on 5 df,   p=3e-13
+    Wald test            = 68.33  on 5 df,   p=2e-13
     Score (logrank) test = 131.3  on 5 df,   p=<2e-16
 
 Model just looking at significance of block and treatment without sex
@@ -223,24 +223,24 @@ summary(df_fit_combo_3)
     Call:
     coxph(formula = Surv(dead, status) ~ injection + Block, data = df2.convert_full)
 
-      n= 206, number of events= 151 
+      n= 205, number of events= 150 
 
                      coef exp(coef) se(coef)      z Pr(>|z|)    
-    injectionDiNV  3.3805   29.3859   0.4049  8.350   <2e-16 ***
-    BlockB        -0.4206    0.6567   0.2051 -2.051   0.0403 *  
-    BlockC         0.2429    1.2749   0.1996  1.217   0.2237    
+    injectionDiNV  3.3847   29.5102   0.4051  8.354   <2e-16 ***
+    BlockB        -0.4446    0.6411   0.2061 -2.157    0.031 *  
+    BlockC         0.2448    1.2773   0.1996  1.226    0.220    
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                   exp(coef) exp(-coef) lower .95 upper .95
-    injectionDiNV   29.3859    0.03403   13.2898   64.9771
-    BlockB           0.6567    1.52280    0.4393    0.9816
-    BlockC           1.2749    0.78435    0.8621    1.8854
+    injectionDiNV   29.5102    0.03389   13.3387   65.2874
+    BlockB           0.6411    1.55984    0.4280    0.9603
+    BlockC           1.2773    0.78288    0.8638    1.8889
 
-    Concordance= 0.753  (se = 0.026 )
-    Likelihood ratio test= 163  on 3 df,   p=<2e-16
-    Wald test            = 75.35  on 3 df,   p=3e-16
-    Score (logrank) test = 127.3  on 3 df,   p=<2e-16
+    Concordance= 0.757  (se = 0.026 )
+    Likelihood ratio test= 163.2  on 3 df,   p=<2e-16
+    Wald test            = 75.94  on 3 df,   p=2e-16
+    Score (logrank) test = 127.6  on 3 df,   p=<2e-16
 
 Model looking at significance of block and treatment with sex
 
@@ -254,26 +254,26 @@ summary(df_fit_combo_4)
     coxph(formula = Surv(dead, status) ~ injection + Block + sex, 
         data = df2.convert_full)
 
-      n= 206, number of events= 151 
+      n= 205, number of events= 150 
 
                      coef exp(coef) se(coef)      z Pr(>|z|)    
-    injectionDiNV  3.3445   28.3467   0.4040  8.279   <2e-16 ***
-    BlockB        -0.3701    0.6907   0.2058 -1.798   0.0722 .  
-    BlockC         0.3409    1.4062   0.2062  1.654   0.0982 .  
-    sexmale       -0.3267    0.7213   0.1734 -1.884   0.0595 .  
+    injectionDiNV  3.3495   28.4885   0.4043  8.286   <2e-16 ***
+    BlockB        -0.3949    0.6737   0.2070 -1.908   0.0564 .  
+    BlockC         0.3410    1.4063   0.2063  1.653   0.0984 .  
+    sexmale       -0.3177    0.7278   0.1739 -1.827   0.0677 .  
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                   exp(coef) exp(-coef) lower .95 upper .95
-    injectionDiNV   28.3467    0.03528   12.8425    62.568
-    BlockB           0.6907    1.44783    0.4614     1.034
-    BlockC           1.4062    0.71114    0.9388     2.106
-    sexmale          0.7213    1.38639    0.5135     1.013
+    injectionDiNV   28.4885     0.0351   12.8993    62.918
+    BlockB           0.6737     1.4842    0.4491     1.011
+    BlockC           1.4063     0.7111    0.9385     2.107
+    sexmale          0.7278     1.3740    0.5176     1.023
 
-    Concordance= 0.766  (se = 0.026 )
-    Likelihood ratio test= 166.7  on 4 df,   p=<2e-16
-    Wald test            = 79.03  on 4 df,   p=3e-16
-    Score (logrank) test = 130.6  on 4 df,   p=<2e-16
+    Concordance= 0.77  (se = 0.026 )
+    Likelihood ratio test= 166.6  on 4 df,   p=<2e-16
+    Wald test            = 79.42  on 4 df,   p=2e-16
+    Score (logrank) test = 130.7  on 4 df,   p=<2e-16
 
 Model looking at significance of block and treatment by sex interaction
 
@@ -287,25 +287,123 @@ summary(df_fit_combo_5)
     coxph(formula = Surv(dead, status) ~ Block + sex * injection, 
         data = df2.convert_full)
 
-      n= 206, number of events= 151 
+      n= 205, number of events= 150 
 
                              coef exp(coef) se(coef)      z Pr(>|z|)    
-    BlockB                -0.3810    0.6832   0.2062 -1.848   0.0646 .  
-    BlockC                 0.3182    1.3747   0.2066  1.540   0.1235    
-    sexmale               -1.9583    0.1411   1.0801 -1.813   0.0698 .  
-    injectionDiNV          2.8561   17.3932   0.4376  6.527 6.73e-11 ***
-    sexmale:injectionDiNV  1.7020    5.4849   1.0947  1.555   0.1200    
+    BlockB                -0.4061    0.6662   0.2073 -1.959   0.0501 .  
+    BlockC                 0.3178    1.3741   0.2068  1.537   0.1244    
+    sexmale               -1.9585    0.1411   1.0801 -1.813   0.0698 .  
+    injectionDiNV          2.8564   17.3981   0.4380  6.522 6.94e-11 ***
+    sexmale:injectionDiNV  1.7121    5.5408   1.0948  1.564   0.1178    
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                           exp(coef) exp(-coef) lower .95 upper .95
-    BlockB                   0.6832    1.46369   0.45610     1.023
-    BlockC                   1.3747    0.72743   0.91694     2.061
-    sexmale                  0.1411    7.08755   0.01699     1.172
-    injectionDiNV           17.3932    0.05749   7.37712    41.008
-    sexmale:injectionDiNV    5.4849    0.18232   0.64174    46.878
+    BlockB                   0.6662    1.50095   0.44379     1.000
+    BlockC                   1.3741    0.72777   0.91620     2.061
+    sexmale                  0.1411    7.08875   0.01698     1.172
+    injectionDiNV           17.3981    0.05748   7.37405    41.048
+    sexmale:injectionDiNV    5.5408    0.18048   0.64816    47.366
 
-    Concordance= 0.77  (se = 0.026 )
+    Concordance= 0.774  (se = 0.025 )
     Likelihood ratio test= 170  on 5 df,   p=<2e-16
-    Wald test            = 67.91  on 5 df,   p=3e-13
+    Wald test            = 68.33  on 5 df,   p=2e-13
     Score (logrank) test = 131.3  on 5 df,   p=<2e-16
+
+Model looking at significance treatment by sex interaction
+
+``` r
+# model including block 
+df_fit_combo_6<- coxph(Surv(dead, status) ~ injection + sex*injection, data=df2.convert_full)
+summary(df_fit_combo_6)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ injection + sex * injection, 
+        data = df2.convert_full)
+
+      n= 205, number of events= 150 
+
+                             coef exp(coef) se(coef)      z Pr(>|z|)    
+    injectionDiNV          2.6788   14.5671   0.4322  6.198 5.71e-10 ***
+    sexmale               -1.9678    0.1398   1.0801 -1.822   0.0685 .  
+    injectionDiNV:sexmale  1.7783    5.9198   1.0936  1.626   0.1039    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                          exp(coef) exp(-coef) lower .95 upper .95
+    injectionDiNV           14.5671    0.06865   6.24444    33.982
+    sexmale                  0.1398    7.15467   0.01683     1.161
+    injectionDiNV:sexmale    5.9198    0.16892   0.69415    50.486
+
+    Concordance= 0.737  (se = 0.025 )
+    Likelihood ratio test= 157.6  on 3 df,   p=<2e-16
+    Wald test            = 57.09  on 3 df,   p=2e-12
+    Score (logrank) test = 122.5  on 3 df,   p=<2e-16
+
+Compare models, which is best?
+
+``` r
+# AIC of model with injection and block, not sex 
+extractAIC(df_fit_combo_3)
+```
+
+    [1]    3.000 1285.719
+
+``` r
+# 1285.719
+# AIC of model with injection, block, and sex 
+extractAIC(df_fit_combo_4)
+```
+
+    [1]    4.000 1284.327
+
+``` r
+# 1284.327
+# AIC of model with block and sex * injection interaction 
+extractAIC(df_fit_combo_5)
+```
+
+    [1]    5.00 1282.92
+
+``` r
+# 1282.92
+# AIC of model with injection and sex * injection interaction, no block 
+extractAIC(df_fit_combo_6)
+```
+
+    [1]    3.000 1291.299
+
+``` r
+# 1291.299
+
+# compare AICs 
+
+# compare block and inject to block, sex, + inject 
+exp((1284.327 - 1285.719)/2)
+```
+
+    [1] 0.4985756
+
+``` r
+# 0.4985756 no sif difference between models 
+
+# compare block, sex, inject to block and sex * inject interaction 
+exp((1282.92 - 1284.327)/2)
+```
+
+    [1] 0.4948503
+
+``` r
+# 0.4948503 no sig diff between models 
+
+# compare inject, block, and sex to inject and sex*inject interaction 
+exp((1284.327 - 1291.299)/2)
+```
+
+    [1] 0.03062312
+
+``` r
+# 0.03062312 significant difference, indicating that the better model would be model with block + inject + sex lower AIC 
+# using df_fit_combo_4 as my final model 
+```

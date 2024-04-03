@@ -1,0 +1,9 @@
+vial,species,sex,mated status,days_emerged,day_infected,age_infected,tube,treatment,virus,volume,time,time on CO2,original_N_number,adjusted_N_number,day 1 3/16,day 2 3/17,day 3 3/18,day 4 3/19,day 5 3/20,day 6 3/21,day 7 3/22,day 8 3/23,day 9 3/24,day 10 3/25,day 11 3/26,day 12 3/27,day 13 3/28,day 14 3/29,notes,
+1,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,CCM,CCM,passage 4,27.6nl,3:28,5 min,10,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,lost 1 in transfer day 9,
+3,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,CCM,CCM,passage 4,27.6nl,3:39,5 min,10,7,7,7,7,7,7,8,7,7,7,7,7,7,6,6,lost 2 flies in transfer day 3,did not find a fly day 12
+4,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,4,0.005 FFU,passage 4,27.6nl,3:46,6 min,10,9,9,9,9,9,8,8,8,7,6,6,6,6,6,6,,
+5,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,4,0.005 FFU,passage 4,27.6nl,3:52,5 min,10,9,9,9,9,9,9,9,9,8,8,8,7,7,7,7,lost 1 in transfer day 9,
+6,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,3,0.01 FFU,passage 4,27.6nl,4:00,5 min,10,9,9,9,9,9,5,4,4,4,2,2,2,2,2,2,,
+7,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,3,0.01 FFU,passage 4,27.6nl,4:05,5 min,10,9,9,9,8,8,8,8,8,7,7,6,6,6,6,6,lost 1 fly in transfer day 3,
+8,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,2,0.05 FFU,passage 4,27.6nl,4:14,5 min,10,10,10,10,10,10,10,10,8,6,5,5,4,4,3,3,,
+9,D. innubila,female,yes,3/9-3/11,20240315,5-7 days,2,0.05 FFU,passage 4,27.6nl,4:19,5 min,10,10,10,10,10,10,10,8,8,6,4,3,2,2,2,2,,
