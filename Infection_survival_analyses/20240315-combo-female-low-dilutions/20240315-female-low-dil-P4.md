@@ -1,4 +1,4 @@
-# 20240221-low-dilutions-rep-2-male
+# 20240315-female-low-dilutions-P4
 
 Load in packages needed for the analysis
 
@@ -98,17 +98,12 @@ return(results)
 
 Read in raw data
 
-**Note that for these datasets, the adjusted N number is the number of
-flies alive on day 2 because there seemed to be more early death in
-these experiments than usual**
-
 ``` r
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240221-low-dilutions-rep-2-male/20240221-male-low-dil-rep2.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240315-combo-female-low-dilutions/combo-female-low-dil-infections.csv")
 
-# now extra rows, I already separated the females out 
 # separate out columns needed
-df <- df[,c(1,9,14:28)]
+df<-df[,c(1,9,15:29)]
 ```
 
 Convert dataframe
@@ -117,49 +112,28 @@ Convert dataframe
 df.convert<-convert_df(df)
 ```
 
-Plot survivial curve with every line separate
+basic plot
 
 ``` r
-# change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
-ggsurvplot(df_fit, size = 5,
-          pval = FALSE, conf.int = FALSE,
-          font.tickslab = c(14),
-          font.x = c(16),
-          font.y = c(16),
-          ggtheme = theme_light())
+ggsurvplot(df_fit,
+          pval = TRUE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
 ```
 
-![](20240221-low-dilutions-rep-2-male_files/figure-commonmark/unnamed-chunk-5-1.png)
-
-**Combine Replicates 1 and 2**
-
-``` r
-#read the file from csv
-df2<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240221-low-dilutions-rep-2-male/low-dil-male-combo.csv")
-
-# now extra rows, I already separated the females out 
-# separate out columns needed
-df2 <- df2[,c(1,8,13:27)]
-```
-
-Convert dataframe
-
-``` r
-df2.convert<-convert_df(df2)
-```
-
-Plot survivial curve with every line separate
+![](20240315-female-low-dil-P4_files/figure-commonmark/unnamed-chunk-5-1.png)
 
 ``` r
 # level the treatments so they go in an order 
-df2.convert <- df2.convert %>% 
+df.convert <- df.convert %>% 
   mutate(treatment = factor(treatment, levels = c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU")))
-# I'm not sure this worked
 
 # change to not have confidence intervals in this one so you can see them 
-# for some reason when I render this plot it does not do the colors in the order I see them in R. I'm not sure why 
-df2_fit<- survfit(Surv(dead, status) ~ treatment, data=df2.convert)
+df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit, size = 5,
           pval = FALSE, conf.int = FALSE,
           legend = "right",
@@ -167,19 +141,19 @@ ggsurvplot(df_fit, size = 5,
           font.x = c(16),
           font.y = c(16),
           ggtheme = theme_light(),
-          title = "Male D. innubila Injected with Dilutions of Passage 4 DiNV",
+          title = "Female D. innubila Injected with Dilutions of Passage 4 DiNV",
           legend.title="Treatment",
-          legend.labs=c(  "0.01 FFU", "0.005 FFU", "0.05 FFU", "CCM"),
+          legend.labs=c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU"),
           font.legend = c(14),
-          palette = c(  "#E7298A","#C994C7", "#980043", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post injection")
+          palette = c("#E7E1EF", "#C994C7", "#E7298A", "#980043")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
-![](20240221-low-dilutions-rep-2-male_files/figure-commonmark/unnamed-chunk-8-1.png)
+![](20240315-female-low-dil-P4_files/figure-commonmark/unnamed-chunk-6-1.png)
 
 Find median survival time by treatment
 
 ``` r
-surv_median(df2_fit, combine = FALSE)
+surv_median(df_fit, combine = FALSE)
 ```
 
     Warning: `select_()` was deprecated in dplyr 0.7.0.
@@ -189,40 +163,40 @@ surv_median(df2_fit, combine = FALSE)
 
                    strata median lower upper
     1       treatment=CCM     NA    NA    NA
-    2 treatment=0.005 FFU     NA    14    NA
-    3  treatment=0.01 FFU     12    10    NA
-    4  treatment=0.05 FFU      9     9    12
+    2 treatment=0.005 FFU     NA    NA    NA
+    3  treatment=0.01 FFU     10     8    NA
+    4  treatment=0.05 FFU      9     8    12
 
 Model just looking at significance of block and treatment
 
 ``` r
 # add in block 
-df2.convert$Block <- rep(c("A","B"), c(77, 73))
+df.convert$Block <- rep(c("A","B"), c(72, 74))
 # model including block 
-df3_fit<- coxph(Surv(dead, status) ~ treatment + Block, data=df2.convert)
-summary(df3_fit)
+df2_fit<- coxph(Surv(dead, status) ~ treatment + Block, data=df.convert)
+summary(df2_fit)
 ```
 
     Call:
-    coxph(formula = Surv(dead, status) ~ treatment + Block, data = df2.convert)
+    coxph(formula = Surv(dead, status) ~ treatment + Block, data = df.convert)
 
-      n= 150, number of events= 72 
+      n= 146, number of events= 70 
 
-                           coef exp(coef) se(coef)      z Pr(>|z|)    
-    treatment0.005 FFU  0.80493   2.23654  0.47544  1.693   0.0905 .  
-    treatment0.01 FFU   1.14824   3.15265  0.47072  2.439   0.0147 *  
-    treatment0.05 FFU   1.82658   6.21258  0.45096  4.050 5.11e-05 ***
-    BlockB             -0.03506   0.96555  0.23931 -0.147   0.8835    
+                         coef exp(coef) se(coef)     z Pr(>|z|)    
+    treatment0.005 FFU 0.9878    2.6853   0.5326 1.855 0.063625 .  
+    treatment0.01 FFU  1.8815    6.5633   0.4983 3.776 0.000159 ***
+    treatment0.05 FFU  2.1778    8.8267   0.4834 4.505 6.65e-06 ***
+    BlockB             0.2388    1.2698   0.2401 0.995 0.319764    
     ---
     Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
                        exp(coef) exp(-coef) lower .95 upper .95
-    treatment0.005 FFU    2.2365     0.4471    0.8808     5.679
-    treatment0.01 FFU     3.1527     0.3172    1.2531     7.932
-    treatment0.05 FFU     6.2126     0.1610    2.5669    15.036
-    BlockB                0.9655     1.0357    0.6041     1.543
+    treatment0.005 FFU     2.685     0.3724    0.9455     7.626
+    treatment0.01 FFU      6.563     0.1524    2.4717    17.428
+    treatment0.05 FFU      8.827     0.1133    3.4221    22.767
+    BlockB                 1.270     0.7875    0.7932     2.033
 
-    Concordance= 0.651  (se = 0.034 )
-    Likelihood ratio test= 24.37  on 4 df,   p=7e-05
-    Wald test            = 22.33  on 4 df,   p=2e-04
-    Score (logrank) test = 25.73  on 4 df,   p=4e-05
+    Concordance= 0.694  (se = 0.029 )
+    Likelihood ratio test= 37.95  on 4 df,   p=1e-07
+    Wald test            = 28.84  on 4 df,   p=8e-06
+    Score (logrank) test = 36.2  on 4 df,   p=3e-07

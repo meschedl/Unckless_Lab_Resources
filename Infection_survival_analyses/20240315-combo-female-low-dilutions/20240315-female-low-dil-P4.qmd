@@ -1,11 +1,11 @@
 ---
-title: "20240221-low-dilutions-rep-2-male"
+title: "20240315-female-low-dilutions-P4"
 format: gfm
 editor: visual
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=11, fig.height = 11)
+knitr::opts_chunk$set(dpi=300,fig.width=8, fig.height = 10)
 ```
 
 Load in packages needed for the analysis
@@ -17,6 +17,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 ```
+
 
 ### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
 
@@ -78,15 +79,12 @@ return(results)
 
 Read in raw data
 
-**Note that for these datasets, the adjusted N number is the number of flies alive on day 2 because there seemed to be more early death in these experiments than usual**
-
 ```{r}
 #read the file from csv
-df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240221-low-dilutions-rep-2-male/20240221-male-low-dil-rep2.csv")
+df<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240315-combo-female-low-dilutions/combo-female-low-dil-infections.csv")
 
-# now extra rows, I already separated the females out 
 # separate out columns needed
-df <- df[,c(1,9,14:28)]
+df<-df[,c(1,9,15:29)]
 
 ```
 
@@ -96,50 +94,29 @@ Convert dataframe
 df.convert<-convert_df(df)
 ```
 
-Plot survivial curve with every line separate
+basic plot 
 
 ```{r}
-# change to not have confidence intervals in this one so you can see them 
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
-ggsurvplot(df_fit, size = 5,
-          pval = FALSE, conf.int = FALSE,
-          font.tickslab = c(14),
-          font.x = c(16),
-          font.y = c(16),
-          ggtheme = theme_light())
-          
-
+ggsurvplot(df_fit,
+          pval = TRUE, conf.int = FALSE,
+          #risk.table = TRUE, # Add risk table
+          #risk.table.col = "strata", # Change risk table color by groups
+          #linetype = "strata", # Change line type by groups
+          #surv.median.line = "hv", # Specify median survival
+          ggtheme = theme_bw()) # Change ggplot2 theme
 ```
 
-**Combine Replicates 1 and 2**
 
-```{r}
-#read the file from csv
-df2<-read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/Infection_survival_analyses/20240221-low-dilutions-rep-2-male/low-dil-male-combo.csv")
 
-# now extra rows, I already separated the females out 
-# separate out columns needed
-df2 <- df2[,c(1,8,13:27)]
-
-```
-
-Convert dataframe
-
-```{r}
-df2.convert<-convert_df(df2)
-```
-
-Plot survivial curve with every line separate
 
 ```{r}
 # level the treatments so they go in an order 
-df2.convert <- df2.convert %>% 
+df.convert <- df.convert %>% 
   mutate(treatment = factor(treatment, levels = c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU")))
-# I'm not sure this worked
 
 # change to not have confidence intervals in this one so you can see them 
-# for some reason when I render this plot it does not do the colors in the order I see them in R. I'm not sure why 
-df2_fit<- survfit(Surv(dead, status) ~ treatment, data=df2.convert)
+df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
 ggsurvplot(df_fit, size = 5,
           pval = FALSE, conf.int = FALSE,
           legend = "right",
@@ -147,30 +124,37 @@ ggsurvplot(df_fit, size = 5,
           font.x = c(16),
           font.y = c(16),
           ggtheme = theme_light(),
-          title = "Male D. innubila Injected with Dilutions of Passage 4 DiNV",
+          title = "Female D. innubila Injected with Dilutions of Passage 4 DiNV",
           legend.title="Treatment",
-          legend.labs=c(  "0.01 FFU", "0.005 FFU", "0.05 FFU", "CCM"),
+          legend.labs=c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU"),
           font.legend = c(14),
-          palette = c(  "#E7298A","#C994C7", "#980043", "#E7E1EF")) + ylab("Survival Proporation") + xlab("Days post injection")
-
+          palette = c("#E7E1EF", "#C994C7", "#E7298A", "#980043")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
 Find median survival time by treatment 
 ```{r}
-surv_median(df2_fit, combine = FALSE)
+surv_median(df_fit, combine = FALSE)
 ```
-
 
 Model just looking at significance of block and treatment
 
 ```{r}
 # add in block 
-df2.convert$Block <- rep(c("A","B"), c(77, 73))
+df.convert$Block <- rep(c("A","B"), c(72, 74))
 # model including block 
-df3_fit<- coxph(Surv(dead, status) ~ treatment + Block, data=df2.convert)
-summary(df3_fit)
+df2_fit<- coxph(Surv(dead, status) ~ treatment + Block, data=df.convert)
+summary(df2_fit)
 
 ```
+
+
+
+
+
+
+
+
+
 
 
 

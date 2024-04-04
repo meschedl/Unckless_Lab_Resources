@@ -148,10 +148,19 @@ Cq_values_F_Delta$delta_Cq <- delta_Cqs_F
 # add a column with 2^ delta Cq
 Cq_values_F_Delta$delta_Cq_2 <- 2^(delta_Cqs_F)
 
+ledgend_title <- "Virus Delivery"
 
 # plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
+ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, fill=dilution)) + geom_boxplot(outlier.shape=NA)  + theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
+  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") + 
+  theme(legend.position = c(0.15, 0.8), legend.background = element_rect(linetype="solid", colour ="black"))
 ```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-6-1.png)
 
@@ -238,10 +247,20 @@ Cq_values_M_Delta$delta_Cq <- delta_Cqs_M
 # add a column with 2^ delta Cq
 Cq_values_M_Delta$delta_Cq_2 <- 2^(delta_Cqs_M)
 
+ledgend_title <- "Virus Delivery"
 
 # plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, color=dilution)) + geom_boxplot()  + theme_linedraw() + geom_point(position=position_jitterdodge(dodge.width=0.9), size=2) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
+ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, fill=dilution)) +
+  geom_boxplot(outlier.shape=NA)  + theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
+  labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = c(0.15, 0.8), legend.background = element_rect(linetype="solid", colour ="black"))
 ```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-8-1.png)
 
@@ -347,14 +366,15 @@ Female_delta_delta <- rbind(F_001, F_01, F_3)
 #Plot 
 legend_title <- "Virus Delivery"
 
-ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot(outlier.shape=NA) +  
   scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
   theme_light() + 
   geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing Viral Titer in Female Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+  labs(title = "Comparing DiNV Increase in Female Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
+  theme(legend.position = c(0.15, 0.75), legend.background = element_rect(linetype="solid", colour ="black"))
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
@@ -471,14 +491,15 @@ Male_delta_delta <- rbind(M_001, M_01, M_3)
 # plot
 legend_title <- "Virus Delivery"
 
-ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot(outlier.shape=NA) +  
   scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
   theme_light() + 
   geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+  labs(title = "Comparing DiNV Increase in Male Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
+  theme(legend.position = c(0.15, 0.75), legend.background = element_rect(linetype="solid", colour ="black"))
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
