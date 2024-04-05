@@ -42,6 +42,32 @@ library(Rmisc)
         arrange, count, desc, failwith, id, mutate, rename, summarise,
         summarize
 
+``` r
+library(ggpubr)
+```
+
+
+    Attaching package: 'ggpubr'
+
+    The following object is masked from 'package:plyr':
+
+        mutate
+
+``` r
+library(rstatix)
+```
+
+
+    Attaching package: 'rstatix'
+
+    The following objects are masked from 'package:plyr':
+
+        desc, mutate
+
+    The following object is masked from 'package:stats':
+
+        filter
+
 Load in dataset
 
 ``` r
@@ -85,7 +111,7 @@ ggplot(Cq_values_F, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodg
 This is showing more patterns that we sort of expect, but we have to do
 the delta Cq comparison to the TPI primer to be sure
 
-Calculating female delta Cq and Plotting
+Calculating female delta Cq
 
 ``` r
 # need to organize by name of the sample I think
@@ -147,22 +173,102 @@ Cq_values_F_Delta$delta_Cq <- delta_Cqs_F
 
 # add a column with 2^ delta Cq
 Cq_values_F_Delta$delta_Cq_2 <- 2^(delta_Cqs_F)
+```
 
+Female Doing t test statistics and plotting
+
+``` r
+# doing pairwise t-tests between dilution methods, within each day
+# for delta Cq
+fem0.stat.test <- Cq_values_F_Delta %>%
+  group_by(day) %>%
+  t_test(delta_Cq_2 ~ dilution) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add the bracket location info for each comparison
+fem0.stat.test<-fem0.stat.test %>% add_xy_position(x = "day")
+
+#do paiwrise t-test between days within dilution methods
+ # for delta Cq
+fem0.stat.test.2 <- Cq_values_F_Delta %>%
+  group_by(dilution) %>%
+  t_test(delta_Cq_2 ~ day) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+#add bracket location info
+fem0.stat.test.2<-fem0.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
+
+# show statistics 
+fem0.stat.test
+```
+
+    # A tibble: 12 × 16
+       day   .y.        group1   group2     n1    n2 statistic    df       p   p.adj
+       <chr> <chr>      <chr>    <chr>   <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+     1 day0  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -1.78   9.37 1.07e-1 1   e+0
+     2 day0  delta_Cq_2 0.01 FFU 3 FFU       8     8    -8.45   7.44 4.50e-5 5.4 e-4
+     3 day0  delta_Cq_2 0.1 FFU  3 FFU       8     8    -7.13   9.47 4.20e-5 5.04e-4
+     4 day1  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -2.64   7.03 3.3 e-2 3.96e-1
+     5 day1  delta_Cq_2 0.01 FFU 3 FFU       8     8    -5.27   7.00 1   e-3 1.2 e-2
+     6 day1  delta_Cq_2 0.1 FFU  3 FFU       8     8    -5.08   7.07 1   e-3 1.2 e-2
+     7 day3  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -3.13  13.5  8   e-3 9.6 e-2
+     8 day3  delta_Cq_2 0.01 FFU 3 FFU       8     8    -5.81  12.8  6.45e-5 7.74e-4
+     9 day3  delta_Cq_2 0.1 FFU  3 FFU       8     8    -1.61  11.5  1.35e-1 1   e+0
+    10 day5  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -2.15   7.08 6.9 e-2 8.28e-1
+    11 day5  delta_Cq_2 0.01 FFU 3 FFU       8     8    -9.56   8.87 5.75e-6 6.90e-5
+    12 day5  delta_Cq_2 0.1 FFU  3 FFU       8     8     0.112  7.56 9.14e-1 1   e+0
+    # ℹ 6 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, x <dbl>, xmin <dbl>, xmax <dbl>
+
+``` r
+fem0.stat.test.2
+```
+
+    # A tibble: 18 × 15
+       dilution .y.        group1 group2    n1    n2 statistic    df       p   p.adj
+       <chr>    <chr>      <chr>  <chr>  <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+     1 0.01 FFU delta_Cq_2 day0   day1       8     8    -1.58   7.55 1.56e-1 1   e+0
+     2 0.01 FFU delta_Cq_2 day0   day3       8     8    -1.51   7.00 1.76e-1 1   e+0
+     3 0.01 FFU delta_Cq_2 day0   day5       8     8    -1.00   7.00 3.51e-1 1   e+0
+     4 0.01 FFU delta_Cq_2 day1   day3       8     8    -1.51   7.00 1.76e-1 1   e+0
+     5 0.01 FFU delta_Cq_2 day1   day5       8     8    -1.00   7.00 3.51e-1 1   e+0
+     6 0.01 FFU delta_Cq_2 day3   day5       8     8    -0.389  9.05 7.06e-1 1   e+0
+     7 0.1 FFU  delta_Cq_2 day0   day1       8     8    -2.68   7.01 3.2 e-2 5.76e-1
+     8 0.1 FFU  delta_Cq_2 day0   day3       8     8    -5.31   7.00 1   e-3 1.8 e-2
+     9 0.1 FFU  delta_Cq_2 day0   day5       8     8    -2.22   7.00 6.2 e-2 1   e+0
+    10 0.1 FFU  delta_Cq_2 day1   day3       8     8    -5.31   7.00 1   e-3 1.8 e-2
+    11 0.1 FFU  delta_Cq_2 day1   day5       8     8    -2.22   7.00 6.2 e-2 1   e+0
+    12 0.1 FFU  delta_Cq_2 day3   day5       8     8    -2.04   7.02 8.1 e-2 1   e+0
+    13 3 FFU    delta_Cq_2 day0   day1       8     8    -5.25   7.00 1   e-3 1.8 e-2
+    14 3 FFU    delta_Cq_2 day0   day3       8     8   -11.9    7.00 6.67e-6 1.20e-4
+    15 3 FFU    delta_Cq_2 day0   day5       8     8   -10.6    7.00 1.49e-5 2.68e-4
+    16 3 FFU    delta_Cq_2 day1   day3       8     8   -11.8    7.00 6.91e-6 1.24e-4
+    17 3 FFU    delta_Cq_2 day1   day5       8     8   -10.6    7.00 1.5 e-5 2.7 e-4
+    18 3 FFU    delta_Cq_2 day3   day5       8     8    -9.27   7.15 3.07e-5 5.53e-4
+    # ℹ 5 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, xmin <dbl>, xmax <dbl>
+
+``` r
 ledgend_title <- "Virus Delivery"
 
 # plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day, fill=dilution)) + geom_boxplot(outlier.shape=NA)  + theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
+  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
+  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
   scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
-  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") + 
-  theme(legend.position = c(0.15, 0.8), legend.background = element_rect(linetype="solid", colour ="black"))
+  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) +
+  stat_pvalue_manual(fem0.stat.test, y.position = seq(3.5,4, by=1.5/3),  hide.ns = TRUE) +
+  stat_pvalue_manual(fem0.stat.test.2, y.position = seq(5,10, by=5/7), hide.ns = TRUE)
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-6-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-7-1.png)
 
 **Male Analysis Second**
 
@@ -176,11 +282,11 @@ ggplot(Cq_values_M, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodg
 
     Warning: Removed 1 rows containing non-finite values (`stat_bin()`).
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-7-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-8-1.png)
 
 Looks pretty similar to the female results
 
-Calculating male delta Cq and Plotting
+Calculating male delta Cq
 
 ``` r
 # need to organize by name of the sample I think
@@ -246,23 +352,102 @@ Cq_values_M_Delta$delta_Cq <- delta_Cqs_M
 
 # add a column with 2^ delta Cq
 Cq_values_M_Delta$delta_Cq_2 <- 2^(delta_Cqs_M)
+```
 
+Doing t test statistics and plotting
+
+``` r
+# doing pairwise t-tests between dilution methods, within each day
+# for delta Cq
+male0.stat.test <- Cq_values_M_Delta %>%
+  group_by(day) %>%
+  t_test(delta_Cq_2 ~ dilution) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add the bracket location info for each comparison
+male0.stat.test <- male0.stat.test %>% add_xy_position(x = "day")
+
+# do paiwrise t-test between days within dilution methods
+ # for delta Cq
+male0.stat.test.2 <- Cq_values_M_Delta %>%
+  group_by(dilution) %>%
+  t_test(delta_Cq_2 ~ day) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add bracket location info
+male0.stat.test.2 <- male0.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
+
+# show statistics 
+male0.stat.test
+```
+
+    # A tibble: 12 × 16
+       day   .y.        group1   group2     n1    n2 statistic    df       p   p.adj
+       <chr> <chr>      <chr>    <chr>   <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+     1 day0  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -1.11   7.13 3.02e-1 1   e+0
+     2 day0  delta_Cq_2 0.01 FFU 3 FFU       8     8    -4.69   7.90 2   e-3 2.4 e-2
+     3 day0  delta_Cq_2 0.1 FFU  3 FFU       8     8    -0.669  8.97 5.2 e-1 1   e+0
+     4 day1  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -3.25   7.39 1.3 e-2 1.56e-1
+     5 day1  delta_Cq_2 0.01 FFU 3 FFU       8     8    -6.50   7.01 3.34e-4 4.01e-3
+     6 day1  delta_Cq_2 0.1 FFU  3 FFU       8     8    -6.00   7.25 4.73e-4 5.68e-3
+     7 day3  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -5.08  11.6  3.03e-4 3.64e-3
+     8 day3  delta_Cq_2 0.01 FFU 3 FFU       8     8    -2.79   7.41 2.5 e-2 3   e-1
+     9 day3  delta_Cq_2 0.1 FFU  3 FFU       8     8    -1.81   7.15 1.13e-1 1   e+0
+    10 day5  delta_Cq_2 0.01 FFU 0.1 FFU     8     8    -3.65  12.9  3   e-3 3.6 e-2
+    11 day5  delta_Cq_2 0.01 FFU 3 FFU       8     8    -6.03  13.8  3.32e-5 3.98e-4
+    12 day5  delta_Cq_2 0.1 FFU  3 FFU       8     8    -3.03  13.6  9   e-3 1.08e-1
+    # ℹ 6 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, x <dbl>, xmin <dbl>, xmax <dbl>
+
+``` r
+male0.stat.test.2
+```
+
+    # A tibble: 18 × 15
+       dilution .y.        group1 group2    n1    n2 statistic    df       p   p.adj
+       <chr>    <chr>      <chr>  <chr>  <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+     1 0.01 FFU delta_Cq_2 day0   day1       8     8    -1.41   7.08 2.01e-1 1   e+0
+     2 0.01 FFU delta_Cq_2 day0   day3       8     8    -1.94   7.00 9.4 e-2 1   e+0
+     3 0.01 FFU delta_Cq_2 day0   day5       8     8    -1.00   7.00 3.51e-1 1   e+0
+     4 0.01 FFU delta_Cq_2 day1   day3       8     8    -1.94   7.00 9.4 e-2 1   e+0
+     5 0.01 FFU delta_Cq_2 day1   day5       8     8    -1.00   7.00 3.51e-1 1   e+0
+     6 0.01 FFU delta_Cq_2 day3   day5       8     8    -0.804  7.14 4.47e-1 1   e+0
+     7 0.1 FFU  delta_Cq_2 day0   day1       8     8    -3.36   7.24 1.2 e-2 2.16e-1
+     8 0.1 FFU  delta_Cq_2 day0   day3       8     8   -12.9    7.00 3.85e-6 6.93e-5
+     9 0.1 FFU  delta_Cq_2 day0   day5       8     8    -7.49   7.00 1.39e-4 2.50e-3
+    10 0.1 FFU  delta_Cq_2 day1   day3       8     8   -12.9    7.00 3.86e-6 6.95e-5
+    11 0.1 FFU  delta_Cq_2 day1   day5       8     8    -7.49   7.00 1.39e-4 2.50e-3
+    12 0.1 FFU  delta_Cq_2 day3   day5       8     8    -6.41   7.09 3.44e-4 6.19e-3
+    13 3 FFU    delta_Cq_2 day0   day1       8     8    -6.50   7.00 3.35e-4 6.03e-3
+    14 3 FFU    delta_Cq_2 day0   day3       8     8    -3.17   7.00 1.6 e-2 2.88e-1
+    15 3 FFU    delta_Cq_2 day0   day5       8     8   -10.3    7.00 1.79e-5 3.22e-4
+    16 3 FFU    delta_Cq_2 day1   day3       8     8    -3.16   7.00 1.6 e-2 2.88e-1
+    17 3 FFU    delta_Cq_2 day1   day5       8     8   -10.3    7.00 1.80e-5 3.24e-4
+    18 3 FFU    delta_Cq_2 day3   day5       8     8    -6.83  12.1  1.72e-5 3.10e-4
+    # ℹ 5 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, xmin <dbl>, xmax <dbl>
+
+``` r
 ledgend_title <- "Virus Delivery"
 
 # plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day, fill=dilution)) +
-  geom_boxplot(outlier.shape=NA)  + theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
+  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
+  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
   scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
   labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
-  theme(legend.position = c(0.15, 0.8), legend.background = element_rect(linetype="solid", colour ="black"))
+  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) +
+  stat_pvalue_manual(male0.stat.test, y.position = seq(3.5,4, by=1.5/4),  hide.ns = TRUE) +
+  stat_pvalue_manual(male0.stat.test.2, y.position = seq(5,9, by=4/8), hide.ns = TRUE)
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-8-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-10-1.png)
 
 **Delta Delta Analysis**
 
@@ -362,36 +547,89 @@ F_001$delta_delta_Cq_2 <- 2^(delta_delta_001)
 
 # add all of the days back together 
 Female_delta_delta <- rbind(F_001, F_01, F_3)
+```
 
-#Plot 
+Statistics and plotting females
+
+``` r
+# doing pairwise t-tests between dilution methods, within each day
+fem.stat.test <- Female_delta_delta %>%
+  group_by(day) %>%
+  t_test(delta_delta_Cq_2 ~ dilution) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add the bracket location info for each comparison
+fem.stat.test <- fem.stat.test %>% add_xy_position(x = "day")
+
+# do paiwrise t-test between days within dilution methods
+fem.stat.test.2 <- Female_delta_delta %>%
+  group_by(dilution) %>%
+  t_test(delta_delta_Cq_2 ~ day) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add bracket location info
+fem.stat.test.2 <- fem.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
+
+# show statistics 
+fem.stat.test
+```
+
+    # A tibble: 9 × 16
+      day   .y.   group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
+      <chr> <chr> <chr>  <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
+    1 day1  delt… 0.01 … 0.1 F…     8     8   -2.30    7.56 0.052 0.468 ns          
+    2 day1  delt… 0.01 … 3 FFU      8     8   -4.66    7.82 0.002 0.018 *           
+    3 day1  delt… 0.1 F… 3 FFU      8     8   -1.24   13.5  0.236 1     ns          
+    4 day3  delt… 0.01 … 0.1 F…     8     8   -0.0276  8.16 0.979 1     ns          
+    5 day3  delt… 0.01 … 3 FFU      8     8    1.39    7.00 0.208 1     ns          
+    6 day3  delt… 0.1 F… 3 FFU      8     8    4.90    7.02 0.002 0.018 *           
+    7 day5  delt… 0.01 … 0.1 F…     8     8   -1.83    8.32 0.103 0.927 ns          
+    8 day5  delt… 0.01 … 3 FFU      8     8    0.608   7.02 0.562 1     ns          
+    9 day5  delt… 0.1 F… 3 FFU      8     8    2.10    7.00 0.074 0.666 ns          
+    # ℹ 5 more variables: y.position <dbl>, groups <named list>, x <dbl>,
+    #   xmin <dbl>, xmax <dbl>
+
+``` r
+fem.stat.test.2
+```
+
+    # A tibble: 9 × 15
+      dilution .y.         group1 group2    n1    n2 statistic    df       p   p.adj
+      <chr>    <chr>       <chr>  <chr>  <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+    1 0.01 FFU delta_delt… day1   day3       8     8    -1.51   7.00 1.76e-1 1   e+0
+    2 0.01 FFU delta_delt… day1   day5       8     8    -1.00   7.00 3.51e-1 1   e+0
+    3 0.01 FFU delta_delt… day3   day5       8     8    -0.389  9.05 7.06e-1 1   e+0
+    4 0.1 FFU  delta_delt… day1   day3       8     8    -5.31   7.00 1   e-3 9   e-3
+    5 0.1 FFU  delta_delt… day1   day5       8     8    -2.22   7.00 6.2 e-2 5.58e-1
+    6 0.1 FFU  delta_delt… day3   day5       8     8    -2.04   7.02 8.1 e-2 7.29e-1
+    7 3 FFU    delta_delt… day1   day3       8     8   -11.8    7.00 6.91e-6 6.22e-5
+    8 3 FFU    delta_delt… day1   day5       8     8   -10.6    7.00 1.5 e-5 1.35e-4
+    9 3 FFU    delta_delt… day3   day5       8     8    -9.27   7.15 3.07e-5 2.76e-4
+    # ℹ 5 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, xmin <dbl>, xmax <dbl>
+
+``` r
+# plot the boxplot with all pairwise stats visualized on top
 legend_title <- "Virus Delivery"
-
-ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot(outlier.shape=NA) +  
+ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
   scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
   theme_light() + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8),aes(fill=dilution)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
   labs(title = "Comparing DiNV Increase in Female Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
-  theme(legend.position = c(0.15, 0.75), legend.background = element_rect(linetype="solid", colour ="black"))
+  theme(legend.position = c(0.9, 0.2), legend.background = element_rect(linetype="solid", colour ="black")) +
+  stat_pvalue_manual(fem.stat.test, y.position = 8, hide.ns = TRUE) +
+  stat_pvalue_manual(fem.stat.test.2, y.position = seq(9,12, by=3/3), hide.ns = TRUE)
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-9-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-12-1.png)
 
-``` r
-# error bars?
-# stats_fem <- summarySE(Female_delta_delta, measurevar="delta_delta_Cq_2", groupvars=c("dilution", "day"))
-# stats_fem
-
-# Plot without box plots and with error bars 
-#ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) +  scale_fill_manual(values=c("#E7E1EF", "#C994C7", "#CE1256")) + theme_light() +geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + geom_errorbar( aes(ymin = delta_delta_Cq_2-se, ymax = delta_delta_Cq_2+se), data = stats_fem, position = position_dodge(0.8), width = 0.2) 
-```
-
-Males
+Males Calculate delta delta Cq
 
 ``` r
 # this might be a little mess to do 
@@ -487,25 +725,87 @@ M_001$delta_delta_Cq_2 <- 2^(delta_delta_001_M)
 
 # add all of the days back together 
 Male_delta_delta <- rbind(M_001, M_01, M_3)
+```
 
-# plot
+Statistics and plotting males
+
+``` r
+# doing pairwise t-tests between dilution methods, within each day
+male.stat.test <- Male_delta_delta %>%
+  group_by(day) %>%
+  t_test(delta_delta_Cq_2 ~ dilution) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add the bracket location info for each comparison
+male.stat.test <- male.stat.test %>% add_xy_position(x = "day")
+
+# do paiwrise t-test between days within dilution methods
+male.stat.test.2 <- Male_delta_delta %>%
+  group_by(dilution) %>%
+  t_test(delta_delta_Cq_2 ~ day) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add bracket location info
+male.stat.test.2 <- male.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
+
+# show statistics 
+male.stat.test
+```
+
+    # A tibble: 9 × 16
+      day   .y.            group1 group2    n1    n2 statistic    df       p   p.adj
+      <chr> <chr>          <chr>  <chr>  <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+    1 day1  delta_delta_C… 0.01 … 0.1 F…     8     8    -2.99   8.13 1.7 e-2 1.53e-1
+    2 day1  delta_delta_C… 0.01 … 3 FFU      8     8    -5.66   8.59 3.65e-4 3.28e-3
+    3 day1  delta_delta_C… 0.1 F… 3 FFU      8     8    -1.47  13.6  1.65e-1 1   e+0
+    4 day3  delta_delta_C… 0.01 … 0.1 F…     8     8    -2.52   8.75 3.4 e-2 3.06e-1
+    5 day3  delta_delta_C… 0.01 … 3 FFU      8     8     0.667  9.04 5.21e-1 1   e+0
+    6 day3  delta_delta_C… 0.1 F… 3 FFU      8     8     6.45  13.9  1.57e-5 1.41e-4
+    7 day5  delta_delta_C… 0.01 … 0.1 F…     8     8    -2.06   9.53 6.8 e-2 6.12e-1
+    8 day5  delta_delta_C… 0.01 … 3 FFU      8     8     0.403  7.05 6.99e-1 1   e+0
+    9 day5  delta_delta_C… 0.1 F… 3 FFU      8     8     6.06   7.25 4.47e-4 4.02e-3
+    # ℹ 6 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, x <dbl>, xmin <dbl>, xmax <dbl>
+
+``` r
+male.stat.test.2
+```
+
+    # A tibble: 9 × 15
+      dilution .y.         group1 group2    n1    n2 statistic    df       p   p.adj
+      <chr>    <chr>       <chr>  <chr>  <int> <int>     <dbl> <dbl>   <dbl>   <dbl>
+    1 0.01 FFU delta_delt… day1   day3       8     8    -1.94   7.00 9.4 e-2 8.46e-1
+    2 0.01 FFU delta_delt… day1   day5       8     8    -1.00   7.00 3.51e-1 1   e+0
+    3 0.01 FFU delta_delt… day3   day5       8     8    -0.804  7.14 4.47e-1 1   e+0
+    4 0.1 FFU  delta_delt… day1   day3       8     8   -12.9    7.00 3.86e-6 3.47e-5
+    5 0.1 FFU  delta_delt… day1   day5       8     8    -7.49   7.00 1.39e-4 1.25e-3
+    6 0.1 FFU  delta_delt… day3   day5       8     8    -6.41   7.09 3.44e-4 3.10e-3
+    7 3 FFU    delta_delt… day1   day3       8     8    -3.16   7.00 1.6 e-2 1.44e-1
+    8 3 FFU    delta_delt… day1   day5       8     8   -10.3    7.00 1.80e-5 1.62e-4
+    9 3 FFU    delta_delt… day3   day5       8     8    -6.83  12.1  1.72e-5 1.55e-4
+    # ℹ 5 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, xmin <dbl>, xmax <dbl>
+
+``` r
+# plot the boxplot with all pairwise stats visualized on top
 legend_title <- "Virus Delivery"
-
-ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot(outlier.shape=NA) +  
+ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
   scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
   theme_light() + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8),aes(fill=dilution)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
   labs(title = "Comparing DiNV Increase in Male Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
-  theme(legend.position = c(0.15, 0.75), legend.background = element_rect(linetype="solid", colour ="black"))
+  theme(legend.position = "none")+
+  stat_pvalue_manual(male.stat.test, y.position = 7, hide.ns = TRUE)+
+  stat_pvalue_manual(male.stat.test.2, y.position = seq(8,12, by=4/4), hide.ns = TRUE)
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-10-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-14-1.png)
 
 Look at male and female for each dilution by day
 
@@ -519,6 +819,32 @@ F_3_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "3 FFU"),]
 
 FFU_3_dil <- rbind(M_3_dil, F_3_dil)
 
+#statistics 
+# only care about comparisons between sexes within days 
+#doing pairwise t-tests between sexes, within each day
+three.stat.test <- FFU_3_dil %>%
+  group_by(day) %>%
+  t_test(delta_delta_Cq_2 ~ sex) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+#add the bracket location info for each comparison
+three.stat.test <- three.stat.test %>% add_xy_position(x = "day")
+# show stats 
+three.stat.test
+```
+
+    # A tibble: 3 × 16
+      day   .y.              group1 group2    n1    n2 statistic    df      p p.adj
+      <chr> <chr>            <chr>  <chr>  <int> <int>     <dbl> <dbl>  <dbl> <dbl>
+    1 day1  delta_delta_Cq_2 female male       8     8    -0.940 14.0  0.363  1    
+    2 day3  delta_delta_Cq_2 female male       8     8    -1.76   7.19 0.121  0.363
+    3 day5  delta_delta_Cq_2 female male       8     8    -1.96  12.9  0.0714 0.214
+    # ℹ 6 more variables: p.adj.signif <chr>, y.position <dbl>,
+    #   groups <named list>, x <dbl>, xmin <dbl>, xmax <dbl>
+
+``` r
+# all non significant, so cannot add to the plot 
+
 legend_title = "Sex"
 #Plot 
 ggplot(FFU_3_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
@@ -528,13 +854,15 @@ ggplot(FFU_3_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
   geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 3 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=11), legend.title=element_text(size=12)) +
+  theme(legend.position = c(0.9, 0.2), legend.background = element_rect(linetype="solid", colour ="black")) +
+  labs(title = "Comparing DiNV Increase in Male and Female Flies \nInjected with 3 FFU DiNV Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection")
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-11-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-15-1.png)
 
 0.1 FFU dilution
 
@@ -546,6 +874,33 @@ F_01_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.1 FFU"),]
 
 FFU_01_dil <- rbind(M_01_dil, F_01_dil)
 
+#statistics 
+# only care about comparisons between sexes within days 
+# doing pairwise t-tests between sexes, within each day
+o1.stat.test <- FFU_01_dil %>%
+  group_by(day) %>%
+  t_test(delta_delta_Cq_2 ~ sex) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add the bracket location info for each comparison
+o1.stat.test <- o1.stat.test %>% add_xy_position(x = "day")
+# show stats 
+o1.stat.test
+```
+
+    # A tibble: 3 × 16
+      day   .y.   group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
+      <chr> <chr> <chr>  <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
+    1 day1  delt… female male       8     8    -0.571 14.0  0.577 1     ns          
+    2 day3  delt… female male       8     8     1.72   8.03 0.123 0.369 ns          
+    3 day5  delt… female male       8     8     1.35   7.19 0.217 0.651 ns          
+    # ℹ 5 more variables: y.position <dbl>, groups <named list>, x <dbl>,
+    #   xmin <dbl>, xmax <dbl>
+
+``` r
+# all non significant, so cannot add to the plot 
+
+
 legend_title = "Sex"
 #Plot 
 ggplot(FFU_01_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
@@ -555,13 +910,15 @@ ggplot(FFU_01_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
   geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.1 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=11), legend.title=element_text(size=12)) +
+  theme(legend.position = "none") +
+  labs(title = "Comparing DiNV Increase in Male and Female Flies \nInjected with 0.1 FFU DiNV Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection")
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-12-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-16-1.png)
 
 0.01 FFU dilution
 
@@ -573,6 +930,32 @@ F_001_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.01 FFU")
 
 FFU_001_dil <- rbind(M_001_dil, F_001_dil)
 
+#statistics 
+# only care about comparisons between sexes within days 
+# doing pairwise t-tests between sexes, within each da
+oo1.stat.test <- FFU_001_dil %>%
+  group_by(day) %>%
+  t_test(delta_delta_Cq_2 ~ sex) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+# add the bracket location info for each comparison
+oo1.stat.test <- oo1.stat.test %>% add_xy_position(x = "day")
+# show stats 
+oo1.stat.test
+```
+
+    # A tibble: 3 × 16
+      day   .y.   group1 group2    n1    n2 statistic    df     p p.adj p.adj.signif
+      <chr> <chr> <chr>  <chr>  <int> <int>     <dbl> <dbl> <dbl> <dbl> <chr>       
+    1 day1  delt… female male       8     8    -0.189 12.6  0.853 1     ns          
+    2 day3  delt… female male       8     8     1.05   7.68 0.325 0.975 ns          
+    3 day5  delt… female male       8     8     0.106 13.7  0.917 1     ns          
+    # ℹ 5 more variables: y.position <dbl>, groups <named list>, x <dbl>,
+    #   xmin <dbl>, xmax <dbl>
+
+``` r
+# all non significant so not adding to plot 
+
 legend_title = "Sex"
 #Plot 
 ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) + 
@@ -582,15 +965,20 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
   geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) +
   scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing Viral Titer in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=11), legend.title=element_text(size=12)) +
+  theme(legend.position = "none") +
+  labs(title = "Comparing DiNV Increase in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection")
 ```
 
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-13-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-17-1.png)
 
-**Adding in days 6, 7, and 9 for males**
+**Adding in days 6, 7, and 9 for males** Not sure if I will include
+this, I don’t feel comfortable combining two experiments like this and
+there were larger differences in the day 0 PIF 3 Cqs than I would have
+expected
 
 Load in dataset
 
@@ -606,7 +994,7 @@ ggplot(Cq_values_extra, aes(x= Cq, fill = primer)) + geom_histogram(position = "
 
     `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-15-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-19-1.png)
 
 These look pretty similar to above, I wonder if all the flies aren’t
 getting infected…
@@ -660,7 +1048,7 @@ Cq_values_extra_Delta$delta_Cq_2 <- 2^(delta_Cqs_extra)
 ggplot(Cq_values_extra_Delta, aes(y= delta_Cq_2, x=day)) + geom_boxplot()  + theme_linedraw() + geom_point() + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
 ```
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-16-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-20-1.png)
 
 Delta delta analysis
 
@@ -708,7 +1096,7 @@ ggplot(E, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot() +
   labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-17-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-21-1.png)
 
 Combine this data with the male data from the other experiment
 
@@ -757,4 +1145,4 @@ ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + g
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-18-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-22-1.png)
