@@ -9,6 +9,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(Rmisc)
+library(rstatix)
 ```
 
 ```{r setup, include=FALSE}
@@ -145,5 +146,16 @@ stat.test <- complete_sample_delta %>%
 stat.test
 ```
 
+what is the mean for each type?
 
+```{r}
+# separate hirt only
+hirt <- complete_sample_delta[which(complete_sample_delta$type == "hirt extract only"),]
+hmean <- mean(hirt$delta_Cq_2)
+hmean
+# separate hirt 
+exo <- complete_sample_delta[which(complete_sample_delta$type != "hirt extract only"),]
+exmean <- mean(exo$delta_Cq_2)
+exmean
+```
 

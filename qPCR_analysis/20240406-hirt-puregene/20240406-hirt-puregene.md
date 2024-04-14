@@ -470,3 +470,23 @@ stat.test
 # p value is 0.035 significance
 # I think this really does depend on how much virus is in the sample and if the method actually works to separate out the viral DNA or not 
 ```
+
+what is the mean for each extraction type?
+
+``` r
+# separate puregene 
+pure <- combo_data[which(combo_data$type == "Puregene"),]
+pmean <- mean(pure$delta_Cq_2)
+pmean
+```
+
+    [1] 112.8833
+
+``` r
+# separate hirt 
+hirt <- combo_data[which(combo_data$type != "Puregene"),]
+hmean <- mean(hirt$delta_Cq_2)
+hmean
+```
+
+    [1] 248.8563

@@ -2,9 +2,9 @@ sample,type,notes,day sampled,day extracted,extracted with,resuspention volume,q
 A,raw supernatant,,20240124,20240323,Puregene,20ul ,0,0
 B,raw supernatant,,20240124,20240323,Puregene,20ul ,0,0
 C,raw supernatant,,20240124,20240323,Puregene,20ul ,0.096,1.92
-D,amicon centrifuged,,20240125,20240323,Puregene,20ul ,0.775,15.5
-E,amicon centrifuged,,20240125,20240323,Puregene,20ul ,0.082,1.64
-F,amicon centrifuged,,20240125,20240323,Puregene,20ul ,0,0
+D,Sartorius centrifuged,,20240125,20240323,Puregene,20ul ,0.775,15.5
+E,Sartorius centrifuged,,20240125,20240323,Puregene,20ul ,0.082,1.64
+F,Sartorius centrifuged,,20240125,20240323,Puregene,20ul ,0,0
 G,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,3.57,71.4
 H,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,3.7,74
 I,millipore small centrifuged,,20240125,20240323,Puregene,20ul ,4.32,86.4
