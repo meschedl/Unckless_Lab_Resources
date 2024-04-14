@@ -1,0 +1,231 @@
+---
+title: "20240406-hirt-puregene"
+format: gfm
+editor: visual
+---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(Rmisc)
+library(rstatix)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 4.5)
+```
+
+Load in dataset
+
+```{r}
+# from this test
+Cq_values <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240406-hirt-puregene/20240406-hirt-puregene.csv")
+# data from previous qPCR of samples either puregene or hirt extracted 
+Further_samples <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/20240406-hirt-puregene/other-hirt-and-puregene-dinn-cell-qPCR-samples.csv")
+```
+
+Look at raw Cq values by primer and sample type
+
+```{r}
+# if you want to also include another varaible to separate out the histogram by, you can include a facet 
+ggplot(Cq_values, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~type) 
+```
+
+Not really able to tell, seems like there could be more variability with the puregene
+
+Calculate variance and mean of Cq value between the technical replicates
+
+```{r}
+# use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the variance by)
+Cq_values$Cq_var <- ave(Cq_values$Cq, Cq_values$unique_name, FUN=var)
+
+# use the mean function, and calculates the mean of Cq values by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the mean by)
+Cq_values$Cq_mean <- ave(Cq_values$Cq, Cq_values$unique_name, FUN=mean)
+
+# Keep all rows where the replicate is 1 (or you could do 2 or 3)
+# make into new Df so we keep the original with all the Cq values
+Cq_values_1rep <- Cq_values[which(Cq_values$replicate == "1"),]
+
+# histogram of all variances
+ggplot(Cq_values_1rep, aes(x=Cq_var)) + geom_histogram(bins = 50)
+
+# these are all very low compared to qPCR analysis I have done before, so I would say these are ok 
+
+# plot variances and means as a scatterplot 
+ggplot(Cq_values_1rep, aes(x=Cq_mean, y=Cq_var)) +
+  geom_point(size=2, shape=23)
+# no real relationship, looks good 
+
+```
+
+Calculating Delta Cqs between TPI and PIF3
+
+```{r}
+# samples are not ordered properly
+# they need to be ordered with the two primer samples next to each other for each sample 
+# order them by the sample
+Cq_values_1rep <- Cq_values_1rep[order(Cq_values_1rep$sample),]
+Cq_values_1rep
+# looks good, for each sample TPI is first, and PIF 3 is second 
+nrow(Cq_values_1rep)
+
+# Separate that dataframe, incriminating by 2, every number between 1-16 (number of rows in dataframe)
+Cq_values_1rep$Cq_mean[seq(1,16,2)] # these are the TPI Cq means 
+Cq_values_1rep$Cq_mean[seq(2,16,2)] # these are the PIF 3 primer Cq means 
+
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+delta_Cqs <- Cq_values_1rep$Cq_mean[seq(1,16,2)] - Cq_values_1rep$Cq_mean[seq(2,16,2)]
+#vector
+delta_Cqs
+
+# Keep only rows that are PIF3 because now we have two rows per sample
+Cq_values1rep_Delta <- Cq_values_1rep[which(Cq_values_1rep$primer == "PIF 3"),]
+# And then add in the delta Cqs as a new column
+Cq_values1rep_Delta$delta_Cq <- delta_Cqs
+
+# do 2^ delta Cq
+Cq_values1rep_Delta$delta_Cq_2 <- 2^(delta_Cqs)
+
+# simple plot 
+ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=type)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) 
+
+```
+
+Ok so it actually looks like puregene has a better ratio, but probabily in any significant way
+
+Plot
+
+```{r}
+# statistics on variance 
+stats <- summarySE(Cq_values1rep_Delta, measurevar="delta_Cq_2", groupvars=c("type"))
+stats
+
+# plot 
+legend_title <- "DNA type"
+
+ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=type)) +
+  geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = type),data = stats, position = position_dodge(0.3), width = 0.2)+
+  geom_point(aes(color = type), position = position_dodge(0.3), size = 3) +
+  scale_color_manual(legend_title,values = c( "#62CFF4", "#2C67F2" )) + theme_light() + 
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=16), legend.position = "none") +
+  labs(title = "Comparing Ammount of DiNV DNA From Extraction Methods",y = "2^delta Cq", x = "DNA Extraction Method") + scale_y_continuous(expand=c(0, 0), limits=c(0, 250))
+```
+
+I have more dinn cells infected with DiNV samples that I have run on qPCR that are either hirt extracted or puregene extracted that I can probably add into this plot
+
+Look at raw Cq values by primer and sample type
+
+```{r}
+# if you want to also include another varaible to separate out the histogram by, you can include a facet 
+ggplot(Further_samples, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodge") + facet_grid(~type) 
+```
+
+Again, you can't really tell until you do the ratio between cell and DiNV primer, but they look similar (as above)
+
+Calculate variance and mean of Cq value between the technical replicates for more data
+
+```{r}
+# use the variance function, and calculates the variance in Cq by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the variance by)
+Further_samples$Cq_var <- ave(Further_samples$Cq, Further_samples$unique_name, FUN=var)
+
+# use the mean function, and calculates the mean of Cq values by the unique.name (each sample/primer has 3 Cq values to 
+# calculate the mean by)
+Further_samples$Cq_mean <- ave(Further_samples$Cq, Further_samples$unique_name, FUN=mean)
+
+# Keep all rows where the replicate is 1 (or you could do 2 or 3)
+# make into new Df so we keep the original with all the Cq values
+Further_samples_1rep <- Further_samples[which(Further_samples$replicate == "1"),]
+
+# histogram of all variances
+ggplot(Further_samples_1rep, aes(x=Cq_var)) + geom_histogram(bins = 50)
+
+# these look pretty great to me, 0.3 is not high
+
+# plot variances and means as a scatterplot 
+ggplot(Further_samples_1rep, aes(x=Cq_mean, y=Cq_var)) +
+  geom_point(size=2, shape=23)
+# no real relationship, looks good 
+
+```
+
+Calculating Delta Cqs between TPI and PIF3 for further data
+
+```{r}
+# samples are not ordered properly
+# they need to be ordered with the two primer samples next to each other for each sample 
+# order them by the sample
+Further_samples_1rep <- Further_samples_1rep[order(Further_samples_1rep$sample),]
+Further_samples_1rep
+# looks good, for each sample TPI is first, and PIF 3 is second 
+nrow(Further_samples_1rep)   
+# 24
+
+# Separate that dataframe, incriminating by 2, every number between 1-32 (number of rows in dataframe)
+Further_samples_1rep$Cq_mean[seq(1,32,2)] # these are the TPI Cq means 
+Further_samples_1rep$Cq_mean[seq(2,32,2)] # these are the PIF 3 primer Cq means 
+
+# make the delta Cq by subtracting the PIF 3 values from the TPI primer values
+# and this is saved as a vector in R 
+Fdelta_Cqs <- Further_samples_1rep$Cq_mean[seq(1,32,2)] - Further_samples_1rep$Cq_mean[seq(2,32,2)]
+#vector
+Fdelta_Cqs
+
+# Keep only rows that are PIF3 because now we have two rows per sample
+Further_samples_1rep_Delta <- Further_samples_1rep[which(Further_samples_1rep$primer == "PIF 3"),]
+# And then add in the delta Cqs as a new column
+Further_samples_1rep_Delta$delta_Cq <- Fdelta_Cqs
+
+# do 2^ delta Cq
+Further_samples_1rep_Delta$delta_Cq_2 <- 2^(Fdelta_Cqs)
+
+# plot 
+ggplot(Further_samples_1rep_Delta, aes(y= delta_Cq_2, x=type)) + geom_boxplot()  + theme_linedraw() + geom_point(position="jitter", size=3) 
+
+```
+
+Combine both datasets
+
+```{r}
+# combine datasets 
+combo_data <- rbind(Cq_values1rep_Delta,Further_samples_1rep_Delta)
+
+# stats and plot
+# statistics on variance 
+stats2 <- summarySE(combo_data, measurevar="delta_Cq_2", groupvars=c("type"))
+stats2
+
+# order x axis 
+level_order <- c('Puregene', 'hirt') 
+
+# plot 
+legend_title <- "DNA type"
+
+ggplot(combo_data, aes(y= delta_Cq_2, x=factor(type, level = level_order))) +
+  geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = type),data = stats2, position = position_dodge(0.3), width = 0.2)+
+  geom_jitter(aes(color=type), position = position_jitter(0.1), size =3)  + 
+  scale_color_manual(legend_title,values = c( "#2C67F2", "#62CFF4" )) +theme_light() + 
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=14), legend.position = "none") +
+  labs(title = "Comparing Relative Amount of DiNV DNA From Extraction Methods",y = "Relative Amount of DiNV to \nHost Genome", x = "DNA Extraction Method") + 
+  scale_x_discrete(labels=c("hirt" = "Hirt", "Puregene" = "Puregene"))
+
+```
+
+T test statistics
+
+```{r}
+# doing pairwise t-tests between dilution methods, within each day
+# for delta Cq
+stat.test <- combo_data %>%
+  t_test(delta_Cq_2 ~ type) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+stat.test
+# p value is 0.035 significance
+# I think this really does depend on how much virus is in the sample and if the method actually works to separate out the viral DNA or not 
+
+```

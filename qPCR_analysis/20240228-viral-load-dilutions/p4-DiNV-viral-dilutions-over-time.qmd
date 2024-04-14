@@ -51,7 +51,7 @@ ggplot(Cq_values_F, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodg
 
 This is showing more patterns that we sort of expect, but we have to do the delta Cq comparison to the TPI primer to be sure
 
-Calculating female delta Cq 
+Calculating female delta Cq
 
 ```{r}
 # need to organize by name of the sample I think
@@ -79,8 +79,9 @@ Cq_values_F_Delta$delta_Cq <- delta_Cqs_F
 Cq_values_F_Delta$delta_Cq_2 <- 2^(delta_Cqs_F)
 
 ```
-Female
-Doing t test statistics and plotting 
+
+Female Doing t test statistics and plotting
+
 ```{r}
 # doing pairwise t-tests between dilution methods, within each day
 # for delta Cq
@@ -133,7 +134,7 @@ ggplot(Cq_values_M, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodg
 
 Looks pretty similar to the female results
 
-Calculating male delta Cq 
+Calculating male delta Cq
 
 ```{r}
 # need to organize by name of the sample I think
@@ -166,7 +167,8 @@ Cq_values_M_Delta$delta_Cq_2 <- 2^(delta_Cqs_M)
 
 ```
 
-Doing t test statistics and plotting 
+Doing t test statistics and plotting
+
 ```{r}
 # doing pairwise t-tests between dilution methods, within each day
 # for delta Cq
@@ -277,8 +279,8 @@ Female_delta_delta <- rbind(F_001, F_01, F_3)
 
 ```
 
+Statistics and plotting females
 
-Statistics and plotting females 
 ```{r}
 # doing pairwise t-tests between dilution methods, within each day
 fem.stat.test <- Female_delta_delta %>%
@@ -318,11 +320,8 @@ ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outli
 
 ```
 
+Males Calculate delta delta Cq
 
-
-
-Males
-Calculate delta delta Cq
 ```{r}
 # this might be a little mess to do 
 # separate out the day 0 samples to start with 
@@ -386,7 +385,8 @@ M_001$delta_delta_Cq_2 <- 2^(delta_delta_001_M)
 Male_delta_delta <- rbind(M_001, M_01, M_3)
 ```
 
-Statistics and plotting males 
+Statistics and plotting males
+
 ```{r}
 # doing pairwise t-tests between dilution methods, within each day
 male.stat.test <- Male_delta_delta %>%
@@ -547,9 +547,7 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
   labs(title = "Comparing DiNV Increase in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection")
 ```
 
-
-**Adding in days 6, 7, and 9 for males**
-Not sure if I will include this, I don't feel comfortable combining two experiments like this and there were larger differences in the day 0 PIF 3 Cqs than I would have expected
+**Adding in days 6, 7, and 9 for males** Not sure if I will include this, I don't feel comfortable combining two experiments like this and there were larger differences in the day 0 PIF 3 Cqs than I would have expected
 
 Load in dataset
 

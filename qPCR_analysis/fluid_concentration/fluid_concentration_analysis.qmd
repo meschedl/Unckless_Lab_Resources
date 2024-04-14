@@ -4,8 +4,6 @@ format: gfm
 editor: visual
 ---
 
-
-
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -15,7 +13,7 @@ library(Rmisc)
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7, fig.length = 9)
+knitr::opts_chunk$set(dpi=300,fig.fig.width=7, fig.height = 4.5)
 ```
 
 Load in dataset
@@ -24,7 +22,8 @@ Load in dataset
 DNA <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/qPCR_analysis/fluid_concentration/fluid_concentration.csv")
 ```
 
-Plot total DNA yield 
+Plot total DNA yield
+
 ```{r}
 
 # make order of type of sample treatment 
@@ -43,4 +42,15 @@ ggplot(DNA, aes(y=total.DNA, x=type, fill=type)) +
   theme(axis.text=element_text(size=16),axis.title=element_text(size=16)) + labs(title = "Comparing Yield of DNA from Concentrated Cell Cuture Supernatant",y = "Total DNA (ng)", x = "Sample Treatment")  + theme(legend.position = "none") + scale_y_continuous(
     trans = pseudo_log_trans(base = 10), breaks = c(0,10, 50, 100)) + scale_x_discrete(labels=c("raw supernatant" = "Unconcentrated \nSupernatant", "amicon centrifuged" = "Amicon \nCentrifuged", "millipore small centrifuged" = "Amicon and \nMillipore \nCentrifuged"))
 ```
+
+
+```{r}
+stat.test <- DNA %>%
+  t_test(total.DNA ~ type) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+stat.test
+```
+
+
 

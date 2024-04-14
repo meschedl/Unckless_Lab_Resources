@@ -10,11 +10,13 @@ library(dplyr)
 library(tidyr)
 library(scales)
 library(Rmisc)
+library(rstatix)
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7, fig.length = 9)
+knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 6)
 ```
+
 
 Load in dataset
 
@@ -121,9 +123,10 @@ ggplot(Cq_values1rep_Delta, aes(y= delta_Cq_2, x=cell_type, fill=infection)) + g
 
 ```
 
-Calculating delta delta Cq 
+Calculating delta delta Cq
 
 Start with separating out control and DiNV
+
 ```{r}
 # separate out control and DiNV samples 
 control <- Cq_values1rep_Delta[which(Cq_values1rep_Delta$infection == "control"),]
@@ -174,7 +177,7 @@ day_5_cc_Myd$delta_delta_Cq_2 <- 2^(day_5_cc_Myd_delta_delta)
 Control_delta_delta <- rbind(day_5_cc_Dv1, day_5_cc_Myd)
 ```
 
-Delta Delta calculations for DiNV samples 
+Delta Delta calculations for DiNV samples
 
 ```{r}
  
@@ -223,16 +226,42 @@ day_5_DiNV_Myd$delta_delta_Cq_2 <- 2^(day_5_DiNV_Myd_delta_delta)
 DiNV_delta_delta <- rbind(day_5_DiNV_Dv1, day_5_DiNV_Myd)
 ```
 
-Combine control and infected datasets and plot 
+Combine control and infected datasets and plot
 
 ```{r}
+
 delta_delta <- rbind(Control_delta_delta, DiNV_delta_delta)
+rownames(delta_delta) <- NULL
+
+# remove sample 28 because LAMBDA value was outlier and skewing delta Cq 
+delta_deltar <- delta_delta[c(1:11, 13:16), ]
 
 legend_title <- "Infection"
 
 # plot 
-ggplot(delta_delta, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + geom_boxplot()  + theme_light()  + scale_fill_manual(legend_title, values=c("#C994C7", "#CE1256"), labels= c("Cell culture medium", "DiNV")) + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_x_discrete(labels=c("DV-1" = "Dv-1", "Myd88" = "Myd88"))+ 
+ggplot(delta_deltar, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + geom_boxplot()  + theme_light()  + scale_fill_manual(legend_title, values=c("#C994C7", "#CE1256"), labels= c("Cell culture medium", "DiNV")) + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_x_discrete(labels=c("DV-1" = "Dv-1", "Myd88" = "Myd88"))+ 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14), legend.position = "bottom") +
-  labs(title = "Comparing Increase in Virus in Dv-1 \nand Myd88 Cells 5 Days Post Innoculation",y = "2^delta delta Cq", x = "Cell Line")
+  labs(title = "Comparing Increase in Virus in Dv-1 \nand Myd88 Cells 5 Days Post Innoculation",y = "Relative DiNV Genome Increase", x = "Cell Line")
+```
+
+find mean increase for Dv-1 samples
+```{r}
+# separate out Dv-1
+Dv <- delta_deltar[which(delta_deltar$cell_type == "DV-1"),]
+# separate out DiNV infected 
+DvD <- Dv[which(Dv$infection == "DiNV"),]
+meanD <- mean(DvD$delta_delta_Cq_2)
+meanD
+```
+
+
+
+```{r}
+stat.test <- delta_deltar %>%
+  group_by(infection) %>%
+  t_test(delta_delta_Cq_2 ~ cell_type) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance("p.adj")
+stat.test
 ```
 

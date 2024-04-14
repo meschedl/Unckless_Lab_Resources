@@ -1,0 +1,49 @@
+well,sample,replicate,primer,type,unique_name,Cq
+A01,32,1,TPI,Puregene,Puregene-TPI-1,21.15
+A02,32,2,TPI,Puregene,Puregene-TPI-1,21.06
+A03,32,3,TPI,Puregene,Puregene-TPI-1,21.28
+A04,33,1,TPI,Puregene,Puregene-TPI-2,19.81
+A05,33,2,TPI,Puregene,Puregene-TPI-2,20.11
+A06,33,3,TPI,Puregene,Puregene-TPI-2,19.84
+A07,34,1,TPI,Puregene,Puregene-TPI-3,19.65
+A08,34,2,TPI,Puregene,Puregene-TPI-3,19.49
+A09,34,3,TPI,Puregene,Puregene-TPI-3,19.78
+A10,35,1,TPI,Puregene,Puregene-TPI-4,22.40
+A11,35,2,TPI,Puregene,Puregene-TPI-4,22.37
+A12,35,3,TPI,Puregene,Puregene-TPI-4,22.56
+B01,36,1,TPI,hirt,Hirt-TPI-1,21.90
+B02,36,2,TPI,hirt,Hirt-TPI-1,21.84
+B03,36,3,TPI,hirt,Hirt-TPI-1,21.78
+B04,37,1,TPI,hirt,Hirt-TPI-2,21.22
+B05,37,2,TPI,hirt,Hirt-TPI-2,21.13
+B06,37,3,TPI,hirt,Hirt-TPI-2,21.13
+B07,38,1,TPI,hirt,Hirt-TPI-3,21.51
+B08,38,2,TPI,hirt,Hirt-TPI-3,21.50
+B09,38,3,TPI,hirt,Hirt-TPI-3,21.53
+B10,39,1,TPI,hirt,Hirt-TPI-4,21.47
+B11,39,2,TPI,hirt,Hirt-TPI-4,21.60
+B12,39,3,TPI,hirt,Hirt-TPI-4,21.80
+C01,32,1,PIF 3,Puregene,Puregene-PIF-1,13.68
+C02,32,2,PIF 3,Puregene,Puregene-PIF-1,13.56
+C03,32,3,PIF 3,Puregene,Puregene-PIF-1,13.94
+C04,33,1,PIF 3,Puregene,Puregene-PIF-2,11.65
+C05,33,2,PIF 3,Puregene,Puregene-PIF-2,12.23
+C06,33,3,PIF 3,Puregene,Puregene-PIF-2,12.05
+C07,34,1,PIF 3,Puregene,Puregene-PIF-3,12.20
+C08,34,2,PIF 3,Puregene,Puregene-PIF-3,12.85
+C09,34,3,PIF 3,Puregene,Puregene-PIF-3,11.26
+C10,35,1,PIF 3,Puregene,Puregene-PIF-4,14.81
+C11,35,2,PIF 3,Puregene,Puregene-PIF-4,15.07
+C12,35,3,PIF 3,Puregene,Puregene-PIF-4,15.09
+D01,36,1,PIF 3,hirt,Hirt-PIF-1,14.54
+D02,36,2,PIF 3,hirt,Hirt-PIF-1,14.47
+D03,36,3,PIF 3,hirt,Hirt-PIF-1,14.60
+D04,37,1,PIF 3,hirt,Hirt-PIF-2,13.80
+D05,37,2,PIF 3,hirt,Hirt-PIF-2,13.67
+D06,37,3,PIF 3,hirt,Hirt-PIF-2,13.65
+D07,38,1,PIF 3,hirt,Hirt-PIF-3,14.10
+D08,38,2,PIF 3,hirt,Hirt-PIF-3,13.87
+D09,38,3,PIF 3,hirt,Hirt-PIF-3,14.13
+D10,39,1,PIF 3,hirt,Hirt-PIF-4,14.47
+D11,39,2,PIF 3,hirt,Hirt-PIF-4,14.44
+D12,39,3,PIF 3,hirt,Hirt-PIF-4,14.48
