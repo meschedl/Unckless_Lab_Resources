@@ -17,7 +17,6 @@ library(rstatix)
 knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 6)
 ```
 
-
 Load in dataset
 
 ```{r}
@@ -245,6 +244,7 @@ ggplot(delta_deltar, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + ge
 ```
 
 find mean increase for Dv-1 samples
+
 ```{r}
 # separate out Dv-1
 Dv <- delta_deltar[which(delta_deltar$cell_type == "DV-1"),]
@@ -254,8 +254,7 @@ meanD <- mean(DvD$delta_delta_Cq_2)
 meanD
 ```
 
-
-
+T test statistics 
 ```{r}
 stat.test <- delta_deltar %>%
   group_by(infection) %>%
@@ -263,5 +262,14 @@ stat.test <- delta_deltar %>%
   adjust_pvalue(method = "bonferroni") %>%
   add_significance("p.adj")
 stat.test
+```
+
+Linear model statistics (better)
+
+```{r}
+# compare model with infection and cell type
+# use only the delta delta Cq, not 2^
+Dv_Myd88_model <- lm(delta_delta_Cq~infection*cell_type, data = delta_deltar)
+summary(aov(Dv_Myd88_model))
 ```
 

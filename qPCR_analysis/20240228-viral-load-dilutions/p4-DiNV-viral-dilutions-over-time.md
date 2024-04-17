@@ -270,6 +270,60 @@ ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
 
 ![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-7-1.png)
 
+Doing linear models for statistical tests instead of t tests for delta
+Cq Female
+
+``` r
+# make a dilution column that is numeric
+Cq_values_F_Delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Cq_values_F_Delta$dilution))
+# make a day column that is numeric
+Cq_values_F_Delta$numeric.day <- as.numeric(gsub("day", "", Cq_values_F_Delta$day))
+
+# linear model 
+# do stats on just the delta Cq, not the 2^ transformed 
+female_delta_full_model <- lm(delta_Cq~numeric.dilution*numeric.day, data = Cq_values_F_Delta)
+summary(aov(female_delta_full_model))
+```
+
+                                 Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution              1   1489    1489   36.73 2.94e-08 ***
+    numeric.day                   1   3305    3305   81.55 2.50e-14 ***
+    numeric.dilution:numeric.day  1     41      41    1.01    0.317    
+    Residuals                    92   3728      41                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# look at just 0.01 FFU dilution 
+female_delta001_model <- lm(delta_Cq~numeric.day, data = subset(Cq_values_F_Delta, numeric.dilution == "0.01"))
+summary(aov(female_delta001_model))
+```
+
+                Df Sum Sq Mean Sq F value Pr(>F)  
+    numeric.day  1    201  200.96   5.145 0.0307 *
+    Residuals   30   1172   39.06                 
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Plot 2^delta Cq without t test statistics
+
+``` r
+ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
+  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
+  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
+  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
+  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black"))
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-9-1.png)
+
 **Male Analysis Second**
 
 Look at raw Cq values and also separate by day
@@ -282,7 +336,7 @@ ggplot(Cq_values_M, aes(x= Cq, fill = primer)) + geom_histogram(position = "dodg
 
     Warning: Removed 1 rows containing non-finite values (`stat_bin()`).
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-8-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-10-1.png)
 
 Looks pretty similar to the female results
 
@@ -447,7 +501,59 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-10-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-12-1.png)
+
+Doing linear models for statistical tests instead of t tests for delta
+Cq Male
+
+``` r
+# make a dilution column that is numeric
+Cq_values_M_Delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Cq_values_M_Delta$dilution))
+# make a day column that is numeric
+Cq_values_M_Delta$numeric.day <- as.numeric(gsub("day", "", Cq_values_M_Delta$day))
+
+# linear model 
+# do stats on just the delta Cq, not the 2^ transformed 
+male_delta_full_model <- lm(delta_Cq~numeric.dilution*numeric.day, data = Cq_values_M_Delta)
+summary(aov(male_delta_full_model))
+```
+
+                                 Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution              1   1097    1097  26.139 1.72e-06 ***
+    numeric.day                   1   2951    2951  70.294 5.69e-13 ***
+    numeric.dilution:numeric.day  1     96      96   2.286    0.134    
+    Residuals                    92   3862      42                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# look at just 0.01 FFU dilution 
+male_delta001_model <- lm(delta_Cq~numeric.day, data = subset(Cq_values_M_Delta, numeric.dilution == "0.01"))
+summary(aov(male_delta001_model))
+```
+
+                Df Sum Sq Mean Sq F value Pr(>F)
+    numeric.day  1   83.3   83.34   1.773  0.193
+    Residuals   30 1410.1   47.00               
+
+Plot 2^delta Cq without t test statistics
+
+``` r
+ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
+  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
+  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
+  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
+  labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = "none")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-14-1.png)
 
 **Delta Delta Analysis**
 
@@ -627,7 +733,59 @@ ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outli
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-12-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-16-1.png)
+
+Doing linear models for statistical tests instead of t tests Female
+
+``` r
+# make a dilution column that is numeric
+Female_delta_delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Female_delta_delta$dilution))
+# make a day column that is numeric
+Female_delta_delta$numeric.day <- as.numeric(gsub("day", "", Female_delta_delta$day))
+
+# linear model 
+# do stats on just the delta delta Cq, not the 2^ transformed 
+female_full_model <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = Female_delta_delta)
+summary(aov(female_full_model))
+```
+
+                                 Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution              1  281.7   281.7   6.350   0.0141 *  
+    numeric.day                   1 1336.1  1336.1  30.113 6.52e-07 ***
+    numeric.dilution:numeric.day  1    1.0     1.0   0.022   0.8834    
+    Residuals                    68 3017.0    44.4                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# look at just 0.01 FFU dilution 
+female_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Female_delta_delta, numeric.dilution == "0.01"))
+summary(aov(female_001_model))
+```
+
+                Df Sum Sq Mean Sq F value Pr(>F)
+    numeric.day  1   98.9   98.85   1.915   0.18
+    Residuals   22 1135.9   51.63               
+
+Plot box plots without t-test significance
+
+``` r
+legend_title <- "Virus Delivery"
+ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8),aes(fill=dilution)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing DiNV Increase in Female Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
+  theme(legend.position = c(0.9, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) 
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-18-1.png)
 
 Males Calculate delta delta Cq
 
@@ -805,7 +963,166 @@ ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-14-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-20-1.png)
+
+Doing linear models for statistical tests instead of t tests Male
+
+``` r
+# make a dilution column that is numeric
+Male_delta_delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Male_delta_delta$dilution))
+# make a day column that is numeric
+Male_delta_delta$numeric.day <- as.numeric(gsub("day", "", Male_delta_delta$day))
+
+# linear model 
+# do stats on just the delta delta Cq, not the 2^ transformed 
+male_full_model <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = Male_delta_delta)
+summary(aov(male_full_model))
+```
+
+                                 Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution              1    374   373.6   7.548  0.00768 ** 
+    numeric.day                   1    998   997.5  20.155 2.83e-05 ***
+    numeric.dilution:numeric.day  1     20    19.6   0.396  0.53148    
+    Residuals                    68   3366    49.5                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# look at just 0.01 FFU dilution 
+Male_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Male_delta_delta, numeric.dilution == "0.01"))
+summary(aov(Male_001_model))
+```
+
+                Df Sum Sq Mean Sq F value Pr(>F)
+    numeric.day  1   17.1   17.06   0.277  0.604
+    Residuals   22 1356.5   61.66               
+
+Plot box plots without t-test significance
+
+``` r
+legend_title <- "Virus Delivery"
+ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8),aes(fill=dilution)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing DiNV Increase in Male Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
+  theme(legend.position = "none")
+```
+
+    Bin width defaults to 1/30 of the range of the data. Pick better value with
+    `binwidth`.
+
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-22-1.png)
+
+Combine males and females and look at a linear model considering all for
+the delta delta Cq
+
+``` r
+all_data <- rbind(Female_delta_delta, Male_delta_delta)
+
+# model with interaction between day, dilution and sex
+full_model_int <- lm(delta_delta_Cq~numeric.dilution*numeric.day*sex, data = all_data)
+summary(aov(full_model_int))
+```
+
+                                      Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution                   1    652   652.1  13.894 0.000283 ***
+    numeric.day                        1   2321  2321.3  49.462 8.96e-11 ***
+    sex                                1      1     1.1   0.022 0.881284    
+    numeric.dilution:numeric.day       1     15    14.6   0.311 0.577826    
+    numeric.dilution:sex               1      3     3.2   0.069 0.793378    
+    numeric.day:sex                    1     12    12.3   0.263 0.608922    
+    numeric.dilution:numeric.day:sex   1      6     5.9   0.126 0.722725    
+    Residuals                        136   6383    46.9                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# model with interaction between day and dilution, but not sex
+full_model_nsint <- lm(delta_delta_Cq~numeric.dilution*numeric.day + sex, data = all_data)
+summary(aov(full_model_nsint))
+```
+
+                                  Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution               1    652   652.1  14.153 0.000248 ***
+    numeric.day                    1   2321  2321.3  50.383 5.93e-11 ***
+    sex                            1      1     1.1   0.023 0.880187    
+    numeric.dilution:numeric.day   1     15    14.6   0.317 0.574289    
+    Residuals                    139   6404    46.1                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# model with interaction between day and dilution, and model not including sex 
+full_model_ns <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = all_data)
+summary(aov(full_model_ns))
+```
+
+                                  Df Sum Sq Mean Sq F value   Pr(>F)    
+    numeric.dilution               1    652   652.1  14.253 0.000235 ***
+    numeric.day                    1   2321  2321.3  50.737 5.08e-11 ***
+    numeric.dilution:numeric.day   1     15    14.6   0.319 0.572942    
+    Residuals                    140   6405    45.8                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# compare models with AIC 
+extractAIC(full_model_int)
+```
+
+    [1]   8.0000 561.9764
+
+``` r
+# 561.9764 
+extractAIC(full_model_nsint)
+```
+
+    [1]   5.0000 556.4608
+
+``` r
+# 556.4608 
+extractAIC(full_model_ns)
+```
+
+    [1]   4.0000 554.4844
+
+``` r
+# 554.4844 
+
+# compare all interactions with not sex interaction 
+exp((556.4608 - 561.9764 )/2)
+```
+
+    [1] 0.06343116
+
+``` r
+# 0.06343116 
+# neither model is a significantly better fit 
+
+# compare all interactions with model without sex
+exp((554.4844 - 561.9764 )/2)
+```
+
+    [1] 0.02361201
+
+``` r
+# 0.02361201 
+# there is a model that is significantly better fit: it should be the model with the smaller AIC so the one without sex 
+
+# compare dil and day interaction with model without sex
+exp((554.4844 - 556.4608 )/2)
+```
+
+    [1] 0.3722461
+
+``` r
+# 0.3722461
+# neither model is a significantly better fit 
+```
 
 Look at male and female for each dilution by day
 
@@ -862,7 +1179,7 @@ ggplot(FFU_3_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-15-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-24-1.png)
 
 0.1 FFU dilution
 
@@ -918,7 +1235,7 @@ ggplot(FFU_01_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-16-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-25-1.png)
 
 0.01 FFU dilution
 
@@ -973,12 +1290,15 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
     Bin width defaults to 1/30 of the range of the data. Pick better value with
     `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-17-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-26-1.png)
 
 **Adding in days 6, 7, and 9 for males** Not sure if I will include
 this, I don’t feel comfortable combining two experiments like this and
 there were larger differences in the day 0 PIF 3 Cqs than I would have
 expected
+
+*this was not included in final analysis because we really can’t add in
+extra samples that had a different day 0*
 
 Load in dataset
 
@@ -994,7 +1314,7 @@ ggplot(Cq_values_extra, aes(x= Cq, fill = primer)) + geom_histogram(position = "
 
     `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-19-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-28-1.png)
 
 These look pretty similar to above, I wonder if all the flies aren’t
 getting infected…
@@ -1048,7 +1368,7 @@ Cq_values_extra_Delta$delta_Cq_2 <- 2^(delta_Cqs_extra)
 ggplot(Cq_values_extra_Delta, aes(y= delta_Cq_2, x=day)) + geom_boxplot()  + theme_linedraw() + geom_point() + scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x)))
 ```
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-20-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-29-1.png)
 
 Delta delta analysis
 
@@ -1096,53 +1416,30 @@ ggplot(E, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot() +
   labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Early Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```
 
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-21-1.png)
+![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-30-1.png)
 
 Combine this data with the male data from the other experiment
 
 ``` r
 # male data
-head(M_001_dil)
-```
-
-        Well         Plate sample_ID primer  sex dilution  day unique_name    Cq
-    8    A08  plate 1 PIF3        53   PIF3 male 0.01 FFU day1     53_PIF3 31.76
-    200  A08 plate 2 PIF 3        54   PIF3 male 0.01 FFU day1     54_PIF3 35.16
-    32   C08  plate 1 PIF3        55   PIF3 male 0.01 FFU day1     55_PIF3 34.20
-    224  C08 plate 2 PIF 3        56   PIF3 male 0.01 FFU day1     56_PIF3 38.38
-    56   E08  plate 1 PIF3        57   PIF3 male 0.01 FFU day1     57_PIF3 29.97
-    248  E08 plate 2 PIF 3        58   PIF3 male 0.01 FFU day1     58_PIF3 37.50
-        delta_Cq   delta_Cq_2 delta_delta_Cq delta_delta_Cq_2
-    8      -7.95 4.044004e-03        5.45625       43.9030724
-    200   -11.23 4.163256e-04        2.17625        4.5197720
-    32    -11.07 4.651553e-04        2.33625        5.0498831
-    224   -14.99 3.072984e-05       -1.58375        0.3336136
-    56     -7.00 7.812500e-03        6.40625       84.8151452
-    248   -14.72 3.705429e-05       -1.31375        0.4022739
-
-``` r
+#head(M_001_dil)
 # to combine datasets I'll need all the same columns 
 # don't need plate column, sex column 
-M_001_dil_s <- M_001_dil[,c(1,3:4,6:13)]
+#M_001_dil_s <- M_001_dil[,c(1,3:4,6:13)]
 
 # combine extra and original data 
 # add all of the days back together 
-All_Male_delta_delta <- rbind(M_001_dil_s, E)
+#All_Male_delta_delta <- rbind(M_001_dil_s, E)
 
 # plot
-legend_title <- "Virus Delivery"
+#legend_title <- "Virus Delivery"
 
-ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
-  scale_fill_manual(legend_title, values=c( "#67001F")) + 
-  theme_light() + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
-  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
-  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days", "day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
-  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+#ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  #scale_fill_manual(legend_title, values=c( "#67001F")) + 
+  #theme_light() + 
+  #geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  #scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  #theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  #scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days", "day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
+  #labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```
-
-    Bin width defaults to 1/30 of the range of the data. Pick better value with
-    `binwidth`.
-
-![](p4-DiNV-viral-dilutions-over-time_files/figure-commonmark/unnamed-chunk-22-1.png)

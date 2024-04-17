@@ -224,7 +224,7 @@ delta_delta <- rbind(Control_delta_delta, DiNV_delta_delta)
 legend_title <- "Infection"
 
 # plot 
-ggplot(delta_delta, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + geom_boxplot(outlier.shape=NA)  + theme_light()  + scale_fill_manual(legend_title, values=c("#C994C7", "#CE1256"), labels= c("Cell culture medium", "DiNV")) + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_x_discrete(labels=c("DV-1" = "Dv-1", "Dinn" = "Dinn"))+ 
+ggplot(delta_delta, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + geom_boxplot(outlier.shape=NA)  + theme_light()  + scale_fill_manual(legend_title, values=c("#C994C7", "#CE1256"), labels= c("Cell culture medium", "DiNV")) + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_x_discrete(labels=c("DV-1" = "Dv-1", "Dinn" = "Dinn-1"))+ 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14), legend.position = "bottom") +
   labs(title = "Comparing Increase in Virus in Dv-1 \nand Dinn Cells 5 Days Post Innoculation",y = "Relative DiNV Genome Increase", x = "Cell Line")
 ```
@@ -239,6 +239,19 @@ stat.test <- delta_delta %>%
   add_significance("p.adj")
 stat.test
 ```
+
+Linear model instead of t-test (better)
+```{r}
+# using lambda as control
+# compare model with infection and cell type
+# use only the delta delta Cq, not 2^
+Dv_Dinn_l_model <- lm(delta_delta_Cq~infection*cell_type, data = delta_delta)
+summary(aov(Dv_Dinn_l_model))
+```
+
+
+
+
 
 Now compare Pif 3 Cqs with TPI/RPL11 for delta delta Cq
 
@@ -420,12 +433,13 @@ Cdelta_delta <- rbind(CControl_delta_delta, CDiNV_delta_delta)
 legend_title <- "Infection"
 
 # plot 
-ggplot(Cdelta_delta, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + geom_boxplot(outlier.shape=NA)  + theme_light()  + scale_fill_manual(legend_title, values=c("#C994C7", "#CE1256"), labels= c("Cell culture medium", "DiNV")) + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_x_discrete(labels=c("DV-1" = "Dv-1", "Dinn" = "Dinn"))+ 
+ggplot(Cdelta_delta, aes(y= delta_delta_Cq_2, x=cell_type, fill=infection)) + geom_boxplot(outlier.shape=NA)  + theme_light()  + scale_fill_manual(legend_title, values=c("#C994C7", "#CE1256"), labels= c("Cell culture medium", "DiNV")) + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + scale_x_discrete(labels=c("DV-1" = "Dv-1", "Dinn" = "Dinn-1"))+ 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14), legend.position = "bottom") +
   labs(title = "Comparing Increase in Virus in Dv-1 \nand Dinn Cells 5 Days Post Innoculation",y = "Relative DiNV Genome Increase", x = "Cell Line")
 ```
 
 find mean increase for Dv-1 samples
+
 ```{r}
 # separate out Dv-1
 Dv <- Cdelta_delta[which(Cdelta_delta$cell_type == "DV-1"),]
@@ -436,6 +450,7 @@ meanD
 ```
 
 find mean increase for Dinn samples
+
 ```{r}
 # separate out Dinn
 Di <- Cdelta_delta[which(Cdelta_delta$cell_type == "Dinn"),]
@@ -455,3 +470,14 @@ stat.test.c <- Cdelta_delta %>%
   add_significance("p.adj")
 stat.test.c
 ```
+
+
+Linear model instead of t-test (better)
+```{r}
+# using cell primers as control
+# compare model with infection and cell type
+# use only the delta delta Cq, not 2^
+Dv_Dinn_c_model <- lm(delta_delta_Cq~infection*cell_type, data = Cdelta_delta)
+summary(aov(Dv_Dinn_c_model))
+```
+

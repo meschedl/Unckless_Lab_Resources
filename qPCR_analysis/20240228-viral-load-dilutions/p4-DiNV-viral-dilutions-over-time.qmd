@@ -15,7 +15,7 @@ library(rstatix)
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 6)
+knitr::opts_chunk$set(dpi=300,fig.width=8, fig.height = 5)
 ```
 
 Load in dataset
@@ -124,6 +124,40 @@ ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
 
 ```
 
+Doing linear models for statistical tests instead of t tests for delta Cq
+Female
+
+```{r}
+# make a dilution column that is numeric
+Cq_values_F_Delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Cq_values_F_Delta$dilution))
+# make a day column that is numeric
+Cq_values_F_Delta$numeric.day <- as.numeric(gsub("day", "", Cq_values_F_Delta$day))
+
+# linear model 
+# do stats on just the delta Cq, not the 2^ transformed 
+female_delta_full_model <- lm(delta_Cq~numeric.dilution*numeric.day, data = Cq_values_F_Delta)
+summary(aov(female_delta_full_model))
+
+# look at just 0.01 FFU dilution 
+female_delta001_model <- lm(delta_Cq~numeric.day, data = subset(Cq_values_F_Delta, numeric.dilution == "0.01"))
+summary(aov(female_delta001_model))
+```
+
+Plot 2^delta Cq without t test statistics 
+
+```{r}
+ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
+  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
+  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
+  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
+  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black"))
+```
+
+
 **Male Analysis Second**
 
 Look at raw Cq values and also separate by day
@@ -210,6 +244,44 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
   stat_pvalue_manual(male0.stat.test.2, y.position = seq(5,9, by=4/8), hide.ns = TRUE)
 
 ```
+
+
+Doing linear models for statistical tests instead of t tests for delta Cq
+Male
+
+```{r}
+# make a dilution column that is numeric
+Cq_values_M_Delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Cq_values_M_Delta$dilution))
+# make a day column that is numeric
+Cq_values_M_Delta$numeric.day <- as.numeric(gsub("day", "", Cq_values_M_Delta$day))
+
+# linear model 
+# do stats on just the delta Cq, not the 2^ transformed 
+male_delta_full_model <- lm(delta_Cq~numeric.dilution*numeric.day, data = Cq_values_M_Delta)
+summary(aov(male_delta_full_model))
+
+# look at just 0.01 FFU dilution 
+male_delta001_model <- lm(delta_Cq~numeric.day, data = subset(Cq_values_M_Delta, numeric.dilution == "0.01"))
+summary(aov(male_delta001_model))
+```
+
+
+Plot 2^delta Cq without t test statistics 
+
+```{r}
+ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
+  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
+  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
+  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
+  labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = "none")
+```
+
+
+
 
 **Delta Delta Analysis**
 
@@ -320,6 +392,43 @@ ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outli
 
 ```
 
+Doing linear models for statistical tests instead of t tests 
+Female
+
+
+```{r}
+# make a dilution column that is numeric
+Female_delta_delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Female_delta_delta$dilution))
+# make a day column that is numeric
+Female_delta_delta$numeric.day <- as.numeric(gsub("day", "", Female_delta_delta$day))
+
+# linear model 
+# do stats on just the delta delta Cq, not the 2^ transformed 
+female_full_model <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = Female_delta_delta)
+summary(aov(female_full_model))
+
+# look at just 0.01 FFU dilution 
+female_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Female_delta_delta, numeric.dilution == "0.01"))
+summary(aov(female_001_model))
+```
+
+Plot box plots without t-test significance 
+
+```{r}
+legend_title <- "Virus Delivery"
+ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8),aes(fill=dilution)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing DiNV Increase in Female Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
+  theme(legend.position = c(0.9, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) 
+```
+
+
+
 Males Calculate delta delta Cq
 
 ```{r}
@@ -426,6 +535,92 @@ ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier
 
 
 ```
+
+
+Doing linear models for statistical tests instead of t tests 
+Male
+
+```{r}
+# make a dilution column that is numeric
+Male_delta_delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Male_delta_delta$dilution))
+# make a day column that is numeric
+Male_delta_delta$numeric.day <- as.numeric(gsub("day", "", Male_delta_delta$day))
+
+# linear model 
+# do stats on just the delta delta Cq, not the 2^ transformed 
+male_full_model <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = Male_delta_delta)
+summary(aov(male_full_model))
+
+# look at just 0.01 FFU dilution 
+Male_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Male_delta_delta, numeric.dilution == "0.01"))
+summary(aov(Male_001_model))
+```
+
+Plot box plots without t-test significance 
+```{r}
+legend_title <- "Virus Delivery"
+ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
+  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
+  theme_light() + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.6, position=position_dodge(0.8),aes(fill=dilution)) + 
+  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
+  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
+  labs(title = "Comparing DiNV Increase in Male Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
+  theme(legend.position = "none")
+```
+
+
+Combine males and females and look at a linear model considering all for the delta delta Cq 
+
+```{r}
+all_data <- rbind(Female_delta_delta, Male_delta_delta)
+
+# model with interaction between day, dilution and sex
+full_model_int <- lm(delta_delta_Cq~numeric.dilution*numeric.day*sex, data = all_data)
+summary(aov(full_model_int))
+
+# model with interaction between day and dilution, but not sex
+full_model_nsint <- lm(delta_delta_Cq~numeric.dilution*numeric.day + sex, data = all_data)
+summary(aov(full_model_nsint))
+
+# model with interaction between day and dilution, and model not including sex 
+full_model_ns <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = all_data)
+summary(aov(full_model_ns))
+
+# compare models with AIC 
+extractAIC(full_model_int)
+# 561.9764 
+extractAIC(full_model_nsint)
+# 556.4608 
+extractAIC(full_model_ns)
+# 554.4844 
+
+# compare all interactions with not sex interaction 
+exp((556.4608 - 561.9764 )/2)
+# 0.06343116 
+# neither model is a significantly better fit 
+
+# compare all interactions with model without sex
+exp((554.4844 - 561.9764 )/2)
+# 0.02361201 
+# there is a model that is significantly better fit: it should be the model with the smaller AIC so the one without sex 
+
+# compare dil and day interaction with model without sex
+exp((554.4844 - 556.4608 )/2)
+# 0.3722461
+# neither model is a significantly better fit 
+```
+
+
+
+
+
+
+
+
+
+
 
 Look at male and female for each dilution by day
 
@@ -549,6 +744,8 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
 
 **Adding in days 6, 7, and 9 for males** Not sure if I will include this, I don't feel comfortable combining two experiments like this and there were larger differences in the day 0 PIF 3 Cqs than I would have expected
 
+_this was not included in final analysis because we really can't add in extra samples that had a different day 0_
+
 Load in dataset
 
 ```{r}
@@ -636,24 +833,24 @@ Combine this data with the male data from the other experiment
 
 ```{r}
 # male data
-head(M_001_dil)
+#head(M_001_dil)
 # to combine datasets I'll need all the same columns 
 # don't need plate column, sex column 
-M_001_dil_s <- M_001_dil[,c(1,3:4,6:13)]
+#M_001_dil_s <- M_001_dil[,c(1,3:4,6:13)]
 
 # combine extra and original data 
 # add all of the days back together 
-All_Male_delta_delta <- rbind(M_001_dil_s, E)
+#All_Male_delta_delta <- rbind(M_001_dil_s, E)
 
 # plot
-legend_title <- "Virus Delivery"
+#legend_title <- "Virus Delivery"
 
-ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
-  scale_fill_manual(legend_title, values=c( "#67001F")) + 
-  theme_light() + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
-  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
-  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days", "day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
-  labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Infection",y = "2^delta delta Cq", x = "Days Since Injection")
+#ggplot(All_Male_delta_delta, aes(y= delta_delta_Cq_2, x=day, fill=dilution)) + geom_boxplot() +  
+  #scale_fill_manual(legend_title, values=c( "#67001F")) + 
+  #theme_light() + 
+  #geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
+  #scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
+  #theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=12), legend.title=element_text(size=14)) +
+  #scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days", "day6" = "6 days", "day7" = "7 days", "day9" = "9 days")) +
+  #labs(title = "Comparing Viral Titer in Male Flies \nInjected with Various Titers Over Infection",y = "2^delta delta Cq", x = "Days Since Injection")
 ```

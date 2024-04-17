@@ -85,11 +85,13 @@ ggplot(DNA, aes(y=total.DNA, x=type, fill=type)) +
   geom_errorbar(aes(ymin = total.DNA-se, ymax = total.DNA+se, color = type),data = stats, position = position_dodge(0.3), width = 0.2)+
   geom_point(aes(color = type), position = position_dodge(0.3), size = 4.5) +
   scale_color_manual(values = c("#55d0ff","#77aaff", "#2C67F2")) + theme_light() + 
-  theme(axis.text=element_text(size=16),axis.title=element_text(size=16)) + labs(title = "Comparing Yield of DNA from Concentrated Cell Cuture Supernatant",y = "Total DNA (ng)", x = "Sample Treatment")  + theme(legend.position = "none") + scale_y_continuous(
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=16), title =element_text(size =16)) + labs(title = "Comparing Yield of DNA from Concentrated \nCell Cuture Supernatant",y = "Total DNA (ng)", x = "Sample Treatment")  + theme(legend.position = "none") + scale_y_continuous(
     trans = pseudo_log_trans(base = 10), breaks = c(0,10, 50, 100)) + scale_x_discrete(labels=c("raw supernatant" = "Unconcentrated \nSupernatant", "Sartorius centrifuged" = "Sartorius \nCentrifuged", "millipore small centrifuged" = "Sartorius and \nMillipore \nCentrifuged"))
 ```
 
 ![](fluid_concentration_analysis_files/figure-commonmark/unnamed-chunk-3-1.png)
+
+T test
 
 ``` r
 stat.test <- DNA %>%
@@ -134,3 +136,38 @@ milmean
 ```
 
     [1] 74.66667
+
+Anova for testing differences (better than pairwise t tests)
+
+``` r
+# anova looking at relationship between DNA yield and sample type
+anov_concentration <- aov(total.DNA ~ type, data = DNA)
+summary(anov_concentration)
+```
+
+                Df Sum Sq Mean Sq F value   Pr(>F)    
+    type         2  15371    7686   89.38 1.16e-06 ***
+    Residuals    9    774      86                     
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# post-hoc tukey test to show what the differences are 
+tukey_concentration <-TukeyHSD(anov_concentration)
+tukey_concentration
+```
+
+      Tukey multiple comparisons of means
+        95% family-wise confidence level
+
+    Fit: aov(formula = total.DNA ~ type, data = DNA)
+
+    $type
+                                                           diff       lwr      upr
+    Sartorius centrifuged-raw supernatant              5.073333 -16.06635 26.21302
+    millipore small centrifuged-raw supernatant       74.026667  55.71916 92.33417
+    millipore small centrifuged-Sartorius centrifuged 68.953333  50.64583 87.26084
+                                                          p adj
+    Sartorius centrifuged-raw supernatant             0.7860706
+    millipore small centrifuged-raw supernatant       0.0000035
+    millipore small centrifuged-Sartorius centrifuged 0.0000063

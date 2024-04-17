@@ -209,8 +209,8 @@ ggplot(combo_data, aes(y= delta_Cq_2, x=factor(type, level = level_order))) +
   geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = type),data = stats2, position = position_dodge(0.3), width = 0.2)+
   geom_jitter(aes(color=type), position = position_jitter(0.1), size =3)  + 
   scale_color_manual(legend_title,values = c( "#2C67F2", "#62CFF4" )) +theme_light() + 
-  theme(axis.text=element_text(size=14),axis.title=element_text(size=14), legend.position = "none") +
-  labs(title = "Comparing Relative Amount of DiNV DNA From Extraction Methods",y = "Relative Amount of DiNV to \nHost Genome", x = "DNA Extraction Method") + 
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=16), title =element_text(size =16), legend.position = "none") +
+  labs(title = "Comparing Relative Amount of DiNV \nDNA From Extraction Methods",y = "Relative Amount of DiNV to \nHost Genome", x = "DNA Extraction Method") + 
   scale_x_discrete(labels=c("hirt" = "Hirt", "Puregene" = "Puregene"))
 
 ```
@@ -242,7 +242,3 @@ hirt <- combo_data[which(combo_data$type != "Puregene"),]
 hmean <- mean(hirt$delta_Cq_2)
 hmean
 ```
-
-
-
-

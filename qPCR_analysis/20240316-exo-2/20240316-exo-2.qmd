@@ -131,13 +131,14 @@ ggplot(complete_sample_delta, aes(y= delta_Cq_2, x=type)) +
   geom_errorbar(aes(ymin = delta_Cq_2-se, ymax = delta_Cq_2+se, color = type),data = stats, position = position_dodge(0.3), width = 0.2)+
   geom_point(aes(color = type), position = position_dodge(0.3), size = 3) +
   scale_color_manual(legend_title,values = c( "#62CFF4", "#2C67F2" )) + theme_light() + 
-  theme(axis.text=element_text(size=14),axis.title=element_text(size=16), legend.position = "none") +
+  theme(axis.text=element_text(size=14),axis.title=element_text(size=16), legend.position = "none", title =element_text(size =15.5)) +
   scale_x_discrete(labels=c("hirt extract only" = "Hirt Extraction", "exonuclease treated" = "Hirt Extracted and \nExonuclease Treated")) +
   labs(title = "Comparing Ammount of DiNV DNA in Extractions \nwith and without Exonuclase V Treatment",y = "Relative Amount of DiNV to \nHost Genome", x = "DNA Sample Type") 
 
 ```
 
 T test
+
 ```{r}
 stat.test <- complete_sample_delta %>%
   t_test(delta_Cq_2 ~ type) %>%
@@ -158,4 +159,3 @@ exo <- complete_sample_delta[which(complete_sample_delta$type != "hirt extract o
 exmean <- mean(exo$delta_Cq_2)
 exmean
 ```
-
