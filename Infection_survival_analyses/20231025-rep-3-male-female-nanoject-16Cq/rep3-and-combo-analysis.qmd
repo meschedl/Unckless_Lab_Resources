@@ -158,11 +158,11 @@ ggsurvplot(df_fit_combo_1, size = 5,
           
 ```
 
-Find median survival time by treatment 
+Find median survival time by treatment
+
 ```{r}
 surv_median(df_fit_combo_1, combine = FALSE)
 ```
-
 
 Start looking at models
 
@@ -193,7 +193,7 @@ summary(df_fit_combo_4)
 
 ```
 
-Model looking at significance of block and treatment by sex interaction
+Model looking at significance of block and injection by sex interaction
 
 ```{r}
 # model including block 
@@ -202,14 +202,6 @@ summary(df_fit_combo_5)
 
 ```
 
-Model looking at significance treatment by sex interaction
-
-```{r}
-# model including block 
-df_fit_combo_6<- coxph(Surv(dead, status) ~ injection + sex*injection, data=df2.convert_full)
-summary(df_fit_combo_6)
-
-```
 
 Compare models, which is best?
 
@@ -223,9 +215,7 @@ extractAIC(df_fit_combo_4)
 # AIC of model with block and sex * injection interaction 
 extractAIC(df_fit_combo_5)
 # 1282.92
-# AIC of model with injection and sex * injection interaction, no block 
-extractAIC(df_fit_combo_6)
-# 1291.299
+
 
 # compare AICs 
 
@@ -237,11 +227,4 @@ exp((1284.327 - 1285.719)/2)
 exp((1282.92 - 1284.327)/2)
 # 0.4948503 no sig diff between models 
 
-# compare inject, block, and sex to inject and sex*inject interaction 
-exp((1284.327 - 1291.299)/2)
-# 0.03062312 significant difference, indicating that the better model would be model with block + inject + sex lower AIC 
-# using df_fit_combo_4 as my final model 
 ```
-
-
-

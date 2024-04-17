@@ -226,3 +226,131 @@ summary(df3_fit)
     Likelihood ratio test= 24.37  on 4 df,   p=7e-05
     Wald test            = 22.33  on 4 df,   p=2e-04
     Score (logrank) test = 25.73  on 4 df,   p=4e-05
+
+Look at model using dilution as a continuous variable
+
+``` r
+# make dilution as a numeric/continuous variable
+# make a duplicate column 
+df2.convert$numeric.dilution <- df2.convert$treatment
+# set CCM to a dose of 0
+df2.convert$numeric.dilution <- str_replace_all(df2.convert$numeric.dilution, 'CCM', '0')
+# remove FFU and make numeric
+df2.convert$numeric.dilution <- as.numeric(gsub("FFU", "", df2.convert$numeric.dilution))
+
+# model including block 
+df4_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df2.convert)
+summary(df4_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution + Block, 
+        data = df2.convert)
+
+      n= 150, number of events= 72 
+
+                           coef  exp(coef)   se(coef)      z Pr(>|z|)    
+    numeric.dilution  2.519e+01  8.709e+10  5.374e+00  4.687 2.77e-06 ***
+    BlockB           -9.531e-02  9.091e-01  2.366e-01 -0.403    0.687    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                     exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution 8.709e+10  1.148e-11 2.320e+06 3.269e+15
+    BlockB           9.091e-01  1.100e+00 5.718e-01 1.445e+00
+
+    Concordance= 0.651  (se = 0.034 )
+    Likelihood ratio test= 20.12  on 2 df,   p=4e-05
+    Wald test            = 21.99  on 2 df,   p=2e-05
+    Score (logrank) test = 24.14  on 2 df,   p=6e-06
+
+Only look at 0.05 and 0.01
+
+``` r
+df2.convert_51 <- df2.convert[which(df2.convert$numeric.dilution != 0),]
+df2.convert_51 <- df2.convert_51[which(df2.convert_51$numeric.dilution != 0.005),]
+
+df5_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df2.convert_51)
+summary(df5_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution + Block, 
+        data = df2.convert_51)
+
+      n= 74, number of events= 48 
+
+                           coef  exp(coef)   se(coef)      z Pr(>|z|)  
+    numeric.dilution  1.815e+01  7.655e+07  7.427e+00  2.444   0.0145 *
+    BlockB           -4.472e-01  6.394e-01  2.970e-01 -1.506   0.1321  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                     exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution 7.655e+07  1.306e-08   36.4758 1.607e+14
+    BlockB           6.394e-01  1.564e+00    0.3572 1.144e+00
+
+    Concordance= 0.616  (se = 0.05 )
+    Likelihood ratio test= 7.83  on 2 df,   p=0.02
+    Wald test            = 7.65  on 2 df,   p=0.02
+    Score (logrank) test = 7.88  on 2 df,   p=0.02
+
+Only look at and 0.01 and .005
+
+``` r
+df2.convert_051 <- df2.convert[which(df2.convert$numeric.dilution != 0),]
+df2.convert_051 <- df2.convert_051[which(df2.convert_051$numeric.dilution != 0.050),]
+
+df5_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df2.convert_051)
+summary(df5_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution + Block, 
+        data = df2.convert_051)
+
+      n= 83, number of events= 37 
+
+                           coef  exp(coef)   se(coef)      z Pr(>|z|)
+    numeric.dilution  6.472e+01  1.280e+28  6.618e+01  0.978    0.328
+    BlockB           -2.731e-02  9.731e-01  3.365e-01 -0.081    0.935
+
+                     exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution 1.280e+28  7.811e-29 5.920e-29 2.768e+84
+    BlockB           9.731e-01  1.028e+00 5.032e-01 1.882e+00
+
+    Concordance= 0.519  (se = 0.047 )
+    Likelihood ratio test= 0.96  on 2 df,   p=0.6
+    Wald test            = 0.96  on 2 df,   p=0.6
+    Score (logrank) test = 0.96  on 2 df,   p=0.6
+
+Only look at and CCM and .005
+
+``` r
+df2.convert_05C <- df2.convert[which(df2.convert$numeric.dilution != 0.010),]
+df2.convert_05C <- df2.convert_05C[which(df2.convert_05C$numeric.dilution != 0.050),]
+
+df6_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df2.convert_05C)
+summary(df6_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution + Block, 
+        data = df2.convert_05C)
+
+      n= 76, number of events= 24 
+
+                          coef exp(coef)  se(coef)     z Pr(>|z|)  
+    numeric.dilution 1.989e+02 2.495e+86 9.631e+01 2.066   0.0389 *
+    BlockB           7.813e-01 2.184e+00 4.309e-01 1.813   0.0698 .
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                     exp(coef) exp(-coef) lower .95  upper .95
+    numeric.dilution 2.495e+86  4.008e-87 2.599e+04 2.396e+168
+    BlockB           2.184e+00  4.578e-01 9.387e-01  5.083e+00
+
+    Concordance= 0.642  (se = 0.052 )
+    Likelihood ratio test= 6.63  on 2 df,   p=0.04
+    Wald test            = 6.29  on 2 df,   p=0.04
+    Score (logrank) test = 6.48  on 2 df,   p=0.04

@@ -1,0 +1,145 @@
+---
+title: "20240305-middle-band-PCR-analysis"
+format: gfm
+editor: visual
+---
+
+Load packages needed
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(plyr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=10, fig.height = 4)
+```
+
+
+Load in dataset
+
+Note, any sample that was negative for both CO1 and TPI was removed from the data
+
+```{r}
+PCR_results <- read.csv("/Users/maggieschedl/Desktop/Github/Unckless_Lab_Resources/PCR_analysis/20240305-middle-band-PCR/20240305-middle-band-PCR.csv")
+
+# remove extra columns
+PCR_results <- PCR_results[,c(1:7)]
+
+```
+
+Get percentages for each dilution by day
+
+Start with day 3
+
+```{r}
+# subset dataframe to just the day 3
+PCR_results_day3 <- subset(PCR_results, day == "day3")
+
+# subset out different FFUs
+# only 3 or 0.05 FFU here 
+PCR_results_day3_005 <- subset(PCR_results_day3, treatment == "0.05 FFU")
+
+# how many yes or no PCR results are there for the p47 PCR for the day3 flies  0.05 
+# make this into a table 
+p47_results_day3_005<- count(PCR_results_day3_005$p47)
+
+# add a column to that table that is the count (column name is freq) divided by the number of rows to get a proportion
+
+p47_results_day3_005$Result_prop <- p47_results_day3_005$freq / nrow(PCR_results_day3_005)
+
+# add a column to that table with the percentage (proportion *100)
+p47_results_day3_005$Result_percent <- p47_results_day3_005$Result_prop * 100
+
+# add a column that says treatment
+p47_results_day3_005$Treatment <- "0.05 FFU"
+
+#########
+# repeat for 3 day 3 
+PCR_results_day3_3 <- subset(PCR_results_day3, treatment == "3 FFU")
+
+# how many yes or no PCR PCR results are there for the p47 PCR for the day3 flies 3 
+# make this into a table 
+p47_results_day3_3<- count(PCR_results_day3_3$p47)
+
+# add a column to that table that is the count (column name is freq) divided by the number of rows to get a proportion
+
+p47_results_day3_3$Result_prop <- p47_results_day3_3$freq / nrow(PCR_results_day3_3)
+
+# add a column to that table with the percentage (proportion *100)
+p47_results_day3_3$Result_percent <- p47_results_day3_3$Result_prop * 100
+
+# add a column that says treatment
+p47_results_day3_3$Treatment <- "3 FFU"
+
+# combine dfs
+percent_table_day3 <- rbind(p47_results_day3_005, p47_results_day3_3)
+
+# create a new column in the df that is a round of the percent column
+percent_table_day3$Round_percent <- round(percent_table_day3$Result_percent)
+
+
+ggplot(percent_table_day3, aes(x =factor(Treatment, level=c("0.05 FFU", "3 FFU")), y = Round_percent,fill =factor(x, level=c('no', 'yes')))) +
+    geom_bar(stat = "identity")  + theme_bw() + xlab("Treatment") +
+    theme(legend.text=element_text(size=12), axis.text=element_text(size=12)) +
+    ylab("Percent PCR Positive for DiNV") 
+
+```
+
+Day 6
+
+```{r}
+# subset dataframe to just the day 6
+PCR_results_day6 <- subset(PCR_results, day == "day6")
+
+# subset out different FFUs
+# only 3 or 0.05 FFU here 
+PCR_results_day3_005 <- subset(PCR_results_day3, treatment == "0.05 FFU")
+
+# how many yes or no PCR results are there for the p47 PCR for the day3 flies  0.05 
+# make this into a table 
+p47_results_day3_005<- count(PCR_results_day3_005$p47)
+
+# add a column to that table that is the count (column name is freq) divided by the number of rows to get a proportion
+
+p47_results_day3_005$Result_prop <- p47_results_day3_005$freq / nrow(PCR_results_day3_005)
+
+# add a column to that table with the percentage (proportion *100)
+p47_results_day3_005$Result_percent <- p47_results_day3_005$Result_prop * 100
+
+# add a column that says treatment
+p47_results_day3_005$Treatment <- "0.05 FFU"
+
+#########
+# repeat for 3 day 3 
+PCR_results_day3_3 <- subset(PCR_results_day3, treatment == "3 FFU")
+
+# how many yes or no PCR PCR results are there for the p47 PCR for the day3 flies 3 
+# make this into a table 
+p47_results_day3_3<- count(PCR_results_day3_3$p47)
+
+# add a column to that table that is the count (column name is freq) divided by the number of rows to get a proportion
+
+p47_results_day3_3$Result_prop <- p47_results_day3_3$freq / nrow(PCR_results_day3_3)
+
+# add a column to that table with the percentage (proportion *100)
+p47_results_day3_3$Result_percent <- p47_results_day3_3$Result_prop * 100
+
+# add a column that says treatment
+p47_results_day3_3$Treatment <- "3 FFU"
+
+# combine dfs
+percent_table_day3 <- rbind(p47_results_day3_005, p47_results_day3_3)
+
+# create a new column in the df that is a round of the percent column
+percent_table_day3$Round_percent <- round(percent_table_day3$Result_percent)
+
+
+ggplot(percent_table_day3, aes(x =factor(Treatment, level=c("0.05 FFU", "3 FFU")), y = Round_percent,fill =factor(x, level=c('no', 'yes')))) +
+    geom_bar(stat = "identity")  + theme_bw() + xlab("Treatment") +
+    theme(legend.text=element_text(size=12), axis.text=element_text(size=12)) +
+    ylab("Percent PCR Positive for DiNV") 
+
+```

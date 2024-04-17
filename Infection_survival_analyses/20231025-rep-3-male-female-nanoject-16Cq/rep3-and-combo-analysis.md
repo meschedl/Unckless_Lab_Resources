@@ -176,6 +176,23 @@ ggsurvplot(df_fit_combo_1, size = 5,
 
 ![](rep3-and-combo-analysis_files/figure-commonmark/unnamed-chunk-7-1.png)
 
+Find median survival time by treatment
+
+``` r
+surv_median(df_fit_combo_1, combine = FALSE)
+```
+
+    Warning: `select_()` was deprecated in dplyr 0.7.0.
+    ℹ Please use `select()` instead.
+    ℹ The deprecated feature was likely used in the survminer package.
+      Please report the issue at <https://github.com/kassambara/survminer/issues>.
+
+                     strata median lower upper
+    1    treatment=male-CCM     NA    NA    NA
+    2  treatment=female-CCM     NA    NA    NA
+    3   treatment=male-DiNV      9     9     9
+    4 treatment=female-DiNV      8     8     9
+
 Start looking at models
 
 Model just looking at significance of block and treatment
@@ -275,7 +292,7 @@ summary(df_fit_combo_4)
     Wald test            = 79.42  on 4 df,   p=2e-16
     Score (logrank) test = 130.7  on 4 df,   p=<2e-16
 
-Model looking at significance of block and treatment by sex interaction
+Model looking at significance of block and injection by sex interaction
 
 ``` r
 # model including block 
@@ -310,37 +327,6 @@ summary(df_fit_combo_5)
     Wald test            = 68.33  on 5 df,   p=2e-13
     Score (logrank) test = 131.3  on 5 df,   p=<2e-16
 
-Model looking at significance treatment by sex interaction
-
-``` r
-# model including block 
-df_fit_combo_6<- coxph(Surv(dead, status) ~ injection + sex*injection, data=df2.convert_full)
-summary(df_fit_combo_6)
-```
-
-    Call:
-    coxph(formula = Surv(dead, status) ~ injection + sex * injection, 
-        data = df2.convert_full)
-
-      n= 205, number of events= 150 
-
-                             coef exp(coef) se(coef)      z Pr(>|z|)    
-    injectionDiNV          2.6788   14.5671   0.4322  6.198 5.71e-10 ***
-    sexmale               -1.9678    0.1398   1.0801 -1.822   0.0685 .  
-    injectionDiNV:sexmale  1.7783    5.9198   1.0936  1.626   0.1039    
-    ---
-    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-                          exp(coef) exp(-coef) lower .95 upper .95
-    injectionDiNV           14.5671    0.06865   6.24444    33.982
-    sexmale                  0.1398    7.15467   0.01683     1.161
-    injectionDiNV:sexmale    5.9198    0.16892   0.69415    50.486
-
-    Concordance= 0.737  (se = 0.025 )
-    Likelihood ratio test= 157.6  on 3 df,   p=<2e-16
-    Wald test            = 57.09  on 3 df,   p=2e-12
-    Score (logrank) test = 122.5  on 3 df,   p=<2e-16
-
 Compare models, which is best?
 
 ``` r
@@ -368,14 +354,7 @@ extractAIC(df_fit_combo_5)
 
 ``` r
 # 1282.92
-# AIC of model with injection and sex * injection interaction, no block 
-extractAIC(df_fit_combo_6)
-```
 
-    [1]    3.000 1291.299
-
-``` r
-# 1291.299
 
 # compare AICs 
 
@@ -396,14 +375,4 @@ exp((1282.92 - 1284.327)/2)
 
 ``` r
 # 0.4948503 no sig diff between models 
-
-# compare inject, block, and sex to inject and sex*inject interaction 
-exp((1284.327 - 1291.299)/2)
-```
-
-    [1] 0.03062312
-
-``` r
-# 0.03062312 significant difference, indicating that the better model would be model with block + inject + sex lower AIC 
-# using df_fit_combo_4 as my final model 
 ```

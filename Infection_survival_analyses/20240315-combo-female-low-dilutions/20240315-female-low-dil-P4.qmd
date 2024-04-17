@@ -18,7 +18,6 @@ library(tidyr)
 library(stringr)
 ```
 
-
 ### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
 
 ```{r}
@@ -94,7 +93,7 @@ Convert dataframe
 df.convert<-convert_df(df)
 ```
 
-basic plot 
+basic plot
 
 ```{r}
 df_fit<- survfit(Surv(dead, status) ~ treatment, data=df.convert)
@@ -106,9 +105,6 @@ ggsurvplot(df_fit,
           #surv.median.line = "hv", # Specify median survival
           ggtheme = theme_bw()) # Change ggplot2 theme
 ```
-
-
-
 
 ```{r}
 # level the treatments so they go in an order 
@@ -131,7 +127,8 @@ ggsurvplot(df_fit, size = 5,
           palette = c("#E7E1EF", "#C994C7", "#E7298A", "#980043")) + ylab("Survival Proporation") + xlab("Days post injection")
 ```
 
-Find median survival time by treatment 
+Find median survival time by treatment
+
 ```{r}
 surv_median(df_fit, combine = FALSE)
 ```
@@ -148,18 +145,11 @@ summary(df2_fit)
 ```
 
 
+Model just looking at significance of block and treatment
 
+```{r}
+# model including block 
+df3_fit<- coxph(Surv(dead, status) ~ treatment + Block + treatment * Block, data=df.convert)
+summary(df3_fit)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+```

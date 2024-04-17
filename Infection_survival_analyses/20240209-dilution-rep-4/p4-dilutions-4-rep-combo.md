@@ -829,3 +829,253 @@ exp((527.0507 - 528.9747)/2)
 ``` r
 # 0.3821279 no sig difference between models 
 ```
+
+Compare all dilutions with sex as an interaction term Using continuous
+variables
+
+``` r
+# make dilution as a numeric/continuous variable
+# make a duplicate column 
+df.convert_full$numeric.dilution <- df.convert_full$dilution
+# set CCM to a dose of 0
+df.convert_full$numeric.dilution[which(df.convert_full$numeric.dilution == "CCM")] = 0
+# make all values numeric 
+df.convert_full$numeric.dilution <- as.numeric(df.convert_full$numeric.dilution)
+
+df_all_fit<- coxph(Surv(dead, status) ~ sex*numeric.dilution + Block, data=df.convert_full)
+summary(df_all_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ sex * numeric.dilution + 
+        Block, data = df.convert_full)
+
+      n= 512, number of events= 350 
+
+                                  coef exp(coef)  se(coef)      z Pr(>|z|)    
+    sexmale                  -0.207558  0.812566  0.140707 -1.475   0.1402    
+    numeric.dilution          0.233196  1.262629  0.028954  8.054 8.01e-16 ***
+    BlockB                   -0.112934  0.893210  0.150880 -0.749   0.4542    
+    BlockC                   -0.166504  0.846620  0.147131 -1.132   0.2578    
+    BlockD                   -0.352383  0.703011  0.156659 -2.249   0.0245 *  
+    sexmale:numeric.dilution -0.005473  0.994542  0.040956 -0.134   0.8937    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                             exp(coef) exp(-coef) lower .95 upper .95
+    sexmale                     0.8126      1.231    0.6167    1.0706
+    numeric.dilution            1.2626      0.792    1.1930    1.3364
+    BlockB                      0.8932      1.120    0.6645    1.2006
+    BlockC                      0.8466      1.181    0.6345    1.1296
+    BlockD                      0.7030      1.422    0.5171    0.9557
+    sexmale:numeric.dilution    0.9945      1.005    0.9178    1.0777
+
+    Concordance= 0.676  (se = 0.016 )
+    Likelihood ratio test= 108.8  on 6 df,   p=<2e-16
+    Wald test            = 121.9  on 6 df,   p=<2e-16
+    Score (logrank) test = 135.4  on 6 df,   p=<2e-16
+
+``` r
+extractAIC(df_all_fit)
+```
+
+    [1]    6.000 3944.023
+
+Compare above model with no sex
+
+``` r
+df_all_nosex_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_full)
+summary(df_all_nosex_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution + Block, 
+        data = df.convert_full)
+
+      n= 512, number of events= 350 
+
+                        coef exp(coef) se(coef)      z Pr(>|z|)    
+    numeric.dilution  0.2286    1.2569   0.0214 10.685   <2e-16 ***
+    BlockB           -0.1056    0.8998   0.1508 -0.701   0.4836    
+    BlockC           -0.1659    0.8471   0.1471 -1.128   0.2594    
+    BlockD           -0.3359    0.7147   0.1563 -2.149   0.0317 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                     exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution    1.2569     0.7956    1.2053    1.3107
+    BlockB              0.8997     1.1114    0.6695    1.2092
+    BlockC              0.8471     1.1805    0.6349    1.1302
+    BlockD              0.7147     1.3992    0.5261    0.9709
+
+    Concordance= 0.676  (se = 0.017 )
+    Likelihood ratio test= 104.6  on 4 df,   p=<2e-16
+    Wald test            = 117.7  on 4 df,   p=<2e-16
+    Score (logrank) test = 129.8  on 4 df,   p=<2e-16
+
+``` r
+extractAIC(df_all_nosex_fit)
+```
+
+    [1]    4.00 3944.21
+
+Model with numeric dilution, block, and sex with no interaction
+
+``` r
+df_all_noint_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block + sex, data=df.convert_full)
+summary(df_all_noint_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution + Block + 
+        sex, data = df.convert_full)
+
+      n= 512, number of events= 350 
+
+                         coef exp(coef) se(coef)      z Pr(>|z|)    
+    numeric.dilution  0.23058   1.25934  0.02141 10.770   <2e-16 ***
+    BlockB           -0.11333   0.89286  0.15085 -0.751   0.4525    
+    BlockC           -0.16683   0.84634  0.14711 -1.134   0.2568    
+    BlockD           -0.35168   0.70351  0.15657 -2.246   0.0247 *  
+    sexmale          -0.21968   0.80278  0.10762 -2.041   0.0412 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                     exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution    1.2593     0.7941    1.2076    1.3133
+    BlockB              0.8929     1.1200    0.6643    1.2000
+    BlockC              0.8463     1.1816    0.6343    1.1292
+    BlockD              0.7035     1.4214    0.5176    0.9562
+    sexmale             0.8028     1.2457    0.6501    0.9913
+
+    Concordance= 0.676  (se = 0.016 )
+    Likelihood ratio test= 108.8  on 5 df,   p=<2e-16
+    Wald test            = 121.7  on 5 df,   p=<2e-16
+    Score (logrank) test = 134  on 5 df,   p=<2e-16
+
+``` r
+extractAIC(df_all_noint_fit)
+```
+
+    [1]    5.00 3942.04
+
+Compare all three models together
+
+``` r
+# compare model with sex as interaction term to no interaction term 
+exp((3942.04 -3944.023)/2)
+```
+
+    [1] 0.3710197
+
+``` r
+# 0.3710197 
+# neither model is more fit than the other 
+
+# compare model with sex as interaction term to the model without sex  
+exp((3944.023 - 3944.21)/2)
+```
+
+    [1] 0.910738
+
+``` r
+# 0.910738
+# neither model is more fit than the other
+
+# compare model with no interaction term to the model without sex
+exp((3942.04 - 3944.21)/2)
+```
+
+    [1] 0.3379018
+
+``` r
+# 0.3379018
+# neither model is more fit than the other
+```
+
+Use the model with the interaction term because it can potentially tell
+us the most?
+
+Compare 0.1 FFU, 1 FFU, 3 FFU, and 6 FFU together
+
+``` r
+# remove CCM or 0 dose treatment 
+df_highdils <- df.convert_full[which(df.convert_full$numeric.dilution != 0),]
+# remove 0.01 FFU dose treatment 
+df_highdils <- df_highdils[which(df_highdils$numeric.dilution != 0.01),]
+
+df_highdils_fit<- coxph(Surv(dead, status) ~ numeric.dilution*sex + Block, data=df_highdils)
+summary(df_highdils_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution * sex + 
+        Block, data = df_highdils)
+
+      n= 302, number of events= 299 
+
+                                  coef exp(coef)  se(coef)      z Pr(>|z|)   
+    numeric.dilution         -0.003255  0.996750  0.033535 -0.097  0.92267   
+    sexmale                  -0.567023  0.567212  0.177636 -3.192  0.00141 **
+    BlockB                    0.163581  1.177720  0.164958  0.992  0.32137   
+    BlockC                   -0.239321  0.787162  0.162469 -1.473  0.14075   
+    BlockD                   -0.173238  0.840938  0.168902 -1.026  0.30505   
+    numeric.dilution:sexmale  0.022955  1.023221  0.049498  0.464  0.64282   
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                             exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution            0.9968     1.0033    0.9333    1.0645
+    sexmale                     0.5672     1.7630    0.4004    0.8034
+    BlockB                      1.1777     0.8491    0.8524    1.6273
+    BlockC                      0.7872     1.2704    0.5725    1.0823
+    BlockD                      0.8409     1.1891    0.6039    1.1709
+    numeric.dilution:sexmale    1.0232     0.9773    0.9286    1.1275
+
+    Concordance= 0.588  (se = 0.023 )
+    Likelihood ratio test= 24.18  on 6 df,   p=5e-04
+    Wald test            = 24.15  on 6 df,   p=5e-04
+    Score (logrank) test = 24.56  on 6 df,   p=4e-04
+
+Compare 0.01 FFU and CCM together
+
+``` r
+# remove 1, 3, 6, 0.1 dose treatment 
+df_lowdils <- df.convert_full[which(df.convert_full$numeric.dilution != 0.1),]
+# remove 0.01 FFU dose treatment 
+df_lowdils <- df_lowdils[which(df_lowdils$numeric.dilution != 1),]
+df_lowdils <- df_lowdils[which(df_lowdils$numeric.dilution != 3),]
+df_lowdils <- df_lowdils[which(df_lowdils$numeric.dilution != 6),]
+
+df_lowdils_fit<- coxph(Surv(dead, status) ~ numeric.dilution*sex + Block, data=df_lowdils)
+summary(df_lowdils_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ numeric.dilution * sex + 
+        Block, data = df_lowdils)
+
+      n= 210, number of events= 51 
+
+                                   coef  exp(coef)   se(coef)      z Pr(>|z|)  
+    numeric.dilution          7.415e+01  1.588e+32  3.672e+01  2.019   0.0435 *
+    sexmale                  -2.674e-01  7.654e-01  4.143e-01 -0.645   0.5187  
+    BlockB                    2.975e-01  1.347e+00  4.244e-01  0.701   0.4833  
+    BlockC                    5.381e-01  1.713e+00  4.035e-01  1.334   0.1823  
+    BlockD                   -5.762e-01  5.620e-01  5.064e-01 -1.138   0.2552  
+    numeric.dilution:sexmale -1.574e+01  1.457e-07  5.708e+01 -0.276   0.7827  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                             exp(coef) exp(-coef) lower .95 upper .95
+    numeric.dilution         1.588e+32  6.297e-33 8.735e+00 2.887e+63
+    sexmale                  7.654e-01  1.307e+00 3.398e-01 1.724e+00
+    BlockB                   1.347e+00  7.427e-01 5.861e-01 3.093e+00
+    BlockC                   1.713e+00  5.839e-01 7.767e-01 3.777e+00
+    BlockD                   5.620e-01  1.779e+00 2.083e-01 1.516e+00
+    numeric.dilution:sexmale 1.457e-07  6.864e+06 3.757e-56 5.648e+41
+
+    Concordance= 0.653  (se = 0.037 )
+    Likelihood ratio test= 15.18  on 6 df,   p=0.02
+    Wald test            = 14.29  on 6 df,   p=0.03
+    Score (logrank) test = 15.28  on 6 df,   p=0.02

@@ -118,3 +118,83 @@ ggsurvplot(df_fit, size = 5,
           palette = c("#E7E1EF", "#C994C7","#DF65B0","#E7298A","#980043")) + ylab("Survival Proporation") + xlab("Days post injection")
 
 ```
+
+Median survival time
+
+```{r}
+surv_median(df_fit, combine = FALSE)
+```
+
+Model looking at significance of block and treatment
+
+```{r}
+# add in block 
+df.convert$Block <- rep(c("A","B"), c(96, 99))
+# model including block 
+df2_fit<- coxph(Surv(dead, status) ~ treatment + Block, data=df.convert)
+summary(df2_fit)
+
+```
+
+
+Look at model using dilution as a continuous variable 
+```{r}
+# make dilution as a numeric/continuous variable
+# make a duplicate column 
+df.convert$numeric.dilution <- df.convert$treatment
+# set CCM to a dose of 0
+df.convert$numeric.dilution <- str_replace_all(df.convert$numeric.dilution, 'CCM', '0')
+# remove FFU and make numeric
+df.convert$numeric.dilution <- as.numeric(gsub("FFU", "", df.convert$numeric.dilution))
+
+# model including block 
+df3_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert)
+summary(df3_fit)
+
+```
+
+Comparing specific dilutions with each other 
+
+Compare 1 and 3 FFU
+```{r}
+df.convert_13 <- df.convert[which(df.convert$numeric.dilution != 0),]
+df.convert_13 <- df.convert_13[which(df.convert_13$numeric.dilution != 0.01),]
+df.convert_13 <- df.convert_13[which(df.convert_13$numeric.dilution != 0.05),]
+
+df4_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_13)
+summary(df4_fit)
+```
+
+Compare 1 and 0.05 FFU
+```{r}
+df.convert_105 <- df.convert[which(df.convert$numeric.dilution != 0),]
+df.convert_105 <- df.convert_105[which(df.convert_105$numeric.dilution != 3),]
+df.convert_105 <- df.convert_105[which(df.convert_105$numeric.dilution != 0.01),]
+
+df5_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_105)
+summary(df5_fit)
+```
+
+Compare 0.01 and 0.05 FFU
+```{r}
+df.convert_0105 <- df.convert[which(df.convert$numeric.dilution != 0),]
+df.convert_0105 <- df.convert_0105[which(df.convert_0105$numeric.dilution != 3),]
+df.convert_0105 <- df.convert_0105[which(df.convert_0105$numeric.dilution != 1),]
+
+df6_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_0105)
+summary(df6_fit)
+```
+
+
+Compare 0.01 and 0 FFU
+```{r}
+df.convert_010 <- df.convert[which(df.convert$numeric.dilution != 0.05),]
+df.convert_010 <- df.convert_010[which(df.convert_010$numeric.dilution != 3),]
+df.convert_010 <- df.convert_010[which(df.convert_010$numeric.dilution != 1),]
+
+df7_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_010)
+summary(df7_fit)
+```
+
+
+
