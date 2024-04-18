@@ -11,6 +11,7 @@ library(tidyr)
 library(scales)
 library(Rmisc)
 library(rstatix)
+library(AICcmodavg)
 ```
 
 ```{r setup, include=FALSE}
@@ -241,17 +242,34 @@ stat.test
 ```
 
 Linear model instead of t-test (better)
+
 ```{r}
 # using lambda as control
 # compare model with infection and cell type
 # use only the delta delta Cq, not 2^
 Dv_Dinn_l_model <- lm(delta_delta_Cq~infection*cell_type, data = delta_delta)
 summary(aov(Dv_Dinn_l_model))
+
+# model without interaction 
+Dv_Dinn_l_modelni <- lm(delta_delta_Cq~infection+cell_type, data = delta_delta)
+summary(aov(Dv_Dinn_l_modelni))
+
+# model without cell type 
+Dv_Dinn_l_modelnc <- lm(delta_delta_Cq~infection, data = delta_delta)
+summary(aov(Dv_Dinn_l_modelnc))
+
+
+# try special package for comparing AIC 
+modelsl <- list( Dv_Dinn_l_model, Dv_Dinn_l_modelni, Dv_Dinn_l_modelnc)
+
+model.namesl <- c( 'interaction', 'no interaction', 'no cell type')
+
+aictab(cand.set = modelsl, modnames = model.namesl)
+
+# best model is no cell type 
+summary(aov(Dv_Dinn_l_modelnc))
+
 ```
-
-
-
-
 
 Now compare Pif 3 Cqs with TPI/RPL11 for delta delta Cq
 
@@ -471,13 +489,29 @@ stat.test.c <- Cdelta_delta %>%
 stat.test.c
 ```
 
-
 Linear model instead of t-test (better)
+
 ```{r}
 # using cell primers as control
 # compare model with infection and cell type
 # use only the delta delta Cq, not 2^
 Dv_Dinn_c_model <- lm(delta_delta_Cq~infection*cell_type, data = Cdelta_delta)
 summary(aov(Dv_Dinn_c_model))
-```
+# model without interaction 
+Dv_Dinn_c_modelni <- lm(delta_delta_Cq~infection+cell_type, data = Cdelta_delta)
+summary(aov(Dv_Dinn_c_modelni))
+# model without cell type 
+Dv_Dinn_c_modelnc <- lm(delta_delta_Cq~infection, data = Cdelta_delta)
+summary(aov(Dv_Dinn_c_modelnc))
 
+
+# try special package for comparing AIC 
+modelsc <- list( Dv_Dinn_c_model, Dv_Dinn_c_modelni, Dv_Dinn_c_modelnc)
+
+model.namesc <- c( 'interaction', 'no interaction', 'no cell type')
+
+aictab(cand.set = modelsc, modnames = model.namesc)
+
+# interaction model is the best 
+summary(aov(Dv_Dinn_c_model))
+```

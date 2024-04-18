@@ -12,6 +12,7 @@ library(scales)
 library(Rmisc)
 library(ggpubr)
 library(rstatix)
+library(AICcmodavg)
 ```
 
 ```{r setup, include=FALSE}
@@ -124,26 +125,7 @@ ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
 
 ```
 
-Doing linear models for statistical tests instead of t tests for delta Cq
-Female
-
-```{r}
-# make a dilution column that is numeric
-Cq_values_F_Delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Cq_values_F_Delta$dilution))
-# make a day column that is numeric
-Cq_values_F_Delta$numeric.day <- as.numeric(gsub("day", "", Cq_values_F_Delta$day))
-
-# linear model 
-# do stats on just the delta Cq, not the 2^ transformed 
-female_delta_full_model <- lm(delta_Cq~numeric.dilution*numeric.day, data = Cq_values_F_Delta)
-summary(aov(female_delta_full_model))
-
-# look at just 0.01 FFU dilution 
-female_delta001_model <- lm(delta_Cq~numeric.day, data = subset(Cq_values_F_Delta, numeric.dilution == "0.01"))
-summary(aov(female_delta001_model))
-```
-
-Plot 2^delta Cq without t test statistics 
+Plot 2\^delta Cq without t test statistics
 
 ```{r}
 ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
@@ -156,7 +138,6 @@ ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
   labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
   theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black"))
 ```
-
 
 **Male Analysis Second**
 
@@ -246,27 +227,8 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
 ```
 
 
-Doing linear models for statistical tests instead of t tests for delta Cq
-Male
 
-```{r}
-# make a dilution column that is numeric
-Cq_values_M_Delta$numeric.dilution <- as.numeric(gsub(" FFU", "", Cq_values_M_Delta$dilution))
-# make a day column that is numeric
-Cq_values_M_Delta$numeric.day <- as.numeric(gsub("day", "", Cq_values_M_Delta$day))
-
-# linear model 
-# do stats on just the delta Cq, not the 2^ transformed 
-male_delta_full_model <- lm(delta_Cq~numeric.dilution*numeric.day, data = Cq_values_M_Delta)
-summary(aov(male_delta_full_model))
-
-# look at just 0.01 FFU dilution 
-male_delta001_model <- lm(delta_Cq~numeric.day, data = subset(Cq_values_M_Delta, numeric.dilution == "0.01"))
-summary(aov(male_delta001_model))
-```
-
-
-Plot 2^delta Cq without t test statistics 
+Plot 2\^delta Cq without t test statistics
 
 ```{r}
 ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
@@ -279,9 +241,6 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
   labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
   theme(legend.position = "none")
 ```
-
-
-
 
 **Delta Delta Analysis**
 
@@ -392,9 +351,8 @@ ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outli
 
 ```
 
-Doing linear models for statistical tests instead of t tests 
-Female
-
+Doing linear models for statistical tests instead of t tests Female
+use delta delta Cq
 
 ```{r}
 # make a dilution column that is numeric
@@ -406,13 +364,25 @@ Female_delta_delta$numeric.day <- as.numeric(gsub("day", "", Female_delta_delta$
 # do stats on just the delta delta Cq, not the 2^ transformed 
 female_full_model <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = Female_delta_delta)
 summary(aov(female_full_model))
+# no interaction 
+female_full_modelni <- lm(delta_delta_Cq~numeric.dilution+numeric.day, data = Female_delta_delta)
+summary(aov(female_full_modelni))
+
+modelsF <- list(female_full_model, female_full_modelni)
+
+model.namesF <- c( ' dilution day interaction', 'dilution day')
+
+aictab(cand.set = modelsF, modnames = model.namesF)
+# no interaction model female_delta_full_modelni is the best 
+summary(female_full_modelni)
 
 # look at just 0.01 FFU dilution 
 female_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Female_delta_delta, numeric.dilution == "0.01"))
 summary(aov(female_001_model))
 ```
 
-Plot box plots without t-test significance 
+
+Plot box plots without t-test significance
 
 ```{r}
 legend_title <- "Virus Delivery"
@@ -426,8 +396,6 @@ ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outli
   labs(title = "Comparing DiNV Increase in Female Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
   theme(legend.position = c(0.9, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) 
 ```
-
-
 
 Males Calculate delta delta Cq
 
@@ -536,9 +504,7 @@ ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier
 
 ```
 
-
-Doing linear models for statistical tests instead of t tests 
-Male
+Doing linear models for statistical tests instead of t tests Male
 
 ```{r}
 # make a dilution column that is numeric
@@ -550,13 +516,25 @@ Male_delta_delta$numeric.day <- as.numeric(gsub("day", "", Male_delta_delta$day)
 # do stats on just the delta delta Cq, not the 2^ transformed 
 male_full_model <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = Male_delta_delta)
 summary(aov(male_full_model))
+# no interaction 
+male_full_modelni <- lm(delta_delta_Cq~numeric.dilution+numeric.day, data = Male_delta_delta)
+summary(aov(male_full_modelni))
+
+modelsM <- list(male_full_model, male_full_modelni)
+
+model.namesM <- c( ' dilution day interaction', 'dilution day')
+
+aictab(cand.set = modelsM, modnames = model.namesM)
+# no interaction model is the best
+summary(male_full_modelni)
 
 # look at just 0.01 FFU dilution 
 Male_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Male_delta_delta, numeric.dilution == "0.01"))
 summary(aov(Male_001_model))
 ```
 
-Plot box plots without t-test significance 
+Plot box plots without t-test significance
+
 ```{r}
 legend_title <- "Virus Delivery"
 ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
@@ -570,8 +548,7 @@ ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier
   theme(legend.position = "none")
 ```
 
-
-Combine males and females and look at a linear model considering all for the delta delta Cq 
+Combine males and females and look at a linear model considering all for the delta delta Cq
 
 ```{r}
 all_data <- rbind(Female_delta_delta, Male_delta_delta)
@@ -588,39 +565,16 @@ summary(aov(full_model_nsint))
 full_model_ns <- lm(delta_delta_Cq~numeric.dilution*numeric.day, data = all_data)
 summary(aov(full_model_ns))
 
-# compare models with AIC 
-extractAIC(full_model_int)
-# 561.9764 
-extractAIC(full_model_nsint)
-# 556.4608 
-extractAIC(full_model_ns)
-# 554.4844 
 
-# compare all interactions with not sex interaction 
-exp((556.4608 - 561.9764 )/2)
-# 0.06343116 
-# neither model is a significantly better fit 
+# try special package for comparing AIC 
+models <- list( full_model_ns, full_model_nsint, full_model_int)
 
-# compare all interactions with model without sex
-exp((554.4844 - 561.9764 )/2)
-# 0.02361201 
-# there is a model that is significantly better fit: it should be the model with the smaller AIC so the one without sex 
+model.names <- c( 'model without sex', 'model without sex as interaction', 'full model')
 
-# compare dil and day interaction with model without sex
-exp((554.4844 - 556.4608 )/2)
-# 0.3722461
-# neither model is a significantly better fit 
+aictab(cand.set = models, modnames = model.names)
+
+# model without sex is the best fit 
 ```
-
-
-
-
-
-
-
-
-
-
 
 Look at male and female for each dilution by day
 
@@ -744,7 +698,7 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
 
 **Adding in days 6, 7, and 9 for males** Not sure if I will include this, I don't feel comfortable combining two experiments like this and there were larger differences in the day 0 PIF 3 Cqs than I would have expected
 
-_this was not included in final analysis because we really can't add in extra samples that had a different day 0_
+*this was not included in final analysis because we really can't add in extra samples that had a different day 0*
 
 Load in dataset
 

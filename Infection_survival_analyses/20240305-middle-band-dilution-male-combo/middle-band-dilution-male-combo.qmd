@@ -136,8 +136,8 @@ summary(df2_fit)
 
 ```
 
+Look at model using dilution as a continuous variable
 
-Look at model using dilution as a continuous variable 
 ```{r}
 # make dilution as a numeric/continuous variable
 # make a duplicate column 
@@ -153,9 +153,10 @@ summary(df3_fit)
 
 ```
 
-Comparing specific dilutions with each other 
+Comparing specific dilutions with each other
 
 Compare 1 and 3 FFU
+
 ```{r}
 df.convert_13 <- df.convert[which(df.convert$numeric.dilution != 0),]
 df.convert_13 <- df.convert_13[which(df.convert_13$numeric.dilution != 0.01),]
@@ -166,6 +167,7 @@ summary(df4_fit)
 ```
 
 Compare 1 and 0.05 FFU
+
 ```{r}
 df.convert_105 <- df.convert[which(df.convert$numeric.dilution != 0),]
 df.convert_105 <- df.convert_105[which(df.convert_105$numeric.dilution != 3),]
@@ -176,6 +178,7 @@ summary(df5_fit)
 ```
 
 Compare 0.01 and 0.05 FFU
+
 ```{r}
 df.convert_0105 <- df.convert[which(df.convert$numeric.dilution != 0),]
 df.convert_0105 <- df.convert_0105[which(df.convert_0105$numeric.dilution != 3),]
@@ -185,8 +188,8 @@ df6_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_0
 summary(df6_fit)
 ```
 
-
 Compare 0.01 and 0 FFU
+
 ```{r}
 df.convert_010 <- df.convert[which(df.convert$numeric.dilution != 0.05),]
 df.convert_010 <- df.convert_010[which(df.convert_010$numeric.dilution != 3),]
@@ -195,6 +198,3 @@ df.convert_010 <- df.convert_010[which(df.convert_010$numeric.dilution != 1),]
 df7_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_010)
 summary(df7_fit)
 ```
-
-
-

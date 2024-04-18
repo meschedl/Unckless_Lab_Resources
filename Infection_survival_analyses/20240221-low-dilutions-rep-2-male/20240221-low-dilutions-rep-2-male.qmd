@@ -172,7 +172,8 @@ summary(df3_fit)
 
 ```
 
-Look at model using dilution as a continuous variable 
+Look at model using dilution as a continuous variable
+
 ```{r}
 # make dilution as a numeric/continuous variable
 # make a duplicate column 
@@ -188,7 +189,8 @@ summary(df4_fit)
 
 ```
 
-Only look at 0.05 and 0.01 
+Only look at 0.05 and 0.01
+
 ```{r}
 df2.convert_51 <- df2.convert[which(df2.convert$numeric.dilution != 0),]
 df2.convert_51 <- df2.convert_51[which(df2.convert_51$numeric.dilution != 0.005),]
@@ -197,7 +199,8 @@ df5_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df2.convert_
 summary(df5_fit)
 ```
 
-Only look at  and 0.01 and .005
+Only look at and 0.01 and .005
+
 ```{r}
 df2.convert_051 <- df2.convert[which(df2.convert$numeric.dilution != 0),]
 df2.convert_051 <- df2.convert_051[which(df2.convert_051$numeric.dilution != 0.050),]
@@ -206,7 +209,8 @@ df5_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df2.convert_
 summary(df5_fit)
 ```
 
-Only look at  and CCM and .005
+Only look at and CCM and .005
+
 ```{r}
 df2.convert_05C <- df2.convert[which(df2.convert$numeric.dilution != 0.010),]
 df2.convert_05C <- df2.convert_05C[which(df2.convert_05C$numeric.dilution != 0.050),]

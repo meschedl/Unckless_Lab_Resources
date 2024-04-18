@@ -16,6 +16,7 @@ library("survminer")
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(AICcmodavg)
 ```
 
 ### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
@@ -202,29 +203,15 @@ summary(df_fit_combo_5)
 
 ```
 
-
 Compare models, which is best?
 
 ```{r}
-# AIC of model with injection and block, not sex 
-extractAIC(df_fit_combo_3)
-# 1285.719
-# AIC of model with injection, block, and sex 
-extractAIC(df_fit_combo_4)
-# 1284.327
-# AIC of model with block and sex * injection interaction 
-extractAIC(df_fit_combo_5)
-# 1282.92
+models <- list(df_fit_combo_3, df_fit_combo_4, df_fit_combo_5)
 
+model.names <- c( 'block and injection', 'block injection and sex', 'block and sex injection interaction')
 
-# compare AICs 
+aictab(cand.set = models, modnames = model.names)
 
-# compare block and inject to block, sex, + inject 
-exp((1284.327 - 1285.719)/2)
-# 0.4985756 no sif difference between models 
-
-# compare block, sex, inject to block and sex * inject interaction 
-exp((1282.92 - 1284.327)/2)
-# 0.4948503 no sig diff between models 
-
+# best model is df_fit_combo_5 but not by much 
+summary(df_fit_combo_5)
 ```

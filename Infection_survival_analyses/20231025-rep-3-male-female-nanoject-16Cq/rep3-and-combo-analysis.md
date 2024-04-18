@@ -36,6 +36,7 @@ library(dplyr)
 ``` r
 library(tidyr)
 library(stringr)
+library(AICcmodavg)
 ```
 
 ### Loop to convert the example data.frame ‘df’ into properly formatted data.frame ‘results’
@@ -330,49 +331,49 @@ summary(df_fit_combo_5)
 Compare models, which is best?
 
 ``` r
-# AIC of model with injection and block, not sex 
-extractAIC(df_fit_combo_3)
+models <- list(df_fit_combo_3, df_fit_combo_4, df_fit_combo_5)
+
+model.names <- c( 'block and injection', 'block injection and sex', 'block and sex injection interaction')
+
+aictab(cand.set = models, modnames = model.names)
 ```
 
-    [1]    3.000 1285.719
+
+    Model selection based on AICc:
+
+                                        K    AICc Delta_AICc AICcWt Cum.Wt      LL
+    block and sex injection interaction 5 1283.22       0.00   0.56   0.56 -636.46
+    block injection and sex             4 1284.53       1.30   0.29   0.85 -638.16
+    block and injection                 3 1285.84       2.62   0.15   1.00 -639.86
 
 ``` r
-# 1285.719
-# AIC of model with injection, block, and sex 
-extractAIC(df_fit_combo_4)
+# best model is df_fit_combo_5 but not by much 
+summary(df_fit_combo_5)
 ```
 
-    [1]    4.000 1284.327
+    Call:
+    coxph(formula = Surv(dead, status) ~ Block + sex * injection, 
+        data = df2.convert_full)
 
-``` r
-# 1284.327
-# AIC of model with block and sex * injection interaction 
-extractAIC(df_fit_combo_5)
-```
+      n= 205, number of events= 150 
 
-    [1]    5.00 1282.92
+                             coef exp(coef) se(coef)      z Pr(>|z|)    
+    BlockB                -0.4061    0.6662   0.2073 -1.959   0.0501 .  
+    BlockC                 0.3178    1.3741   0.2068  1.537   0.1244    
+    sexmale               -1.9585    0.1411   1.0801 -1.813   0.0698 .  
+    injectionDiNV          2.8564   17.3981   0.4380  6.522 6.94e-11 ***
+    sexmale:injectionDiNV  1.7121    5.5408   1.0948  1.564   0.1178    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-``` r
-# 1282.92
+                          exp(coef) exp(-coef) lower .95 upper .95
+    BlockB                   0.6662    1.50095   0.44379     1.000
+    BlockC                   1.3741    0.72777   0.91620     2.061
+    sexmale                  0.1411    7.08875   0.01698     1.172
+    injectionDiNV           17.3981    0.05748   7.37405    41.048
+    sexmale:injectionDiNV    5.5408    0.18048   0.64816    47.366
 
-
-# compare AICs 
-
-# compare block and inject to block, sex, + inject 
-exp((1284.327 - 1285.719)/2)
-```
-
-    [1] 0.4985756
-
-``` r
-# 0.4985756 no sif difference between models 
-
-# compare block, sex, inject to block and sex * inject interaction 
-exp((1282.92 - 1284.327)/2)
-```
-
-    [1] 0.4948503
-
-``` r
-# 0.4948503 no sig diff between models 
-```
+    Concordance= 0.774  (se = 0.025 )
+    Likelihood ratio test= 170  on 5 df,   p=<2e-16
+    Wald test            = 68.33  on 5 df,   p=2e-13
+    Score (logrank) test = 131.3  on 5 df,   p=<2e-16

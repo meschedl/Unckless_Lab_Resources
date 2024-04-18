@@ -11,6 +11,7 @@ library(tidyr)
 library(scales)
 library(Rmisc)
 library(rstatix)
+library(AICcmodavg)
 ```
 
 ```{r setup, include=FALSE}
@@ -254,7 +255,8 @@ meanD <- mean(DvD$delta_delta_Cq_2)
 meanD
 ```
 
-T test statistics 
+T test statistics
+
 ```{r}
 stat.test <- delta_deltar %>%
   group_by(infection) %>%
@@ -270,6 +272,23 @@ Linear model statistics (better)
 # compare model with infection and cell type
 # use only the delta delta Cq, not 2^
 Dv_Myd88_model <- lm(delta_delta_Cq~infection*cell_type, data = delta_deltar)
-summary(aov(Dv_Myd88_model))
-```
+summary(aov(Dv_Myd88_model)) 
 
+# model without interaction 
+Dv_Myd88_model2 <- lm(delta_delta_Cq~infection + cell_type, data = delta_deltar)
+summary(aov(Dv_Myd88_model2))
+
+# model without cell type 
+Dv_Myd88_model3 <- lm(delta_delta_Cq~infection, data = delta_deltar)
+summary(aov(Dv_Myd88_model3))
+
+
+# try special package for comparing AIC 
+models <- list( Dv_Myd88_model, Dv_Myd88_model2, Dv_Myd88_model3)
+
+model.names <- c( 'interaction', 'no interaction', 'no cell type')
+
+aictab(cand.set = models, modnames = model.names)
+
+# model with interaction term is best model 
+```

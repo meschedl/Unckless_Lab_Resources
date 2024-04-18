@@ -16,6 +16,7 @@ library("survminer")
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(AICcmodavg)
 ```
 
 ### Loop to convert the example data.frame 'df' into properly formatted data.frame 'results'
@@ -365,7 +366,6 @@ df.convert_full$numeric.dilution <- as.numeric(df.convert_full$numeric.dilution)
 
 df_all_fit<- coxph(Surv(dead, status) ~ sex*numeric.dilution + Block, data=df.convert_full)
 summary(df_all_fit)
-extractAIC(df_all_fit)
 ```
 
 Compare above model with no sex
@@ -373,7 +373,6 @@ Compare above model with no sex
 ```{r}
 df_all_nosex_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df.convert_full)
 summary(df_all_nosex_fit)
-extractAIC(df_all_nosex_fit)
 
 ```
 
@@ -382,29 +381,22 @@ Model with numeric dilution, block, and sex with no interaction
 ```{r}
 df_all_noint_fit<- coxph(Surv(dead, status) ~ numeric.dilution + Block + sex, data=df.convert_full)
 summary(df_all_noint_fit)
-extractAIC(df_all_noint_fit)
 ```
 
 Compare all three models together
 
 ```{r}
-# compare model with sex as interaction term to no interaction term 
-exp((3942.04 -3944.023)/2)
-# 0.3710197 
-# neither model is more fit than the other 
 
-# compare model with sex as interaction term to the model without sex  
-exp((3944.023 - 3944.21)/2)
-# 0.910738
-# neither model is more fit than the other
+models <- list(df_all_fit, df_all_nosex_fit, df_all_noint_fit)
 
-# compare model with no interaction term to the model without sex
-exp((3942.04 - 3944.21)/2)
-# 0.3379018
-# neither model is more fit than the other
+model.names <- c( 'model with sex and dilution interaction', 'model without sex as a variable', 'model with sex but no interaction')
+
+aictab(cand.set = models, modnames = model.names)
+
+# best model is df_all_noint_fit but not by much 
+summary(df_all_noint_fit)
 ```
 
-Use the model with the interaction term because it can potentially tell us the most?
 
 Compare 0.1 FFU, 1 FFU, 3 FFU, and 6 FFU together
 
@@ -414,8 +406,28 @@ df_highdils <- df.convert_full[which(df.convert_full$numeric.dilution != 0),]
 # remove 0.01 FFU dose treatment 
 df_highdils <- df_highdils[which(df_highdils$numeric.dilution != 0.01),]
 
-df_highdils_fit<- coxph(Surv(dead, status) ~ numeric.dilution*sex + Block, data=df_highdils)
+# dilution and sex interaction
+df_highdils_fit <- coxph(Surv(dead, status) ~ numeric.dilution*sex + Block, data=df_highdils)
 summary(df_highdils_fit)
+# dilution and sex no interaction 
+df_highdils_fitni <- coxph(Surv(dead, status) ~ numeric.dilution + sex + Block, data=df_highdils)
+summary(df_highdils_fitni)
+# dilution no sex
+df_highdils_fitns <- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df_highdils)
+summary(df_highdils_fitns)
+
+
+
+
+
+models2 <- list(df_highdils_fit, df_highdils_fitni, df_highdils_fitns )
+
+model.names2 <- c( 'dilution and sex interaction', 'dilution and sex no interaction', 'just dilution')
+
+aictab(cand.set = models2, modnames = model.names2)
+
+# best model is df_highdils_fitni no interaction 
+summary(df_highdils_fitni)
 ```
 
 Compare 0.01 FFU and CCM together
@@ -428,6 +440,23 @@ df_lowdils <- df_lowdils[which(df_lowdils$numeric.dilution != 1),]
 df_lowdils <- df_lowdils[which(df_lowdils$numeric.dilution != 3),]
 df_lowdils <- df_lowdils[which(df_lowdils$numeric.dilution != 6),]
 
+# dilution and sex interaction 
 df_lowdils_fit<- coxph(Surv(dead, status) ~ numeric.dilution*sex + Block, data=df_lowdils)
 summary(df_lowdils_fit)
+# dilution and sex no interaction 
+df_lowdils_fitni <- coxph(Surv(dead, status) ~ numeric.dilution + sex + Block, data=df_lowdils)
+summary(df_lowdils_fitni)
+# dilution no sex
+df_lowdils_fitns <- coxph(Surv(dead, status) ~ numeric.dilution + Block, data=df_lowdils)
+summary(df_lowdils_fitns)
+
+
+models3 <- list(df_lowdils_fit, df_lowdils_fitni, df_lowdils_fitns )
+
+model.names3 <- c( 'dilution and sex interaction', 'dilution and sex no interaction', 'just dilution')
+
+aictab(cand.set = models3, modnames = model.names3)
+
+# best model does not have sex df_lowdils_fitns
+summary(df_lowdils_fitns)
 ```
