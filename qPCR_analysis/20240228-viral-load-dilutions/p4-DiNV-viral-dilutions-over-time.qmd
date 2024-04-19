@@ -13,6 +13,7 @@ library(Rmisc)
 library(ggpubr)
 library(rstatix)
 library(AICcmodavg)
+library(ggtext)
 ```
 
 ```{r setup, include=FALSE}
@@ -81,53 +82,10 @@ Cq_values_F_Delta$delta_Cq_2 <- 2^(delta_Cqs_F)
 
 ```
 
-Female Doing t test statistics and plotting
+Plot 2\^delta Cq 
 
 ```{r}
-# doing pairwise t-tests between dilution methods, within each day
-# for delta Cq
-fem0.stat.test <- Cq_values_F_Delta %>%
-  group_by(day) %>%
-  t_test(delta_Cq_2 ~ dilution) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add the bracket location info for each comparison
-fem0.stat.test<-fem0.stat.test %>% add_xy_position(x = "day")
-
-#do paiwrise t-test between days within dilution methods
- # for delta Cq
-fem0.stat.test.2 <- Cq_values_F_Delta %>%
-  group_by(dilution) %>%
-  t_test(delta_Cq_2 ~ day) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-#add bracket location info
-fem0.stat.test.2<-fem0.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
-
-# show statistics 
-fem0.stat.test
-fem0.stat.test.2
-
-ledgend_title <- "Virus Delivery"
-
-# plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
-  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
-  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
-  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
-  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
-  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
-  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
-  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) +
-  stat_pvalue_manual(fem0.stat.test, y.position = seq(3.5,4, by=1.5/3),  hide.ns = TRUE) +
-  stat_pvalue_manual(fem0.stat.test.2, y.position = seq(5,10, by=5/7), hide.ns = TRUE)
-
-```
-
-Plot 2\^delta Cq without t test statistics
-
-```{r}
+ledgend_title = "Virus Delivery"
 ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
   geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
   theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
@@ -135,8 +93,8 @@ ggplot(Cq_values_F_Delta, aes(y= delta_Cq_2, x=day)) +
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
   scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
-  labs(title = "Comparing Viral Load in Female D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
-  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black"))
+  labs(title = "Comparing Viral Load in Female _D. innubila_ Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black"),plot.title = element_markdown())
 ```
 
 **Male Analysis Second**
@@ -182,53 +140,8 @@ Cq_values_M_Delta$delta_Cq_2 <- 2^(delta_Cqs_M)
 
 ```
 
-Doing t test statistics and plotting
 
-```{r}
-# doing pairwise t-tests between dilution methods, within each day
-# for delta Cq
-male0.stat.test <- Cq_values_M_Delta %>%
-  group_by(day) %>%
-  t_test(delta_Cq_2 ~ dilution) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add the bracket location info for each comparison
-male0.stat.test <- male0.stat.test %>% add_xy_position(x = "day")
-
-# do paiwrise t-test between days within dilution methods
- # for delta Cq
-male0.stat.test.2 <- Cq_values_M_Delta %>%
-  group_by(dilution) %>%
-  t_test(delta_Cq_2 ~ day) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add bracket location info
-male0.stat.test.2 <- male0.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
-
-# show statistics 
-male0.stat.test
-male0.stat.test.2
-
-ledgend_title <- "Virus Delivery"
-
-# plot and use a log 10 scale for the y axis 
-ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
-  geom_boxplot(outlier.shape=NA, aes(fill=dilution))  + 
-  theme_light() + scale_fill_manual(ledgend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
-  geom_dotplot(aes(fill=dilution), binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8)) + 
-  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
-  scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
-  labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
-  theme(legend.position = c(0.93, 0.15), legend.background = element_rect(linetype="solid", colour ="black")) +
-  stat_pvalue_manual(male0.stat.test, y.position = seq(3.5,4, by=1.5/4),  hide.ns = TRUE) +
-  stat_pvalue_manual(male0.stat.test.2, y.position = seq(5,9, by=4/8), hide.ns = TRUE)
-
-```
-
-
-
-Plot 2\^delta Cq without t test statistics
+Plot 2\^delta Cq 
 
 ```{r}
 ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
@@ -238,8 +151,9 @@ ggplot(Cq_values_M_Delta, aes(y= delta_Cq_2, x=day)) +
   scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=6), legend.title=element_text(size=7)) +
   scale_x_discrete(labels=c("day0" = "0 days", "day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) + 
-  labs(title = "Comparing Viral Load in Male D. innubila Across Early Infection",y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
-  theme(legend.position = "none")
+  labs(title = expression("Comparing Viral Load in Male _D. innubila_ Across Early Infection"),y = "Relative amount of DiNV genome to host genome", x = "Days Post Injection") +
+  theme(legend.position = "none",
+        plot.title = element_markdown())
 ```
 
 **Delta Delta Analysis**
@@ -310,48 +224,8 @@ Female_delta_delta <- rbind(F_001, F_01, F_3)
 
 ```
 
-Statistics and plotting females
 
-```{r}
-# doing pairwise t-tests between dilution methods, within each day
-fem.stat.test <- Female_delta_delta %>%
-  group_by(day) %>%
-  t_test(delta_delta_Cq_2 ~ dilution) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add the bracket location info for each comparison
-fem.stat.test <- fem.stat.test %>% add_xy_position(x = "day")
-
-# do paiwrise t-test between days within dilution methods
-fem.stat.test.2 <- Female_delta_delta %>%
-  group_by(dilution) %>%
-  t_test(delta_delta_Cq_2 ~ day) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add bracket location info
-fem.stat.test.2 <- fem.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
-
-# show statistics 
-fem.stat.test
-fem.stat.test.2
-
-# plot the boxplot with all pairwise stats visualized on top
-legend_title <- "Virus Delivery"
-ggplot(Female_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
-  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
-  theme_light() + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8),aes(fill=dilution)) + 
-  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
-  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing DiNV Increase in Female Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
-  theme(legend.position = c(0.9, 0.2), legend.background = element_rect(linetype="solid", colour ="black")) +
-  stat_pvalue_manual(fem.stat.test, y.position = 8, hide.ns = TRUE) +
-  stat_pvalue_manual(fem.stat.test.2, y.position = seq(9,12, by=3/3), hide.ns = TRUE)
-
-```
-
-Doing linear models for statistical tests instead of t tests Female
+Doing linear models for statistical tests Female
 use delta delta Cq
 
 ```{r}
@@ -382,7 +256,7 @@ summary(aov(female_001_model))
 ```
 
 
-Plot box plots without t-test significance
+Plot box plots 
 
 ```{r}
 legend_title <- "Virus Delivery"
@@ -462,49 +336,8 @@ M_001$delta_delta_Cq_2 <- 2^(delta_delta_001_M)
 Male_delta_delta <- rbind(M_001, M_01, M_3)
 ```
 
-Statistics and plotting males
 
-```{r}
-# doing pairwise t-tests between dilution methods, within each day
-male.stat.test <- Male_delta_delta %>%
-  group_by(day) %>%
-  t_test(delta_delta_Cq_2 ~ dilution) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add the bracket location info for each comparison
-male.stat.test <- male.stat.test %>% add_xy_position(x = "day")
-
-# do paiwrise t-test between days within dilution methods
-male.stat.test.2 <- Male_delta_delta %>%
-  group_by(dilution) %>%
-  t_test(delta_delta_Cq_2 ~ day) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add bracket location info
-male.stat.test.2 <- male.stat.test.2 %>% add_xy_position(x = "day", group="dilution")
-
-# show statistics 
-male.stat.test
-male.stat.test.2
-
-# plot the boxplot with all pairwise stats visualized on top
-legend_title <- "Virus Delivery"
-ggplot(Male_delta_delta, aes(y= delta_delta_Cq_2, x=day)) + geom_boxplot(outlier.shape=NA,aes(fill=dilution)) +  
-  scale_fill_manual(legend_title, values=c("#E7E1EF", "#C994C7", "#CE1256")) + 
-  theme_light() + 
-  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.75, position=position_dodge(0.8),aes(fill=dilution)) + 
-  scale_y_continuous(trans='log10', breaks=trans_breaks('log10', function(x) 10^x), labels=trans_format('log10', math_format(10^.x))) + 
-  theme(axis.text=element_text(size=12),axis.title=element_text(size=14), legend.text=element_text(size=10), legend.title=element_text(size=11)) +
-  scale_x_discrete(labels=c("day1" = "1 day", "day3" = "3 days", "day5" = "5 days")) +
-  labs(title = "Comparing DiNV Increase in Male Flies \nInjected with Various Titers Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection") +
-  theme(legend.position = "none")+
-  stat_pvalue_manual(male.stat.test, y.position = 7, hide.ns = TRUE)+
-  stat_pvalue_manual(male.stat.test.2, y.position = seq(8,12, by=4/4), hide.ns = TRUE)
-
-
-```
-
-Doing linear models for statistical tests instead of t tests Male
+Doing linear models for statistical tests Male
 
 ```{r}
 # make a dilution column that is numeric
@@ -533,7 +366,7 @@ Male_001_model <- lm(delta_delta_Cq~numeric.day, data = subset(Male_delta_delta,
 summary(aov(Male_001_model))
 ```
 
-Plot box plots without t-test significance
+Plot box plots 
 
 ```{r}
 legend_title <- "Virus Delivery"
@@ -588,19 +421,6 @@ F_3_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "3 FFU"),]
 
 FFU_3_dil <- rbind(M_3_dil, F_3_dil)
 
-#statistics 
-# only care about comparisons between sexes within days 
-#doing pairwise t-tests between sexes, within each day
-three.stat.test <- FFU_3_dil %>%
-  group_by(day) %>%
-  t_test(delta_delta_Cq_2 ~ sex) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-#add the bracket location info for each comparison
-three.stat.test <- three.stat.test %>% add_xy_position(x = "day")
-# show stats 
-three.stat.test
-# all non significant, so cannot add to the plot 
 
 legend_title = "Sex"
 #Plot 
@@ -626,20 +446,6 @@ M_01_dil <- Male_delta_delta[which(Male_delta_delta$dilution == "0.1 FFU"),]
 F_01_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.1 FFU"),]
 
 FFU_01_dil <- rbind(M_01_dil, F_01_dil)
-
-#statistics 
-# only care about comparisons between sexes within days 
-# doing pairwise t-tests between sexes, within each day
-o1.stat.test <- FFU_01_dil %>%
-  group_by(day) %>%
-  t_test(delta_delta_Cq_2 ~ sex) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add the bracket location info for each comparison
-o1.stat.test <- o1.stat.test %>% add_xy_position(x = "day")
-# show stats 
-o1.stat.test
-# all non significant, so cannot add to the plot 
 
 
 legend_title = "Sex"
@@ -668,19 +474,6 @@ F_001_dil <- Female_delta_delta[which(Female_delta_delta$dilution == "0.01 FFU")
 
 FFU_001_dil <- rbind(M_001_dil, F_001_dil)
 
-#statistics 
-# only care about comparisons between sexes within days 
-# doing pairwise t-tests between sexes, within each da
-oo1.stat.test <- FFU_001_dil %>%
-  group_by(day) %>%
-  t_test(delta_delta_Cq_2 ~ sex) %>%
-  adjust_pvalue(method = "bonferroni") %>%
-  add_significance("p.adj")
-# add the bracket location info for each comparison
-oo1.stat.test <- oo1.stat.test %>% add_xy_position(x = "day")
-# show stats 
-oo1.stat.test
-# all non significant so not adding to plot 
 
 legend_title = "Sex"
 #Plot 
@@ -695,6 +488,8 @@ ggplot(FFU_001_dil, aes(y= delta_delta_Cq_2, x=day, fill=sex)) +
   theme(legend.position = "none") +
   labs(title = "Comparing DiNV Increase in Male and Female Flies \nInjected with 0.01 FFU DiNV Over Early Infection",y = "Relative DiNV Genome Increase", x = "Days Post Injection")
 ```
+
+
 
 **Adding in days 6, 7, and 9 for males** Not sure if I will include this, I don't feel comfortable combining two experiments like this and there were larger differences in the day 0 PIF 3 Cqs than I would have expected
 

@@ -119,8 +119,9 @@ ggsurvplot(df_fit, size = 5,
           font.tickslab = c(14),
           font.x = c(16),
           font.y = c(16),
+          font.t = c(16),
           ggtheme = theme_light(),
-          title = "Female D. innubila Injected with Dilutions of Passage 4 DiNV",
+          title = expression(paste("Female",italic(" D. innubila "), "Injected with Dilutions of Passage 4 DiNV")),
           legend.title="Treatment",
           legend.labs=c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU"),
           font.legend = c(14),
@@ -143,7 +144,6 @@ df2_fit<- coxph(Surv(dead, status) ~ treatment + Block, data=df.convert)
 summary(df2_fit)
 
 ```
-
 
 Model just looking at significance of block and treatment
 

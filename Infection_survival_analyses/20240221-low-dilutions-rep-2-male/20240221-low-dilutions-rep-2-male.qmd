@@ -5,7 +5,7 @@ editor: visual
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(dpi=300,fig.width=11, fig.height = 11)
+knitr::opts_chunk$set(dpi=300,fig.width=7, fig.height = 9)
 ```
 
 Load in packages needed for the analysis
@@ -142,12 +142,13 @@ df2.convert <- df2.convert %>%
 df2_fit<- survfit(Surv(dead, status) ~ treatment, data=df2.convert)
 ggsurvplot(df_fit, size = 5,
           pval = FALSE, conf.int = FALSE,
-          legend = "right",
+          legend = "bottom",
           font.tickslab = c(14),
           font.x = c(16),
           font.y = c(16),
+          font.t = c(16),
           ggtheme = theme_light(),
-          title = "Male D. innubila Injected with Dilutions of Passage 4 DiNV",
+          title = expression(paste("Male",italic(" D. innubila "), "Injected with Dilutions of Passage 4 DiNV")),
           legend.title="Treatment",
           legend.labs=c(  "0.01 FFU", "0.005 FFU", "0.05 FFU", "CCM"),
           font.legend = c(14),

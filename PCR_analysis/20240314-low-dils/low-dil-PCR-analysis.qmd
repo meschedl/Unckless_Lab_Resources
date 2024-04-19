@@ -663,8 +663,7 @@ ggplot(percent_table_day14d, aes(x =factor(Treatment, level=c("0.005 FFU" ,"0.05
 
 ```
 
-
-Try combining all these plots into 1 
+Try combining all these plots into 1
 
 ```{r}
 # first need to add the day to each of the datasets 
@@ -692,9 +691,3 @@ ggplot(percent_tables, aes(x =factor(Treatment, level=c("0.005 FFU" ,"0.01 FFU",
 
 
 ```
-
-
-
-
-
-

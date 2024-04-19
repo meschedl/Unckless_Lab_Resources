@@ -140,8 +140,9 @@ ggsurvplot(df_fit, size = 5,
           font.tickslab = c(14),
           font.x = c(16),
           font.y = c(16),
+          font.t = c(16),
           ggtheme = theme_light(),
-          title = "Female D. innubila Injected with Dilutions of Passage 4 DiNV",
+          title = expression(paste("Female",italic(" D. innubila "), "Injected with Dilutions of Passage 4 DiNV")),
           legend.title="Treatment",
           legend.labs=c("CCM", "0.005 FFU", "0.01 FFU", "0.05 FFU"),
           font.legend = c(14),
@@ -200,3 +201,42 @@ summary(df2_fit)
     Likelihood ratio test= 37.95  on 4 df,   p=1e-07
     Wald test            = 28.84  on 4 df,   p=8e-06
     Score (logrank) test = 36.2  on 4 df,   p=3e-07
+
+Model just looking at significance of block and treatment
+
+``` r
+# model including block 
+df3_fit<- coxph(Surv(dead, status) ~ treatment + Block + treatment * Block, data=df.convert)
+summary(df3_fit)
+```
+
+    Call:
+    coxph(formula = Surv(dead, status) ~ treatment + Block + treatment * 
+        Block, data = df.convert)
+
+      n= 146, number of events= 70 
+
+                                  coef exp(coef) se(coef)      z Pr(>|z|)   
+    treatment0.005 FFU         0.91345   2.49292  0.83673  1.092  0.27497   
+    treatment0.01 FFU          1.94728   7.00957  0.77506  2.512  0.01199 * 
+    treatment0.05 FFU          2.22831   9.28420  0.75444  2.954  0.00314 **
+    BlockB                     0.29160   1.33857  0.91288  0.319  0.74940   
+    treatment0.005 FFU:BlockB  0.13594   1.14561  1.08455  0.125  0.90025   
+    treatment0.01 FFU:BlockB  -0.11745   0.88918  1.01214 -0.116  0.90762   
+    treatment0.05 FFU:BlockB  -0.08836   0.91543  0.97926 -0.090  0.92811   
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                              exp(coef) exp(-coef) lower .95 upper .95
+    treatment0.005 FFU           2.4929     0.4011    0.4836    12.851
+    treatment0.01 FFU            7.0096     0.1427    1.5345    32.020
+    treatment0.05 FFU            9.2842     0.1077    2.1163    40.731
+    BlockB                       1.3386     0.7471    0.2237     8.011
+    treatment0.005 FFU:BlockB    1.1456     0.8729    0.1367     9.599
+    treatment0.01 FFU:BlockB     0.8892     1.1246    0.1223     6.464
+    treatment0.05 FFU:BlockB     0.9154     1.0924    0.1343     6.240
+
+    Concordance= 0.694  (se = 0.029 )
+    Likelihood ratio test= 38.09  on 7 df,   p=3e-06
+    Wald test            = 28.57  on 7 df,   p=2e-04
+    Score (logrank) test = 36.46  on 7 df,   p=6e-06
